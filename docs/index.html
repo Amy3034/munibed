@@ -391,20 +391,24 @@
         /* Custom Scrollbar for Sidebar */
         .hostel-list::-webkit-scrollbar {
             width: 8px;
-            display: block; /* Ensure it exists */
         }
         .hostel-list::-webkit-scrollbar-track {
-            background: rgba(241, 245, 249, 0.5);
+            background: rgba(241, 245, 249, 0.3);
+            border-radius: 10px;
         }
         .hostel-list::-webkit-scrollbar-thumb {
-            background: transparent; /* Hide by default */
-            border-radius: 4px;
+            background: transparent;
+            border-radius: 10px;
+            border: 2px solid transparent; /* Gutter effect */
+            background-clip: content-box;
         }
         .hostel-list:hover::-webkit-scrollbar-thumb {
-            background: #94a3b8; /* Show on hover */
+            background-color: #94a3b8;
+            background-clip: content-box;
+            border: 2px solid transparent;
         }
         .hostel-list::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
+            background-color: var(--primary) !important;
         }
 
         /* Alphabet Group Headers */
@@ -738,6 +742,13 @@
                 const firstLetter = cityName.charAt(0).toUpperCase() || 'Other';
                 const matchesLetter = filterLetter === 'All' || firstLetter === filterLetter;
                 return matchesSearch && matchesLetter;
+            });
+
+            // Sort alphabetically by city name (from parentheses)
+            filtered.sort((a, b) => {
+                const cityA = a.name.match(/\((.*?)\)/)?.[1] || "";
+                const cityB = b.name.match(/\((.*?)\)/)?.[1] || "";
+                return cityA.localeCompare(cityB, 'en', { sensitivity: 'base' });
             });
 
             listCountEl.textContent = `숙소 목록 (${filtered.length})`;
