@@ -49,7 +49,7 @@
         .header-icons span { cursor: pointer; font-size: 1.4rem; transition: color 0.2s; }
         .header-icons span:hover { color: var(--primary); }
 
-        /* Modals */
+        /* Modals (General) */
         .modal {
             display: none;
             position: fixed;
@@ -65,10 +65,10 @@
         .modal-content {
             background-color: #fff;
             margin: 5% auto;
-            padding: 0; /* Remove padding for header effect */
+            padding: 0;
             border-radius: 20px;
             width: 90%;
-            max-width: 580px;
+            max-width: 500px;
             position: relative;
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -84,7 +84,82 @@
         }
         .modal-header h2 {
             margin: 0;
-            font-size: 1.6rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .modal-body {
+            padding: 32px;
+            line-height: 1.8;
+            color: #334155;
+            font-size: 1.05rem;
+        }
+
+        /* Contact Modal Specific */
+        .contact-greeting {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 1.3rem;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+        .contact-intro {
+            text-align: center;
+            font-size: 1rem;
+            color: #475569;
+            margin-bottom: 24px;
+            word-break: keep-all;
+        }
+        .contact-box {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .contact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            align-items: center;
+        }
+        .contact-label {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .contact-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+        .contact-support-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: -2px;
+        }
+        .contact-footer {
+            margin-top: 24px;
+            font-size: 0.9rem;
+            color: #94a3b8;
+            text-align: center;
+            line-height: 1.5;
+            word-break: keep-all;
+        }
+
+        .close-modal-btn {
+            font-size: 32px;
+            cursor: pointer;
+            color: #fff;
+            line-height: 1;
             font-weight: 800;
         }
         .header-controls {
@@ -205,6 +280,9 @@
             padding: 24px;
             background: #fff;
             border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
         .sidebar-title {
             display: flex;
@@ -426,15 +504,37 @@
     <!-- Contact Modal -->
     <div id="contact-modal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('contact-modal')">&times;</span>
-            <h2>✉️ Contact Developer</h2>
-            <div class="modal-body text-center">
-                <p>Have suggestions or found a bug?</p>
-                <div class="contact-links" style="margin-top: 24px; display: flex; flex-direction: column; gap: 12px;">
-                    <a href="mailto:mandeukamychoi@gmail.com" class="btn-contact">📧 Email: mandeukamychoi@gmail.com</a>
-                    <a href="https://github.com/Amy3034/munibed" target="_blank" class="btn-contact">🐙 GitHub Repository</a>
+            <div class="modal-header">
+                <h2>Contact / Developer ✉️</h2>
+                <span class="close-modal-btn" onclick="closeModal('contact-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="contact-greeting">안녕하세요! Hello! ¡Hola! 👋</div>
+                <div class="contact-intro">
+                    MuniBed를 만들어가는 개발자입니다.<br>
+                    순례길을 준비하시거나 걷고 계신 모든 분들께<br>
+                    부엔 까미노(Buen Camino)를 기원합니다! 🎒🚶
                 </div>
-                <p style="margin-top: 20px; font-size: 0.8em; color: #94a3b8;">Buen Camino! 👣</p>
+
+                <div class="contact-box">
+                    <div class="contact-item">
+                        <div class="contact-label">📧 Email / 의견 전달</div>
+                        <a href="mailto:hello@munibed.com" class="contact-value">hello@munibed.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">📸 인스타그램 (Instagram)</div>
+                        <a href="https://instagram.com/munibed_camino" target="_blank" class="contact-value">@munibed_camino</a>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-label">☕ 커피 한 잔 후원하기</div>
+                        <div class="contact-support-note">서버 유지비에 큰 도움이 됩니다! (추후 오픈 예정)</div>
+                    </div>
+                </div>
+
+                <div class="contact-footer">
+                    버그 제보나 추가되었으면 하는 기능 아이디어가 있다면<br>
+                    언제든 위 연락처로 편하게 말씀해 주세요!
+                </div>
             </div>
         </div>
     </div>
