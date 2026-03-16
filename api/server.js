@@ -43,7 +43,46 @@ const db = new sqlite3.Database(dbPath, (err) => {
         console.log('Albergues 테이블 확인 완료.');
       }
     });
+
+    // 댓글 테이블 생성
+    const createCommentsTableQuery = `
+      CREATE TABLE IF NOT EXISTS Comments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nickname TEXT NOT NULL,
+        content TEXT NOT NULL,
+        createdAt TEXT NOT NULL
+      )
+    `;
+    db.run(createCommentsTableQuery, (err) => {
+      if (err) console.error('댓글 테이블 생성 실패:', err.message);
+      else console.log('Comments 테이블 확인 완료.');
+    });
   }
+});
+
+// GET API: 댓글 불러오기
+app.get('/api/comments', (req, res) => {
+  const sql = 'SELECT * FROM Comments ORDER BY id DESC LIMIT 100';
+  db.all(sql, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
+// POST API: 댓글 작성
+app.post('/api/comments', (req, res) => {
+  const { nickname, content } = req.body;
+  if (!nickname || !content) {
+    return res.status(400).json({ error: "Nickname and content are required." });
+  }
+  const now = new Date();
+  const createdAt = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  
+  const sql = 'INSERT INTO Comments (nickname, content, createdAt) VALUES (?, ?, ?)';
+  db.run(sql, [nickname, content, createdAt], function(err) {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ id: this.lastID, nickname, content, createdAt });
+  });
 });
 
 // GET API: 전체 데이터 불러오기

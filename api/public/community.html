@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title>MuniBed - Pilgrim Community</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* ── Community Page Specific ── */
+        body { overflow-y: auto; overflow-x: hidden; }
+
+        .community-wrap {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 28px 16px 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Nickname Badge */
+        .nick-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 18px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .nick-badge .nick-icon {
+            width: 28px; height: 28px;
+            background: linear-gradient(135deg, var(--primary), #0062ff);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        .nick-badge .nick-label {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            margin-right: 4px;
+        }
+
+        /* Compose Box */
+        .compose-box {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .compose-box textarea {
+            width: 100%;
+            min-height: 90px;
+            resize: none;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: var(--bg);
+            transition: border-color 0.2s;
+            box-sizing: border-box;
+        }
+        .compose-box textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        .compose-footer {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+        }
+        .char-count {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+        .send-btn {
+            background: linear-gradient(135deg, var(--primary), #0062ff);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 22px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(2,132,199,0.3);
+        }
+        .send-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(2,132,199,0.4); }
+        .send-btn:active { transform: translateY(0); }
+        .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        /* Filter row */
+        .filter-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-row .section-label {
+            font-weight: 800;
+            font-size: 1rem;
+            color: var(--text-main);
+            flex: 1;
+        }
+        .refresh-icon-btn {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 6px 10px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+        .refresh-icon-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Comment Cards */
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .comment-card {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            animation: slideUp 0.3s ease;
+        }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .comment-meta {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .comment-avatar {
+            width: 34px; height: 34px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+        .comment-nick {
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+        .comment-time {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-left: auto;
+        }
+        .comment-mine .comment-nick { color: var(--primary); }
+        .comment-mine { border-color: rgba(2,132,199,0.3); background: rgba(2,132,199,0.04); }
+        .comment-body {
+            font-size: 0.95rem;
+            line-height: 1.65;
+            color: var(--text-main);
+            word-break: break-word;
+        }
+
+        /* Empty / Loading states */
+        .empty-state {
+            text-align: center;
+            padding: 48px 16px;
+            color: var(--text-muted);
+        }
+        .empty-state .empty-icon { font-size: 2.8rem; margin-bottom: 12px; }
+        .empty-state p { font-size: 0.95rem; }
+
+        /* Load-more */
+        .load-more-btn {
+            background: var(--card-bg);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 12px;
+            width: 100%;
+            font-size: 0.88rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .load-more-btn:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* Dark mode overrides */
+        body.dark-mode .compose-box textarea {
+            background: rgba(31,41,55,0.5);
+            color: var(--text-main);
+            border-color: var(--border);
+        }
+        body.dark-mode .compose-box textarea:focus { border-color: var(--primary); }
+        body.dark-mode .comment-card { box-shadow: none; }
+
+        /* Nav bar back button */
+        .community-nav {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .back-btn {
+            display: flex; align-items: center; gap: 6px;
+            background: transparent; border: none;
+            cursor: pointer; font-size: 0.9rem; font-weight: 700;
+            color: var(--primary);
+            padding: 6px 0;
+            text-decoration: none;
+        }
+        .back-btn:hover { opacity: 0.7; }
+        .nav-title { font-weight: 800; font-size: 1.05rem; color: var(--text-main); }
+        .nav-right { margin-left: auto; display: flex; gap: 8px; }
+    </style>
+</head>
+<body id="communityBody">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('munibed_theme') || 'light';
+            if (savedTheme === 'dark') document.getElementById('communityBody').classList.add('dark-mode');
+        })();
+    </script>
+
+    <!-- Nav Bar -->
+    <nav class="community-nav">
+        <a href="index.html" class="back-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M19 12H5M5 12l7 7M5 12l7-7"/>
+            </svg>
+            홈
+        </a>
+        <span class="nav-title">💬 Pilgrim Board</span>
+        <div class="nav-right">
+            <button class="info-btn" id="themeBtnComm" title="Dark/Light Mode">🌗</button>
+        </div>
+    </nav>
+
+    <div class="community-wrap">
+
+        <!-- My Nickname -->
+        <div id="nickDisplay" class="nick-badge" title="이 기기의 고정 닉네임 (랜덤 부여)">
+            <div class="nick-icon" id="nickInitial">?</div>
+            <span class="nick-label">내 닉네임</span>
+            <span id="nickText">불러오는 중...</span>
+        </div>
+
+        <!-- Compose -->
+        <div class="compose-box">
+            <textarea id="commentInput" placeholder="길 위에서 나누고 싶은 이야기를 적어주세요 🎒&#10;Share your Camino story..." maxlength="300"></textarea>
+            <div class="compose-footer">
+                <span class="char-count"><span id="charCount">0</span>/300</span>
+                <button class="send-btn" id="sendBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                    남기기
+                </button>
+            </div>
+        </div>
+
+        <!-- Comment List -->
+        <div class="filter-row">
+            <span class="section-label">순례자 이야기</span>
+            <button class="refresh-icon-btn" id="refreshComments" title="새로고침">🔄</button>
+        </div>
+        <div class="comments-list" id="commentsList">
+            <div class="empty-state">
+                <div class="empty-icon">🌄</div>
+                <p>불러오는 중...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ── Nickname Engine ──────────────────────────────────────────
+        const ADJECTIVES = ['용감한','든든한','따뜻한','신비로운','씩씩한','느긋한','명랑한','차분한','열정적','지혜로운','Brave','Gentle','Sunny','Swift','Calm','Cozy','Bright','Bold','Kind','Happy'];
+        const NOUNS = ['순례자','까미노러','알베르게인','배낭여행자','Pilgrim','Wanderer','Walker','Traveler','Hiker','Seeker'];
+        const COLORS = ['#4CAF50','#2196F3','#9C27B0','#FF9800','#00BCD4','#E91E63','#3F51B5','#009688','#FF5722','#607D8B'];
+
+        function getNickname() {
+            let nick = localStorage.getItem('munibed_nickname');
+            if (!nick) {
+                const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+                const noun = NOUNS[Math.floor(Math.random() * NOUNS.length)];
+                const num = Math.floor(Math.random() * 900) + 100;
+                nick = `${adj} ${noun} ${num}`;
+                localStorage.setItem('munibed_nickname', nick);
+            }
+            return nick;
+        }
+
+        function getNickColor() {
+            let color = localStorage.getItem('munibed_nick_color');
+            if (!color) {
+                color = COLORS[Math.floor(Math.random() * COLORS.length)];
+                localStorage.setItem('munibed_nick_color', color);
+            }
+            return color;
+        }
+
+        const myNick = getNickname();
+        const myColor = getNickColor();
+
+        // Display nickname
+        document.getElementById('nickText').textContent = myNick;
+        document.getElementById('nickInitial').textContent = myNick.charAt(0).toUpperCase();
+        document.getElementById('nickInitial').style.background = myColor;
+
+        // ── Theme Toggle ────────────────────────────────────────────
+        const themeBtn = document.getElementById('themeBtnComm');
+        function applyTheme() {
+            const theme = localStorage.getItem('munibed_theme') || 'light';
+            document.getElementById('communityBody').classList.toggle('dark-mode', theme === 'dark');
+            themeBtn.textContent = theme === 'dark' ? '☀️' : '🌗';
+        }
+        themeBtn.addEventListener('click', () => {
+            const cur = localStorage.getItem('munibed_theme') || 'light';
+            localStorage.setItem('munibed_theme', cur === 'dark' ? 'light' : 'dark');
+            applyTheme();
+        });
+        applyTheme();
+
+        // ── Char Count ───────────────────────────────────────────────
+        const textarea = document.getElementById('commentInput');
+        const charCountEl = document.getElementById('charCount');
+        textarea.addEventListener('input', () => {
+            charCountEl.textContent = textarea.value.length;
+        });
+
+        // ── API Calls ────────────────────────────────────────────────
+        const API = '/api/comments';
+
+        async function loadComments() {
+            const list = document.getElementById('commentsList');
+            list.innerHTML = '<div class="empty-state"><div class="empty-icon">🌄</div><p>불러오는 중...</p></div>';
+            try {
+                const res = await fetch(API);
+                if (!res.ok) throw new Error('Server error');
+                const data = await res.json();
+                renderComments(data);
+            } catch(e) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>댓글을 불러오지 못했습니다.<br>서버 연결을 확인해주세요.</p></div>';
+            }
+        }
+
+        function renderComments(data) {
+            const list = document.getElementById('commentsList');
+            if (!data.length) {
+                list.innerHTML = '<div class="empty-state"><div class="empty-icon">✍️</div><p>아직 첫 번째 이야기가 없어요.<br>순례길의 첫 게시물을 남겨보세요!</p></div>';
+                return;
+            }
+            list.innerHTML = '';
+            data.forEach(c => {
+                const isMine = c.nickname === myNick;
+                const initial = c.nickname.charAt(0).toUpperCase();
+                // Deterministic color based on nickname string hash
+                const colorIndex = Math.abs(c.nickname.split('').reduce((a, ch) => a + ch.charCodeAt(0), 0)) % COLORS.length;
+                const cardColor = isMine ? myColor : COLORS[colorIndex];
+
+                const card = document.createElement('div');
+                card.className = 'comment-card' + (isMine ? ' comment-mine' : '');
+                card.innerHTML = `
+                    <div class="comment-meta">
+                        <div class="comment-avatar" style="background:${cardColor}">${initial}</div>
+                        <div>
+                            <div class="comment-nick">${escapeHtml(c.nickname)}${isMine ? ' <span style="font-size:0.75rem;color:var(--primary);">(나)</span>' : ''}</div>
+                        </div>
+                        <span class="comment-time">${c.createdAt}</span>
+                    </div>
+                    <div class="comment-body">${escapeHtml(c.content).replace(/\n/g, '<br>')}</div>
+                `;
+                list.appendChild(card);
+            });
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        }
+
+        async function sendComment() {
+            const content = textarea.value.trim();
+            if (!content) return;
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.textContent = '전송 중...';
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nickname: myNick, content })
+                });
+                if (!res.ok) throw new Error('Failed');
+                textarea.value = '';
+                charCountEl.textContent = '0';
+                await loadComments();
+            } catch(e) {
+                alert('댓글 전송에 실패했습니다. 다시 시도해주세요.');
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> 남기기`;
+            }
+        }
+
+        document.getElementById('sendBtn').addEventListener('click', sendComment);
+        textarea.addEventListener('keydown', e => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') sendComment();
+        });
+        document.getElementById('refreshComments').addEventListener('click', loadComments);
+
+        // Init
+        loadComments();
+    </script>
+</body>
+</html>
