@@ -327,31 +327,38 @@
         /* Side Alphabet Index (Contact Style) */
         .side-index {
             position: absolute;
-            right: 2px;
+            right: 8px; /* Offset from the edge to avoid scrollbar overlap */
             top: 50%;
             transform: translateY(-50%);
             display: flex;
             flex-direction: column;
-            gap: 1px;
-            z-index: 1001;
+            gap: 2px;
+            z-index: 5001; /* Very high to be above list items */
             background: var(--card-bg);
-            backdrop-filter: blur(4px);
-            padding: 10px 2px;
-            border-radius: 20px;
-            border: 1px solid #cbd5e1;
+            backdrop-filter: blur(8px);
+            padding: 12px 4px;
+            border-radius: 24px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            pointer-events: auto;
+        }
+        body.dark-mode .side-index {
+            background: rgba(17, 24, 39, 0.85);
+            border-color: #374151;
         }
         .side-index span {
-            font-size: 0.65rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            color: #64748b;
+            color: var(--text-muted);
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            width: 22px;
+            height: 22px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
             transition: all 0.2s;
+            user-select: none;
         }
         .side-index span:hover {
             background: var(--primary);
@@ -1135,13 +1142,23 @@
         }
 
         function scrollToLetter(letter) {
-            const firstCard = Array.from(document.querySelectorAll('.hostel-card')).find(card => {
-                const name = card.querySelector('.hostel-name').textContent;
-                const cityName = name.match(/\((.*?)\)/)?.[1] || "";
-                return cityName.trim().toUpperCase().startsWith(letter);
-            });
-            if (firstCard) {
-                firstCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const target = document.getElementById(`group-${letter}`);
+            if (target) {
+                const container = document.getElementById('hostel-list');
+                const offset = target.offsetTop - container.offsetTop;
+                container.scrollTo({ top: offset, behavior: 'smooth' });
+            } else {
+                // Fallback to finding first card if group header somehow missing
+                const firstCard = Array.from(document.querySelectorAll('.hostel-card')).find(card => {
+                    const name = card.querySelector('.hostel-name').textContent;
+                    const cityName = name.match(/\((.*?)\)/)?.[1] || "";
+                    return cityName.trim().toUpperCase().startsWith(letter);
+                });
+                if (firstCard) {
+                    const container = document.getElementById('hostel-list');
+                    const offset = firstCard.offsetTop - container.offsetTop;
+                    container.scrollTo({ top: offset, behavior: 'smooth' });
+                }
             }
         }
 
@@ -1151,7 +1168,8 @@
             sideIndexEl.innerHTML = '';
 
             alberguesData.forEach(item => {
-                let cityName = item.name.match(/\(([^()]*?)\)/)?.[1] || "";
+                let cityMatch = item.name.match(/\(([^()]*?)\)/);
+                let cityName = cityMatch ? cityMatch[1].trim() : "";
                 if (cityName) {
                     const firstChar = cityName.trim().charAt(0).toUpperCase();
                     if (/[A-Z]/.test(firstChar)) {
@@ -1172,7 +1190,13 @@
                 // Vertical Side Index
                 const vSpan = document.createElement('span');
                 vSpan.textContent = l;
-                vSpan.onclick = () => scrollToLetter(l);
+                vSpan.onclick = () => {
+                    if (filterLetter !== '') {
+                        filterLetter = '';
+                        renderAll(); // Ensure full list is shown for scrolling
+                    }
+                    scrollToLetter(l);
+                };
                 sideIndexEl.appendChild(vSpan);
             });
         }

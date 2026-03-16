@@ -54,6 +54,7 @@ async function fetchAlbergues() {
         document.getElementById('count').textContent = data.length;
         renderMapMarkers();
         renderList();
+        renderSideIndex();
     } catch (error) {
         console.error('API 로드 실패:', error);
         document.getElementById('albergueList').innerHTML = 
@@ -120,11 +121,27 @@ function renderList(dataToRender = alberguesData) {
         return;
     }
 
+    let currentGroup = '';
+
     dataToRender.forEach(item => {
+        // Grouping logic
+        const cityMatch = item.name.match(/\(([^()]*?)\)/);
+        const cityName = cityMatch ? cityMatch[1].trim() : "Other";
+        const firstLetter = cityName.charAt(0).toUpperCase();
+
+        if (firstLetter !== currentGroup) {
+            currentGroup = firstLetter;
+            const groupHeader = document.createElement('div');
+            groupHeader.className = 'group-header';
+            groupHeader.id = `group-${currentGroup}`;
+            groupHeader.textContent = currentGroup;
+            groupHeader.style.cssText = 'padding: 1rem 1.5rem; background: var(--bg-alt); font-weight: 800; border-bottom: 1px solid var(--border); color: var(--primary);';
+            listContainer.appendChild(groupHeader);
+        }
+
         const card = document.createElement('div');
         card.className = 'card';
-        // Add a data attribute for alphabet indexing using the City Name
-        card.dataset.index = getCityFirstLetter(item.name);
+        card.style.margin = '1rem';
         card.onclick = () => focusMapMarker(item.id, item.lat, item.lng);
 
         const badgeClass = `bg-${item.status}`;
@@ -179,6 +196,40 @@ async function updateStatus(id, newStatus) {
     } catch (error) {
         console.error('업데이트 에러:', error);
         alert('서버 연결 오류로 업데이트에 실패했습니다.');
+    }
+}
+
+function renderSideIndex() {
+    const sideIndexEl = document.getElementById('side-index');
+    if (!sideIndexEl) return;
+    sideIndexEl.innerHTML = '';
+
+    const letters = new Set();
+    alberguesData.forEach(item => {
+        let cityName = item.name.match(/\(([^()]*?)\)/)?.[1] || "";
+        if (cityName) {
+            const firstChar = cityName.trim().charAt(0).toUpperCase();
+            if (/[A-Z]/.test(firstChar)) {
+                letters.add(firstChar);
+            }
+        }
+    });
+
+    const sortedLetters = Array.from(letters).sort();
+    sortedLetters.forEach(l => {
+        const span = document.createElement('span');
+        span.textContent = l;
+        span.onclick = () => scrollToLetter(l);
+        sideIndexEl.appendChild(span);
+    });
+}
+
+function scrollToLetter(letter) {
+    const target = document.getElementById(`group-${letter}`);
+    if (target) {
+        const container = document.getElementById('albergueList');
+        const offset = target.offsetTop - container.offsetTop;
+        container.scrollTo({ top: offset, behavior: 'smooth' });
     }
 }
 
