@@ -344,8 +344,24 @@
         function renderAll() {
             // Filter data
             let filtered = alberguesData.filter(item => {
-                const matchesSearch = item.name.toLowerCase().includes(searchQuery);
-                const firstLetter = item.name.match(/\((.*?)\)/)?.[1]?.charAt(0).toUpperCase() || 'Other';
+                const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
+                const hostelNamePart = item.name.split('(')[0].toLowerCase();
+                
+                // Detailed matching logic
+                let matchesSearch = true;
+                if (searchQuery) {
+                    // Match if:
+                    // 1. City starts with query (e.g., "S" -> "Saint-Jean...")
+                    // 2. Any word in city starts with query (e.g., "M" -> "Cizur Minor")
+                    // 3. Hostel name contains query
+                    const cityWords = cityName.split(/[\s-]+/);
+                    const cityMatches = cityWords.some(word => word.startsWith(searchQuery));
+                    const hostelMatches = hostelNamePart.includes(searchQuery);
+                    
+                    matchesSearch = (cityMatches || hostelMatches);
+                }
+
+                const firstLetter = cityName.charAt(0).toUpperCase() || 'Other';
                 const matchesLetter = filterLetter === 'All' || firstLetter === filterLetter;
                 return matchesSearch && matchesLetter;
             });
