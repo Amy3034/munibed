@@ -492,7 +492,7 @@
             #bottom-sheet { display: flex; } /* Handle mobile separately if needed */
         }
 
-        /* Mobile Bottom Sheet (Fall-back or for small screens) */
+        /* Mobile Bottom Sheet */
         #bottom-sheet {
             position: fixed;
             bottom: -100%;
@@ -501,11 +501,23 @@
             background: white;
             border-radius: 24px 24px 0 0;
             z-index: 2000;
-            transition: bottom 0.35s;
-            padding: 24px;
-            box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
+            transition: bottom 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 24px 24px 40px 24px;
+            box-shadow: 0 -12px 32px rgba(0,0,0,0.15);
+            display: none;
+            flex-direction: column;
+            gap: 16px;
         }
-        #bottom-sheet.active { bottom: 0; }
+        #bottom-sheet.active { bottom: 0; display: flex; }
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: #e2e8f0;
+            border-radius: 2px;
+            margin: -8px auto 8px;
+        }
+        .sheet-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .sheet-close { font-size: 24px; cursor: pointer; color: #94a3b8; }
     </style>
 </head>
 <body>
@@ -608,6 +620,18 @@
                     <!-- Dynamic letters R, A, B, C... -->
                 </div>
             </div>
+            <!-- Bottom Sheet -->
+    <div id="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <div id="sheet-name" class="hostel-name" style="font-size: 1.2rem;"></div>
+            <div class="sheet-close" onclick="closeBottomSheet()">&times;</div>
+        </div>
+        <div id="sheet-status"></div>
+        <div id="sheet-actions" class="card-actions" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+            <!-- Actions will be cloned or injected here -->
+        </div>
+    </div>
             <div class="hostel-list" id="hostel-list">
                 <!-- Hostels will be injected here -->
             </div>
@@ -828,11 +852,46 @@
             if(item) {
                 map.flyTo([item.lat, item.lng], 15, { duration: 1 });
                 markers[id].openPopup();
-                // Refresh list highlight
+                
+                // Sidebar highlight
                 document.querySelectorAll('.hostel-card').forEach(c => c.classList.remove('selected'));
                 const card = document.getElementById(`card-${id}`);
                 if(card) card.classList.add('selected');
+
+                // Mobile Bottom Sheet
+                if (window.innerWidth <= 900) {
+                    showBottomSheet(item);
+                }
             }
+        }
+
+        function showBottomSheet(item) {
+            const sheet = document.getElementById('bottom-sheet');
+            const nameEl = document.getElementById('sheet-name');
+            const statusEl = document.getElementById('sheet-status');
+            const actionsEl = document.getElementById('sheet-actions');
+            
+            nameEl.textContent = item.name;
+            const status = STATUS_MAP[item.status] || STATUS_MAP['gray'];
+            statusEl.innerHTML = `
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="status-badge ${status.class}">${status.label.split(' ')[1]} (${status.text})</span>
+                    <span style="font-size:0.85rem; color:#94a3b8;">🕒 ${item.lastUpdated}</span>
+                </div>
+            `;
+            
+            actionsEl.innerHTML = `
+                <button class="btn-update green" style="padding:12px;" onclick="updateStatus(${item.id}, 'green'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">여유<span>(Available)</span></button>
+                <button class="btn-update yellow" style="padding:12px;" onclick="updateStatus(${item.id}, 'yellow'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">혼잡<span>(Limited)</span></button>
+                <button class="btn-update red" style="padding:12px;" onclick="updateStatus(${item.id}, 'red'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">만실<span>(Full)</span></button>
+                <button class="btn-update gray" style="padding:12px;" onclick="updateStatus(${item.id}, 'gray'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">미확인<span>(Unknown)</span></button>
+            `;
+            
+            sheet.classList.add('active');
+        }
+
+        function closeBottomSheet() {
+            document.getElementById('bottom-sheet').classList.remove('active');
         }
 
         function syncListToMarker(id) {
