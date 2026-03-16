@@ -517,24 +517,24 @@
         /* Geolocation Button */
         .geo-btn {
             position: absolute;
-            bottom: 40px;
+            bottom: 120px; /* Raised to be above mobile attribution/bottom-sheet */
             left: 24px;
-            z-index: 1000;
+            z-index: 5000; /* Higher than Leaflet and Bottom-sheet */
             background: white;
-            width: 48px;
-            height: 48px;
+            width: 54px; /* Slightly larger */
+            height: 54px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+            border: 2px solid var(--primary); /* Blue border for visibility */
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .geo-btn:hover { transform: scale(1.1); background: #f8fafc; }
-        .geo-btn:active { transform: scale(0.95); }
+        .geo-btn:hover { transform: scale(1.15) rotate(-15deg); background: #f0f7ff; }
+        .geo-btn:active { transform: scale(0.9); }
     </style>
 </head>
 <body>
