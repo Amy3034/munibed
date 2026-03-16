@@ -690,6 +690,7 @@
         </div>
         <div class="header-icons">
             <span id="theme-toggle" title="Dark/Light Mode" onclick="toggleTheme()">🌗</span>
+            <span title="Share" onclick="shareApp()">🔗</span>
             <span title="Information" onclick="openModal('info-modal')">ℹ️</span>
             <span title="Contact" onclick="openModal('contact-modal')">✉️</span>
         </div>
@@ -1123,6 +1124,25 @@
 
         function closeBottomSheet() {
             document.getElementById('bottom-sheet').classList.remove('active');
+        }
+
+        async function shareApp() {
+            const shareData = {
+                title: 'MuniBed - Camino Albergue Tracker',
+                text: '산티아고 순례길 알베르게 실시간 현황을 확인해보세요! Check real-time Albergue status on Camino!',
+                url: window.location.href
+            };
+
+            try {
+                if (navigator.share) {
+                    await navigator.share(shareData);
+                } else {
+                    await navigator.clipboard.writeText(window.location.href);
+                    alert('주소가 복사되었습니다! Link copied to clipboard.');
+                }
+            } catch (err) {
+                console.error('Share failed:', err);
+            }
         }
 
         function syncListToMarker(id) {

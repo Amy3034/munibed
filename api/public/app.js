@@ -264,6 +264,28 @@ document.getElementById('refreshBtn').addEventListener('click', () => {
     fetchAlbergues();
 });
 
+const shareBtn = document.getElementById('shareBtn');
+if (shareBtn) {
+    shareBtn.addEventListener('click', async () => {
+        const shareData = {
+            title: 'MuniBed - Camino Albergue Tracker',
+            text: '산티아고 순례길 알베르게 실시간 현황을 확인해보세요! Check real-time Albergue status on Camino!',
+            url: window.location.href
+        };
+
+        try {
+            if (navigator.share) {
+                await navigator.share(shareData);
+            } else {
+                await navigator.clipboard.writeText(window.location.href);
+                alert('주소가 복사되었습니다! Link copied to clipboard.');
+            }
+        } catch (err) {
+            console.error('Share failed:', err);
+        }
+    });
+}
+
 // Mobile Sidebar Logic
 const mobileFab = document.getElementById('mobileFab');
 const mobileOverlay = document.getElementById('mobileOverlay');
