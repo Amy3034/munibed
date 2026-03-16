@@ -819,6 +819,9 @@
         }
 
         function renderAll(options = {}) {
+            // ALWAYS render markers from the full data set first
+            renderMarkers();
+
             // Filter data
             let filtered = alberguesData.filter(item => {
                 if (options.soloId) return item.id === options.soloId;
@@ -872,7 +875,7 @@
             const scrollPos = options.keepScroll ? hostelListEl.scrollTop : 0;
 
             // Render List with Alphabet Grouping
-            // Empty State Handling
+            // Empty State Handling (Return early for list, but markers are already rendered above)
             if (filtered.length === 0 && !searchQuery && !filterLetter) {
                 hostelListEl.innerHTML = `
                     <div style="padding: 40px 20px; text-align: center; color: #94a3b8;">
@@ -883,6 +886,9 @@
                 `;
                 return;
             }
+
+            hostelListEl.innerHTML = '';
+            let currentGroup = '';
 
             filtered.forEach(item => {
                 const cityMatch = item.name.match(/\(([^()]*?)\)(?:\s|\d|km|$)/);
@@ -927,8 +933,10 @@
             }
 
             // Render Markers
-            if (!options.keepScroll) { // Only re-render markers if not a mini-update
-                renderMarkers();
+            if (options.keepScroll) {
+                hostelListEl.scrollTop = scrollPos;
+            } else if (options.soloId) {
+                hostelListEl.scrollTop = 0; // Pin to top
             }
         }
 
