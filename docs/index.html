@@ -161,7 +161,10 @@
             color: #fff;
             line-height: 1;
             font-weight: 800;
+            margin-left: 12px;
+            transition: opacity 0.2s;
         }
+        .close-modal-btn:hover { opacity: 0.7; }
         .header-controls {
             display: flex;
             align-items: center;
@@ -187,14 +190,6 @@
             background: #fff;
             color: var(--primary);
             border-color: #fff;
-        }
-        .close-modal-btn {
-            font-size: 32px;
-            cursor: pointer;
-            color: #fff;
-            line-height: 1;
-            font-weight: 800;
-            margin-left: 8px;
         }
 
         .modal-body {
@@ -535,7 +530,7 @@
 
     <!-- Info Modal -->
     <div id="info-modal" class="modal">
-        <div class="modal-content" id="info-modal-content">
+        <div class="modal-content">
             <div class="modal-header">
                 <h2 id="info-title">About MuniBed 🛏️</h2>
                 <div class="header-controls">
@@ -620,18 +615,6 @@
                     <!-- Dynamic letters R, A, B, C... -->
                 </div>
             </div>
-            <!-- Bottom Sheet -->
-    <div id="bottom-sheet">
-        <div class="sheet-handle"></div>
-        <div class="sheet-header">
-            <div id="sheet-name" class="hostel-name" style="font-size: 1.2rem;"></div>
-            <div class="sheet-close" onclick="closeBottomSheet()">&times;</div>
-        </div>
-        <div id="sheet-status"></div>
-        <div id="sheet-actions" class="card-actions" style="grid-template-columns: 1fr 1fr; gap: 12px;">
-            <!-- Actions will be cloned or injected here -->
-        </div>
-    </div>
             <div class="hostel-list" id="hostel-list">
                 <!-- Hostels will be injected here -->
             </div>
@@ -639,6 +622,19 @@
                 <!-- A, B, C... -->
             </div>
         </aside>
+
+        <!-- Bottom Sheet (Moved outside sidebar for mobile visibility) -->
+        <div id="bottom-sheet">
+            <div class="sheet-handle"></div>
+            <div class="sheet-header">
+                <div id="sheet-name" class="hostel-name" style="font-size: 1.2rem;"></div>
+                <div class="sheet-close" onclick="closeBottomSheet()">&times;</div>
+            </div>
+            <div id="sheet-status"></div>
+            <div id="sheet-actions" class="card-actions" style="grid-template-columns: 1fr 1fr; gap: 12px;">
+                <!-- Actions will be cloned or injected here -->
+            </div>
+        </div>
     </div>
 
     <!-- Static Data Load -->
