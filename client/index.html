@@ -2,279 +2,187 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>까미노 신호등 (Camino Traffic Light)</title>
-    <!-- 오픈소스 지도 라이브러리 Leaflet CSS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuniBed - for Camino de Santiago</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
-    <style>
-        :root {
-            --green: #4CAF50;
-            --yellow: #FFC107;
-            --red: #F44336;
-            --bg-color: #f8f9fa;
-            --text-color: #333;
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden; /* 지도 밖으로 스크롤되는 것을 방지 */
-            background-color: var(--bg-color);
-        }
-
-        /* 지도가 화면 전체를 채우도록 설정 */
-        #map {
-            width: 100%;
-            height: 100%;
-            z-index: 1; /* 바텀시트보다 아래에 위치하도록 */
-        }
-
-        /* 바텀 시트 (정보 창) 스타일 */
-        #bottom-sheet {
-            position: fixed;
-            bottom: -100%; /* 초기 상태: 화면 아래로 숨김 */
-            left: 0;
-            width: 100%;
-            background-color: white;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-            transition: bottom 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); /* 부드럽게 올라오는 애니메이션 */
-            z-index: 1000; /* 지도보다 위에 표시 */
-            padding: 24px 20px 40px 20px; /* 한 손으로 조작하기 편하게 넉넉한 여백 (아래쪽 여백 추가) */
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* 마커 클릭 시 클래스가 추가되어 화면에 나타남 */
-        #bottom-sheet.active {
-            bottom: 0;
-        }
-
-        /* 바텀 시트 상단의 회색 손잡이 모양 (디자인 요소) */
-        .sheet-handle {
-            width: 44px;
-            height: 5px;
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            margin: 0 auto;
-        }
-
-        .albergue-info {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            text-align: center; /* 가운데 정렬로 시인성 향상 */
-            margin-bottom: 8px;
-        }
-
-        .albergue-name {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text-color);
-            margin: 0;
-            word-break: keep-all;
-        }
-
-        .update-time {
-            font-size: 0.95rem;
-            color: #757575;
-            margin: 0;
-        }
-
-        /* 버튼 그룹 컨테이너 */
-        .status-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 14px; /* 버튼 사이 간격을 넓혀 오터치 방지 */
-        }
-
-        /* 개별 버튼 공통 스타일 */
-        .btn-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 18px; /* 한 손으로 누르기 쉬운 큰 크기 */
-            border: none;
-            border-radius: 16px; /* 둥근 모서리 */
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 약간의 입체감 */
-        }
-
-        .btn-status:active {
-            transform: scale(0.97); /* 눌렀을 때 살짝 들어가는 효과 */
-        }
-
-        /* 각 상태별 버튼 색상 */
-        .btn-green {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border: 2px solid var(--green);
-        }
-
-        .btn-yellow {
-            background-color: #fff8e1;
-            color: #f57f17;
-            border: 2px solid var(--yellow);
-        }
-
-        .btn-red {
-            background-color: #ffebee;
-            color: #c62828;
-            border: 2px solid var(--red);
-        }
-
-        .emoji {
-            margin-right: 12px;
-            font-size: 1.3rem;
-        }
-        
-    </style>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <!-- 지도가 표시될 영역 -->
-    <div id="map"></div>
-
-    <!-- 하단 정보 창 (바텀 시트) -->
-    <div id="bottom-sheet">
-        <div class="sheet-handle"></div>
-        <div class="albergue-info">
-            <h2 id="sheet-name" class="albergue-name">알베르게 이름</h2>
-            <p id="sheet-time" class="update-time">최근 업데이트: 시간 정보</p>
+    <header class="app-header">
+        <div class="header-container" style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div class="logo">
+                    <span class="logo-icon">🛏️</span>
+                    <h1>MuniBed</h1>
+                </div>
+                <p class="subtitle">for Camino de Santiago</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+                <button id="contactBtn" class="info-btn" title="Contact Developer">✉️</button>
+                <button id="infoBtn" class="info-btn" title="About MuniBed">ℹ️</button>
+            </div>
         </div>
-        <div class="status-buttons">
-            <button class="btn-status btn-green" onclick="updateStatus('green')">
-                <span class="emoji">🟢</span> 널널함
-            </button>
-            <button class="btn-status btn-yellow" onclick="updateStatus('yellow')">
-                <span class="emoji">🟡</span> 얼마 안 남음
-            </button>
-            <button class="btn-status btn-red" onclick="updateStatus('red')">
-                <span class="emoji">🔴</span> 꽉 참
-            </button>
+    </header>
+
+    <main class="app-container">
+        <!-- 지도 영역 -->
+        <section class="map-section">
+            <div id="map"></div>
+            <div class="map-overlay-legend">
+                <div class="legend-item"><span class="dot dot-green"></span> 여유 (Available)</div>
+                <div class="legend-item"><span class="dot dot-yellow"></span> 혼잡 (Limited)</div>
+                <div class="legend-item"><span class="dot dot-red"></span> 만실 (Full)</div>
+                <div class="legend-item"><span class="dot dot-gray"></span> 미확인 (Unknown)</div>
+            </div>
+        </section>
+
+        <!-- 리스트 영역 -->
+        <section class="list-section">
+            <div class="list-header">
+                <h2>숙소 목록 (<span id="count">0</span>)</h2>
+                <button id="refreshBtn" class="refresh-btn">🔄 새로고침</button>
+            </div>
+            
+            <!-- 통합 검색 및 색인 영역 -->
+            <div class="search-container">
+                <div class="autocomplete-wrapper">
+                    <input type="text" id="searchInput" placeholder="도시명(eng) 검색 (예: Burgos)..." autocomplete="off">
+                    <div id="autocompleteList" class="autocomplete-items"></div>
+                </div>
+            </div>
+            <div class="alphabet-index" id="alphabetIndex">
+                <!-- A-Z index will be generated here -->
+            </div>
+
+            <div class="albergue-list" id="albergueList">
+                <!-- Data will be loaded here -->
+                <div class="loading">데이터를 불러오는 중입니다...</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Info Modal -->
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>About MuniBed 🛏️</h2>
+                <div class="modal-actions">
+                    <button class="lang-btn active" data-lang="KO">KO</button>
+                    <button class="lang-btn" data-lang="EN">EN</button>
+                    <button class="lang-btn" data-lang="ES">ES</button>
+                    <button id="closeModalBtn" class="close-btn">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body">
+                <!-- Korean Content (Default) -->
+                <div id="contentKO" class="lang-content active">
+                    <p><strong>MuniBed</strong>는 산티아고 순례길(Camino Francés)을 걷는 순례자들을 위한 실시간 숙소(알베르게) 현황 크라우드소싱 공유 서비스입니다.</p>
+                    
+                    <h3>🌟 어떻게 사용하나요?</h3>
+                    <ul>
+                        <li><strong>색상 확인:</strong> 지도의 마커나 리스트의 배지 색상으로 숙소의 남은 자리를 직관적으로 확인하세요. (🟢 여유, 🟡 혼잡, 🔴 만실, ⚪ 미확인)</li>
+                        <li><strong>검색 & 필터링:</strong> 찾고 싶은 마을 이름이나 숙소 이름을 검색하거나 아래의 A-Z 알파벳 버튼을 눌러 손쉽게 조회할 수 있습니다.</li>
+                        <li><strong>직접 업데이트:</strong> 현재 머물고 계신 알베르게의 상황을 클릭 한 번으로 업데이트하여 뒤따라오는 다른 순례자들에게 도움을 주세요!</li>
+                    </ul>
+                    
+                    <div class="modal-note">
+                        <p>💡 <em>참고: 모든 데이터는 매일 새벽 2시(현지 시각)에 새로운 날을 맞이하여 '미확인(Unknown)' 상태로 자동 초기화됩니다.</em></p>
+                    </div>
+                </div>
+
+                <!-- English Content -->
+                <div id="contentEN" class="lang-content">
+                    <p><strong>MuniBed</strong> is a real-time crowdsourced Albergue (hostel) status sharing service for pilgrims walking the Camino Francés.</p>
+                    
+                    <h3>🌟 How to use?</h3>
+                    <ul>
+                        <li><strong>Check Colors:</strong> Intuitively check the availability of beds using the colors of map markers or list badges. (🟢 Available, 🟡 Limited, 🔴 Full, ⚪ Unknown)</li>
+                        <li><strong>Search & Filter:</strong> Simply search for the name of the town or albergue, or use the A-Z alphabet index below to quickly find your stop.</li>
+                        <li><strong>Update Yourself:</strong> Help fellow pilgrims behind you by updating the status of the albergue you are currently staying at with just one click!</li>
+                    </ul>
+                    
+                    <div class="modal-note">
+                        <p>💡 <em>Note: All data is automatically reset to 'Unknown' every day at 2:00 AM (LT) to prepare for a new day.</em></p>
+                    </div>
+                </div>
+
+                <!-- Spanish Content -->
+                <div id="contentES" class="lang-content">
+                    <p><strong>MuniBed</strong> es un servicio de intercambio de estados de Albergues en tiempo real, creado por la comunidad para los peregrinos que caminan el Camino Francés.</p>
+                    
+                    <h3>🌟 ¿Cómo usarlo?</h3>
+                    <ul>
+                        <li><strong>Revisa los colores:</strong> Comprueba intuitivamente la disponibilidad de camas usando los colores de los marcadores del mapa o las insignias de la lista. (🟢 Disponible, 🟡 Limitado, 🔴 Lleno, ⚪ Desconocido)</li>
+                        <li><strong>Busca y Filtra:</strong> Simplemente busca el nombre del pueblo o albergue, o usa el índice alfabético A-Z de abajo para encontrar tu parada rápidamente.</li>
+                        <li><strong>Actualízalo tú mismo:</strong> Ayuda a los peregrinos que vienen detrás actualizando el estado del albergue en el que te hospedas con un solo clic.</li>
+                    </ul>
+                    
+                    <div class="modal-note">
+                        <p>💡 <em>Nota: Todos los datos se restablecen automáticamente a 'Desconocido' todos los días a las 2:00 AM (Hora local) para prepararse para un nuevo día.</em></p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- 오픈소스 지도 라이브러리 Leaflet JS -->
+    <div id="contactModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Contact / Developer ✉️</h2>
+                <div class="modal-actions">
+                    <button class="lang-btn active" data-lang="KO">KO</button>
+                    <button class="lang-btn" data-lang="EN">EN</button>
+                    <button class="lang-btn" data-lang="ES">ES</button>
+                    <button id="closeContactBtn" class="close-btn">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <h3 style="margin-top: 0; margin-bottom: 1rem;">안녕하세요! Hello! ¡Hola! 👋</h3>
+                
+                <!-- Korean Content -->
+                <div id="contactContentKO" class="lang-content active">
+                    <p style="margin-bottom: 1.5rem; font-size: 0.95rem;">MuniBed를 만들어가는 개발자입니다.<br>순례길을 준비하시거나 걷고 계신 모든 분들께<br>부엔 까미노(Buen Camino)를 기원합니다! 🎒🚶‍♂️</p>
+                </div>
+
+                <!-- English Content -->
+                <div id="contactContentEN" class="lang-content">
+                    <p style="margin-bottom: 1.5rem; font-size: 0.95rem;">I am the developer behind MuniBed.<br>Wishing all of you who are preparing for or walking the Camino<br>a Buen Camino! 🎒🚶‍♂️</p>
+                </div>
+
+                <!-- Spanish Content -->
+                <div id="contactContentES" class="lang-content">
+                    <p style="margin-bottom: 1.5rem; font-size: 0.95rem;">Soy el desarrollador de MuniBed.<br>¡Les deseo a todos los que se preparan o recorren el Camino<br>un Buen Camino! 🎒🚶‍♂️</p>
+                </div>
+                
+                <div class="contact-card" style="padding: 1.5rem; background: #f8fafc; border-radius: 12px; border: 1px solid var(--border);">
+                    <div style="margin-bottom: 1.25rem;">
+                        <strong>📧 Email</strong><br>
+                        <a href="mailto:hello@munibed.com" style="color: var(--primary); text-decoration: none; font-weight: 500;">hello@munibed.com</a>
+                    </div>
+                    <div style="margin-bottom: 1.25rem;">
+                        <strong>📸 Instagram</strong><br>
+                        <a href="https://instagram.com/munibed_camino" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 500;">@munibed_camino</a>
+                    </div>
+                    <div>
+                        <strong>☕ 커피 한 잔 후원하기</strong><br>
+                        <span style="font-size: 0.85rem; color: var(--text-muted);">서버 유지비에 큰 도움이 됩니다! (추후 오픈 예정)</span>
+                    </div>
+                </div>
+                
+                <p style="margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted); line-height: 1.5;">
+                    버그 제보나 추가되었으면 하는 기능 아이디어가 있다면<br>언제든 위 연락처로 편하게 말씀해 주세요!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script>
-        // 1. 지도 생성 초기화
-        // 스페인 팜플로나 대성당 근처 좌표: 위도 42.81687, 경도 -1.64323
-        const map = L.map('map', {
-            zoomControl: false // 모바일 환경 최적화를 위해 기본 줌 버튼(+) (-) 숨김
-        }).setView([42.818, -1.644], 14); // 초기 좌표와 줌 레벨 설정
-
-        // 오픈스트리트맵(OpenStreetMap) 타일 타일을 지도에 입히기
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap' // 저작권 표시 (오픈소스 필수)
-        }).addTo(map);
-
-        // 2. 가짜 데이터 (Mock Data) 생성 (3개의 알베르게)
-        const albergues = [
-            { 
-                id: 1, 
-                name: "알베르게 헤수스 이 마리아", 
-                lat: 42.8183, 
-                lng: -1.6443, 
-                lastUpdated: "5분 전"
-            },
-            { 
-                id: 2, 
-                name: "카사 파데른 알베르게", 
-                lat: 42.8195, 
-                lng: -1.6465, 
-                lastUpdated: "15분 전"
-            },
-            { 
-                id: 3, 
-                name: "시스루 메노르 공립 알베르게", 
-                lat: 42.7937, 
-                lng: -1.6844, 
-                lastUpdated: "1시간 전"
-            }
-        ];
-
-        // HTML 요소 선택기
-        const bottomSheet = document.getElementById('bottom-sheet');
-        const sheetName = document.getElementById('sheet-name');
-        const sheetTime = document.getElementById('sheet-time');
-        
-        let currentSelectedId = null; // 현재 선택된 숙소 기억용
-
-        // 3. 지도 위에 핀(마커) 꽂기
-        albergues.forEach(albergue => {
-            // 마커 생성 및 지도에 추가
-            const marker = L.marker([albergue.lat, albergue.lng]).addTo(map);
-            
-            // 마커를 클릭(터치)했을 때 이벤트 설정
-            marker.on('click', () => {
-                openBottomSheet(albergue);
-            });
-        });
-
-        // 지도의 빈 곳을 클릭(터치)했을 때 창 닫기
-        map.on('click', () => {
-            closeBottomSheet();
-        });
-
-        // 4. 정보 창(바텀 시트) 열기 함수
-        function openBottomSheet(albergue) {
-            currentSelectedId = albergue.id;
-            
-            // 정보 업데이트
-            sheetName.textContent = albergue.name;
-            sheetTime.textContent = `최근 업데이트: ${albergue.lastUpdated}`;
-            
-            // CSS 클래스를 추가하여 창을 위로 슬라이드
-            bottomSheet.classList.add('active');
-            
-            // 클릭한 마커가 화면 중앙에 오도록 지도를 부드럽게 이동시킴 (바텀시트에 가려지지 않게 약간 위로 조정)
-            // 모바일에서는 바텀시트가 화면을 덮기 때문에, 마커 위치를 약간 위로(위도 감소) 보정해줍니다.
-            map.flyTo([albergue.lat - 0.003, albergue.lng], 15, { duration: 0.5 });
-        }
-
-        // 5. 정보 창(바텀 시트) 닫기 함수
-        function closeBottomSheet() {
-            bottomSheet.classList.remove('active');
-            currentSelectedId = null;
-        }
-
-        // 6. 상태 버튼 눌렀을 때 실행되는 함수
-        function updateStatus(status) {
-            if (!currentSelectedId) return;
-            
-            let statusText = "";
-            let statusEmoji = "";
-            
-            if (status === 'green') {
-                statusText = "널널함";
-                statusEmoji = "🟢";
-            } else if (status === 'yellow') {
-                statusText = "얼마 안 남음";
-                statusEmoji = "🟡";
-            } else if (status === 'red') {
-                statusText = "꽉 참";
-                statusEmoji = "🔴";
-            }
-
-            // 시각적 피드백 제공 (실제로는 여기서 구글 스프레드시트로 데이터를 보냄)
-            alert(`[완료] 방금 '${sheetName.textContent}'의 상태를\n'${statusEmoji} ${statusText}'(으)로 업데이트 했습니다.\n(추후 구글 시트와 연동될 부분입니다)`);
-            
-            // 상태 업데이트 완료 후 화면 정리
-            sheetTime.textContent = "최근 업데이트: 방금 전";
-            closeBottomSheet(); // 창 닫기
-        }
-    </script>
+    <!-- Custom script -->
+    <script src="app.js"></script>
 </body>
 </html>
