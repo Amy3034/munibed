@@ -140,12 +140,27 @@
         /* Hostel List */
         .hostel-list {
             flex: 1;
-            overflow-y: auto !important; /* Force enable scrolling */
+            overflow-y: auto !important;
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 16px;
             scroll-behavior: smooth;
+        }
+        
+        /* Custom Scrollbar for Sidebar */
+        .hostel-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        .hostel-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .hostel-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .hostel-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
 
         .hostel-card {
@@ -423,7 +438,11 @@
                 hostelListEl.appendChild(card);
             });
 
-            if (options.keepScroll) hostelListEl.scrollTop = scrollPos;
+            if (options.keepScroll) {
+                hostelListEl.scrollTop = scrollPos;
+            } else if (options.soloId) {
+                hostelListEl.scrollTop = 0; // Pin to top
+            }
 
             // Render Markers
             if (!options.keepScroll) { // Only re-render markers if not a mini-update
