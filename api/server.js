@@ -280,7 +280,7 @@ async function initDB() {
   try {
     // Create Albergues table
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Albergues (
+      CREATE TABLE IF NOT EXISTS "Albergues" (
         id SERIAL PRIMARY KEY,
         name TEXT NOT NULL,
         lat REAL NOT NULL,
@@ -307,7 +307,7 @@ async function initDB() {
 
     // Create Comments table
     await client.query(`
-      CREATE TABLE IF NOT EXISTS Comments (
+      CREATE TABLE IF NOT EXISTS "Comments" (
         id SERIAL PRIMARY KEY,
         nickname TEXT NOT NULL,
         content TEXT NOT NULL,
