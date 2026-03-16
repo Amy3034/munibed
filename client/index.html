@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>까미노 신호등 (Camino Traffic Light)</title>
+    <!-- 오픈소스 지도 라이브러리 Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <style>
+        :root {
+            --green: #4CAF50;
+            --yellow: #FFC107;
+            --red: #F44336;
+            --bg-color: #f8f9fa;
+            --text-color: #333;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden; /* 지도 밖으로 스크롤되는 것을 방지 */
+            background-color: var(--bg-color);
+        }
+
+        /* 지도가 화면 전체를 채우도록 설정 */
+        #map {
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* 바텀시트보다 아래에 위치하도록 */
+        }
+
+        /* 바텀 시트 (정보 창) 스타일 */
+        #bottom-sheet {
+            position: fixed;
+            bottom: -100%; /* 초기 상태: 화면 아래로 숨김 */
+            left: 0;
+            width: 100%;
+            background-color: white;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            transition: bottom 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); /* 부드럽게 올라오는 애니메이션 */
+            z-index: 1000; /* 지도보다 위에 표시 */
+            padding: 24px 20px 40px 20px; /* 한 손으로 조작하기 편하게 넉넉한 여백 (아래쪽 여백 추가) */
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* 마커 클릭 시 클래스가 추가되어 화면에 나타남 */
+        #bottom-sheet.active {
+            bottom: 0;
+        }
+
+        /* 바텀 시트 상단의 회색 손잡이 모양 (디자인 요소) */
+        .sheet-handle {
+            width: 44px;
+            height: 5px;
+            background-color: #e0e0e0;
+            border-radius: 3px;
+            margin: 0 auto;
+        }
+
+        .albergue-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            text-align: center; /* 가운데 정렬로 시인성 향상 */
+            margin-bottom: 8px;
+        }
+
+        .albergue-name {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-color);
+            margin: 0;
+            word-break: keep-all;
+        }
+
+        .update-time {
+            font-size: 0.95rem;
+            color: #757575;
+            margin: 0;
+        }
+
+        /* 버튼 그룹 컨테이너 */
+        .status-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 14px; /* 버튼 사이 간격을 넓혀 오터치 방지 */
+        }
+
+        /* 개별 버튼 공통 스타일 */
+        .btn-status {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 18px; /* 한 손으로 누르기 쉬운 큰 크기 */
+            border: none;
+            border-radius: 16px; /* 둥근 모서리 */
+            font-size: 1.15rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05); /* 약간의 입체감 */
+        }
+
+        .btn-status:active {
+            transform: scale(0.97); /* 눌렀을 때 살짝 들어가는 효과 */
+        }
+
+        /* 각 상태별 버튼 색상 */
+        .btn-green {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 2px solid var(--green);
+        }
+
+        .btn-yellow {
+            background-color: #fff8e1;
+            color: #f57f17;
+            border: 2px solid var(--yellow);
+        }
+
+        .btn-red {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 2px solid var(--red);
+        }
+
+        .emoji {
+            margin-right: 12px;
+            font-size: 1.3rem;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <!-- 지도가 표시될 영역 -->
+    <div id="map"></div>
+
+    <!-- 하단 정보 창 (바텀 시트) -->
+    <div id="bottom-sheet">
+        <div class="sheet-handle"></div>
+        <div class="albergue-info">
+            <h2 id="sheet-name" class="albergue-name">알베르게 이름</h2>
+            <p id="sheet-time" class="update-time">최근 업데이트: 시간 정보</p>
+        </div>
+        <div class="status-buttons">
+            <button class="btn-status btn-green" onclick="updateStatus('green')">
+                <span class="emoji">🟢</span> 널널함
+            </button>
+            <button class="btn-status btn-yellow" onclick="updateStatus('yellow')">
+                <span class="emoji">🟡</span> 얼마 안 남음
+            </button>
+            <button class="btn-status btn-red" onclick="updateStatus('red')">
+                <span class="emoji">🔴</span> 꽉 참
+            </button>
+        </div>
+    </div>
+
+    <!-- 오픈소스 지도 라이브러리 Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script>
+        // 1. 지도 생성 초기화
+        // 스페인 팜플로나 대성당 근처 좌표: 위도 42.81687, 경도 -1.64323
+        const map = L.map('map', {
+            zoomControl: false // 모바일 환경 최적화를 위해 기본 줌 버튼(+) (-) 숨김
+        }).setView([42.818, -1.644], 14); // 초기 좌표와 줌 레벨 설정
+
+        // 오픈스트리트맵(OpenStreetMap) 타일 타일을 지도에 입히기
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap' // 저작권 표시 (오픈소스 필수)
+        }).addTo(map);
+
+        // 2. 가짜 데이터 (Mock Data) 생성 (3개의 알베르게)
+        const albergues = [
+            { 
+                id: 1, 
+                name: "알베르게 헤수스 이 마리아", 
+                lat: 42.8183, 
+                lng: -1.6443, 
+                lastUpdated: "5분 전"
+            },
+            { 
+                id: 2, 
+                name: "카사 파데른 알베르게", 
+                lat: 42.8195, 
+                lng: -1.6465, 
+                lastUpdated: "15분 전"
+            },
+            { 
+                id: 3, 
+                name: "시스루 메노르 공립 알베르게", 
+                lat: 42.7937, 
+                lng: -1.6844, 
+                lastUpdated: "1시간 전"
+            }
+        ];
+
+        // HTML 요소 선택기
+        const bottomSheet = document.getElementById('bottom-sheet');
+        const sheetName = document.getElementById('sheet-name');
+        const sheetTime = document.getElementById('sheet-time');
+        
+        let currentSelectedId = null; // 현재 선택된 숙소 기억용
+
+        // 3. 지도 위에 핀(마커) 꽂기
+        albergues.forEach(albergue => {
+            // 마커 생성 및 지도에 추가
+            const marker = L.marker([albergue.lat, albergue.lng]).addTo(map);
+            
+            // 마커를 클릭(터치)했을 때 이벤트 설정
+            marker.on('click', () => {
+                openBottomSheet(albergue);
+            });
+        });
+
+        // 지도의 빈 곳을 클릭(터치)했을 때 창 닫기
+        map.on('click', () => {
+            closeBottomSheet();
+        });
+
+        // 4. 정보 창(바텀 시트) 열기 함수
+        function openBottomSheet(albergue) {
+            currentSelectedId = albergue.id;
+            
+            // 정보 업데이트
+            sheetName.textContent = albergue.name;
+            sheetTime.textContent = `최근 업데이트: ${albergue.lastUpdated}`;
+            
+            // CSS 클래스를 추가하여 창을 위로 슬라이드
+            bottomSheet.classList.add('active');
+            
+            // 클릭한 마커가 화면 중앙에 오도록 지도를 부드럽게 이동시킴 (바텀시트에 가려지지 않게 약간 위로 조정)
+            // 모바일에서는 바텀시트가 화면을 덮기 때문에, 마커 위치를 약간 위로(위도 감소) 보정해줍니다.
+            map.flyTo([albergue.lat - 0.003, albergue.lng], 15, { duration: 0.5 });
+        }
+
+        // 5. 정보 창(바텀 시트) 닫기 함수
+        function closeBottomSheet() {
+            bottomSheet.classList.remove('active');
+            currentSelectedId = null;
+        }
+
+        // 6. 상태 버튼 눌렀을 때 실행되는 함수
+        function updateStatus(status) {
+            if (!currentSelectedId) return;
+            
+            let statusText = "";
+            let statusEmoji = "";
+            
+            if (status === 'green') {
+                statusText = "널널함";
+                statusEmoji = "🟢";
+            } else if (status === 'yellow') {
+                statusText = "얼마 안 남음";
+                statusEmoji = "🟡";
+            } else if (status === 'red') {
+                statusText = "꽉 참";
+                statusEmoji = "🔴";
+            }
+
+            // 시각적 피드백 제공 (실제로는 여기서 구글 스프레드시트로 데이터를 보냄)
+            alert(`[완료] 방금 '${sheetName.textContent}'의 상태를\n'${statusEmoji} ${statusText}'(으)로 업데이트 했습니다.\n(추후 구글 시트와 연동될 부분입니다)`);
+            
+            // 상태 업데이트 완료 후 화면 정리
+            sheetTime.textContent = "최근 업데이트: 방금 전";
+            closeBottomSheet(); // 창 닫기
+        }
+    </script>
+</body>
+</html>
