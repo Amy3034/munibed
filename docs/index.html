@@ -699,8 +699,8 @@
             <div class="sidebar-header">
                 <div class="close-drawer" onclick="toggleSidebar(false)">&times;</div>
                 <div class="sidebar-title">
-                    <h2 id="list-count">숙소 목록 (0)</h2>
-                    <button class="refresh-btn" onclick="renderAll()">🔄 새로고침</button>
+                    <h2 id="list-count">숙소 목록 / Albergues (0)</h2>
+                    <button class="refresh-btn" onclick="renderAll()">🔄 새로고침 / Refresh</button>
                 </div>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="도시명(eng) 검색 (예: Burgos)..." oninput="handleSearch()">
@@ -869,7 +869,7 @@
                 return cityA.localeCompare(cityB, 'en', { sensitivity: 'base' });
             });
 
-            listCountEl.textContent = `숙소 목록 (${filtered.length})`;
+            listCountEl.textContent = `숙소 목록 / Albergues (${filtered.length})`;
 
             // Preserve scroll position if needed
             const scrollPos = options.keepScroll ? hostelListEl.scrollTop : 0;
