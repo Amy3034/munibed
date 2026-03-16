@@ -391,13 +391,17 @@
         /* Custom Scrollbar for Sidebar */
         .hostel-list::-webkit-scrollbar {
             width: 8px;
+            display: block; /* Ensure it exists */
         }
         .hostel-list::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: rgba(241, 245, 249, 0.5);
         }
         .hostel-list::-webkit-scrollbar-thumb {
-            background: #94a3b8; /* Fixed: Darker for visibility */
+            background: transparent; /* Hide by default */
             border-radius: 4px;
+        }
+        .hostel-list:hover::-webkit-scrollbar-thumb {
+            background: #94a3b8; /* Show on hover */
         }
         .hostel-list::-webkit-scrollbar-thumb:hover {
             background: var(--primary);
