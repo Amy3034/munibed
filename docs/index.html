@@ -64,37 +64,105 @@
         }
         .modal-content {
             background-color: #fff;
-            margin: 10% auto;
-            padding: 32px;
-            border-radius: 24px;
+            margin: 5% auto;
+            padding: 0; /* Remove padding for header effect */
+            border-radius: 20px;
             width: 90%;
-            max-width: 500px;
+            max-width: 580px;
             position: relative;
-            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
             animation: slideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
         }
-        .close-modal {
-            position: absolute;
-            right: 24px;
-            top: 20px;
-            font-size: 28px;
+        .modal-header {
+            background: var(--primary);
+            padding: 24px 32px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.6rem;
+            font-weight: 800;
+        }
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .lang-btns {
+            display: flex;
+            gap: 8px;
+        }
+        .lang-btn {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
             cursor: pointer;
-            color: #64748b;
+            transition: all 0.2s;
         }
-        .modal h2 { margin-top: 0; font-size: 1.5rem; margin-bottom: 20px; color: #0f172a; }
-        .modal-body { line-height: 1.6; color: #334155; }
-        .modal-body ul { padding-left: 20px; margin-top: 12px; }
-        .modal-body li { margin-bottom: 8px; }
-        
+        .lang-btn:hover { background: rgba(255,255,255,0.3); }
+        .lang-btn.active {
+            background: #fff;
+            color: var(--primary);
+            border-color: #fff;
+        }
+        .close-modal-btn {
+            font-size: 32px;
+            cursor: pointer;
+            color: #fff;
+            line-height: 1;
+            font-weight: 800;
+            margin-left: 8px;
+        }
+
+        .modal-body {
+            padding: 32px;
+            line-height: 1.8;
+            color: #334155;
+            font-size: 1.05rem;
+        }
+        .modal-body p { margin-bottom: 20px; }
+        .modal-body ul { padding-left: 0; list-style: none; margin-bottom: 24px; }
+        .modal-body li { margin-bottom: 16px; position: relative; padding-left: 24px; }
+        .modal-body li::before { content: "•"; position: absolute; left: 0; color: #1e293b; font-weight: 800; }
+        .modal-body strong { color: #0f172a; font-weight: 800; }
+
+        .info-subtitle {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .info-note {
+            background: #f1f7ff;
+            border-radius: 12px;
+            padding: 20px;
+            font-size: 0.95rem;
+            color: #475569;
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
         .btn-contact {
             display: block;
             background: #f8fafc;
             border: 1px solid #e2e8f0;
-            padding: 14px;
+            padding: 16px;
             border-radius: 12px;
             text-decoration: none;
             color: #0f172a;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.2s;
             text-align: left;
         }
@@ -106,7 +174,7 @@
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
         /* Main Container */
         .main-container {
@@ -325,17 +393,32 @@
 
     <!-- Info Modal -->
     <div id="info-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal" onclick="closeModal('info-modal')">&times;</span>
-            <h2>ℹ️ MuniBed Information</h2>
+        <div class="modal-content" id="info-modal-content">
+            <div class="modal-header">
+                <h2 id="info-title">About MuniBed 🛏️</h2>
+                <div class="header-controls">
+                    <div class="lang-btns">
+                        <button class="lang-btn active" id="btn-ko" onclick="switchInfoLanguage('KO')">KO</button>
+                        <button class="lang-btn" id="btn-en" onclick="switchInfoLanguage('EN')">EN</button>
+                        <button class="lang-btn" id="btn-es" onclick="switchInfoLanguage('ES')">ES</button>
+                    </div>
+                    <span class="close-modal-btn" onclick="closeModal('info-modal')">&times;</span>
+                </div>
+            </div>
             <div class="modal-body">
-                <p><strong>MuniBed</strong> is a dedicated helper for pilgrims walking the <i>Camino de Santiago (French Way)</i>.</p>
-                <ul>
-                    <li>📍 <strong>Precise Locations</strong>: 124 albergues with verified Google Maps coordinates.</li>
-                    <li>💾 <strong>Offline First</strong>: Your status updates are saved locally on your device.</li>
-                    <li>🚀 <strong>Status Tracking</strong>: Track availability (Available, Limited, Full) in real-time.</li>
+                <p id="info-intro"><strong>MuniBed</strong>는 산티아고 순례길(Camino Francés)을 걷는 순례자들을 위한 실시간 숙소(알베르게) 현황 크라우드소싱 공유 서비스입니다.</p>
+                
+                <div class="info-subtitle" id="info-usage-title">🌟 어떻게 사용하나요?</div>
+                <ul id="info-usage-list">
+                    <li><strong>색상 확인</strong>: 지도의 마커나 리스트의 배지 색상으로 숙소의 남은 자리를 직관적으로 확인하세요. (🟢 여유, 🟡 혼잡, 🔴 만실, ⚪ 미확인)</li>
+                    <li><strong>검색 & 필터링</strong>: 찾고 싶은 마을 이름이나 숙소 이름들 검색하거나 아래의 A-Z 알파벳 버튼을 눌러 손쉽게 조회할 수 있습니다.</li>
+                    <li><strong>직접 업데이트</strong>: 현재 머물고 계신 알베르게의 상황을 클릭 한 번으로 업데이트하여 뒤따라오는 다른 순례자들에게 도움을 주세요!</li>
                 </ul>
-                <p style="margin-top: 20px; font-size: 0.9em; color: #64748b;">Version 2.0 (Serverless Edition)</p>
+
+                <div class="info-note">
+                    <span style="font-size: 1.2rem;">💡</span>
+                    <span id="info-note-text">참고: 모든 데이터는 매일 새벽 2시(현지 시각)에 새로운 날을 맞이하여 '미확인(Unknown)' 상태로 자동 초기화됩니다.</span>
+                </div>
             </div>
         </div>
     </div>
@@ -615,8 +698,64 @@
             });
         }
 
+        const INFO_TRANSLATIONS = {
+            'KO': {
+                title: 'About MuniBed 🛏️',
+                intro: '<strong>MuniBed</strong>는 산티아고 순례길(Camino Francés)을 걷는 순례자들을 위한 실시간 숙소(알베르게) 현황 크라우드소싱 공유 서비스입니다.',
+                usageTitle: '🌟 어떻게 사용하나요?',
+                usageList: `
+                    <li><strong>색상 확인</strong>: 지도의 마커나 리스트의 배지 색상으로 숙소의 남은 자리를 직관적으로 확인하세요. (🟢 여유, 🟡 혼잡, 🔴 만실, ⚪ 미확인)</li>
+                    <li><strong>검색 & 필터링</strong>: 찾고 싶은 마을 이름이나 숙소 이름들 검색하거나 아래의 A-Z 알파벳 버튼을 눌러 손쉽게 조회할 수 있습니다.</li>
+                    <li><strong>직접 업데이트</strong>: 현재 머물고 계신 알베르게의 상황을 클릭 한 번으로 업데이트하여 뒤따라오는 다른 순례자들에게 도움을 주세요!</li>
+                `,
+                note: '참고: 모든 데이터는 매일 새벽 2시(현지 시각)에 새로운 날을 맞이하여 \'미확인(Unknown)\' 상태로 자동 초기화됩니다.'
+            },
+            'EN': {
+                title: 'About MuniBed 🛏️',
+                intro: '<strong>MuniBed</strong> is a real-time crowdsourced hostel (albergue) status sharing service for pilgrims walking the <i>Camino de Santiago (French Way)</i>.',
+                usageTitle: '🌟 How to use?',
+                usageList: `
+                    <li><strong>Color Check</strong>: Intuitively check the availability of hostels by the color of markers on the map or badges in the list. (🟢 Available, 🟡 Limited, 🔴 Full, ⚪ Unknown)</li>
+                    <li><strong>Search & Filtering</strong>: Easily look up village or hostel names, or use the A-Z alphabet buttons below for quick navigation.</li>
+                    <li><strong>Update Status</strong>: Help other pilgrims behind you! Update the status of the albergue where you are staying with just one click.</li>
+                `,
+                note: 'Note: All data is automatically reset to \'Unknown\' daily at 2 AM (local time) to start a fresh day.'
+            },
+            'ES': {
+                title: 'Sobre MuniBed 🛏️',
+                intro: '<strong>MuniBed</strong> es un servicio de información en tiempo real sobre el estado de los albergues para peregrinos en el <i>Camino de Santiago (Camino Francés)</i>.',
+                usageTitle: '🌟 ¿Cómo usar?',
+                usageList: `
+                    <li><strong>Verificación de color</strong>: Verifique la disponibilidad de los albergues de forma intuitiva mediante el color de los marcadores en el mapa o las insignias de la lista. (🟢 Disponible, 🟡 Limitado, 🔴 Lleno, ⚪ Desconocido)</li>
+                    <li><strong>Búsqueda y filtrado</strong>: Busque fácilmente nombres de pueblos o albergues, o utilice los botones del alfabeto A-Z para una navegación rápida.</li>
+                    <li><strong>Actualizar estado</strong>: ¡Ayude a otros peregrinos! Actualice el estado del albergue donde se encuentra hoy con un solo clic.</li>
+                `,
+                note: 'Nota: Todos los datos se reinician automáticamente a \'Desconocido\' cada día a las 2 AM (hora local) para comenzar un nuevo día.'
+            }
+        };
+
+        function switchInfoLanguage(lang) {
+            const t = INFO_TRANSLATIONS[lang];
+            if (!t) return;
+
+            // Update content
+            document.getElementById('info-title').textContent = t.title;
+            document.getElementById('info-intro').innerHTML = t.intro;
+            document.getElementById('info-usage-title').textContent = t.usageTitle;
+            document.getElementById('info-usage-list').innerHTML = t.usageList;
+            document.getElementById('info-note-text').textContent = t.note;
+
+            // Update button states
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${lang.toLowerCase()}`).classList.add('active');
+        }
+
         function openModal(id) {
             document.getElementById(id).style.display = 'block';
+            // If opening info modal, reset to KO by default or keep current
+            if (id === 'info-modal') {
+                // switchInfoLanguage('KO'); // Optional: always reset to KO
+            }
         }
 
         function closeModal(id) {
