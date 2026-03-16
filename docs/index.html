@@ -140,11 +140,12 @@
         /* Hostel List */
         .hostel-list {
             flex: 1;
-            overflow-y: auto;
+            overflow-y: auto !important; /* Force enable scrolling */
             padding: 20px;
             display: flex;
             flex-direction: column;
             gap: 16px;
+            scroll-behavior: smooth;
         }
 
         .hostel-card {
@@ -157,6 +158,12 @@
             gap: 12px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
             transition: all 0.2s;
+            cursor: pointer;
+        }
+        .hostel-card.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+            box-shadow: 0 0 0 2px rgba(0,132,255,0.2);
         }
         .hostel-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
 
@@ -274,6 +281,7 @@
         let alberguesData = window.ALBERGUES_DATA || [];
         let filterLetter = 'All';
         let searchQuery = '';
+        let currentSelectedId = null;
 
         const hostelListEl = document.getElementById('hostel-list');
         const listCountEl = document.getElementById('list-count');
@@ -315,7 +323,7 @@
 
         function updateStatus(id, newStatus) {
             const now = new Date();
-            const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
             const fullTime = timeStr;
 
             const idx = alberguesData.findIndex(a => a.id === id);
@@ -323,7 +331,7 @@
                 alberguesData[idx].status = newStatus;
                 alberguesData[idx].lastUpdated = fullTime;
                 saveLocalState(id, newStatus, fullTime);
-                renderAll();
+                renderAll({ keepScroll: true });
             }
         }
 
@@ -341,7 +349,7 @@
             renderAll();
         }
 
-        function renderAll() {
+        function renderAll(options = {}) {
             // Filter data
             let filtered = alberguesData.filter(item => {
                 const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
@@ -360,20 +368,18 @@
                 
                 let matchesSearch = true;
                 if (searchQuery) {
-                    const mappedQuery = aliases[searchQuery] || searchQuery;
+                    const mappedQuery = searchQuery.replace(/[()]/g, ''); // Clean query
+                    const cleanCity = cityName.replace(/[()]/g, ''); // Clean city name
+                    const cleanMappedQuery = (aliases[mappedQuery] || mappedQuery).toLowerCase();
                     
-                    // 1. Check if ANY word in city starts with query
-                    const cityWords = cityName.split(/[\s-]+/);
-                    const cityWordStarts = cityWords.some(word => word.startsWith(mappedQuery));
+                    const cityWords = cleanCity.split(/[\s-]+/);
+                    const cityWordStarts = cityWords.some(word => word.startsWith(cleanMappedQuery));
+                    const hostelMatches = mappedQuery.length >= 3 && hostelNamePart.includes(mappedQuery);
                     
-                    // 2. Check if hostel name contains query (only for 3+ chars to avoid clutter)
-                    const hostelMatches = searchQuery.length >= 3 && hostelNamePart.includes(searchQuery);
-                    
-                    // 3. Special case for single char: only city prefix
-                    if (searchQuery.length === 1) {
+                    if (mappedQuery.length === 1) {
                         matchesSearch = cityWordStarts;
                     } else {
-                        matchesSearch = cityWordStarts || hostelMatches || cityName.includes(mappedQuery);
+                        matchesSearch = cityWordStarts || hostelMatches || cleanCity.includes(cleanMappedQuery);
                     }
                 }
 
@@ -384,31 +390,43 @@
 
             listCountEl.textContent = `숙소 목록 (${filtered.length})`;
 
+            // Preserve scroll position if needed
+            const scrollPos = options.keepScroll ? hostelListEl.scrollTop : 0;
+
             // Render List
             hostelListEl.innerHTML = '';
             filtered.forEach(item => {
                 const status = STATUS_MAP[item.status] || STATUS_MAP['gray'];
                 const card = document.createElement('div');
-                card.className = 'hostel-card';
+                card.id = `card-${item.id}`;
+                card.className = `hostel-card ${currentSelectedId === item.id ? 'selected' : ''}`;
                 card.innerHTML = `
-                    <div class="card-header" onclick="focusOnMap(${item.id})">
+                    <div class="card-header" onclick="focusHostel(${item.id})">
                         <div class="hostel-name">${item.name}</div>
                         <div class="status-badge ${status.class}">${status.label.split(' ')[1]} (${status.text})</div>
                     </div>
                     <div class="update-item">
-                        <span>🕒</span> ${item.lastUpdated}
+                        <span>🕒</span> <span id="time-${item.id}">${item.lastUpdated}</span>
                     </div>
                     <div class="card-actions">
-                        <button class="btn-update green" onclick="updateStatus(${item.id}, 'green')">여유<span>(Available)</span></button>
-                        <button class="btn-update yellow" onclick="updateStatus(${item.id}, 'yellow')">혼잡<span>(Limited)</span></button>
-                        <button class="btn-update red" onclick="updateStatus(${item.id}, 'red')">만실<span>(Full)</span></button>
-                        <button class="btn-update gray" onclick="updateStatus(${item.id}, 'gray')">미확인<span>(Unknown)</span></button>
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(${item.id}, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update yellow" onclick="event.stopPropagation(); updateStatus(${item.id}, 'yellow')">혼잡<span>(Limited)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(${item.id}, 'red')">만실<span>(Full)</span></button>
+                        <button class="btn-update gray" onclick="event.stopPropagation(); updateStatus(${item.id}, 'gray')">미확인<span>(Unknown)</span></button>
                     </div>
                 `;
                 hostelListEl.appendChild(card);
             });
 
+            if (options.keepScroll) hostelListEl.scrollTop = scrollPos;
+
             // Render Markers
+            if (!options.keepScroll) { // Only re-render markers if not a mini-update
+                renderMarkers();
+            }
+        }
+
+        function renderMarkers() {
             Object.values(markers).forEach(m => map.removeLayer(m));
             markers = {};
             const markerColors = { green: '#4CAF50', yellow: '#FFC107', red: '#F44336', gray: '#94a3b8' };
@@ -422,23 +440,49 @@
                 });
                 const marker = L.marker([item.lat, item.lng], { icon }).addTo(map);
                 marker.bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-status">상태: ${STATUS_MAP[item.status]?.label || '미확인'}</div>`);
+                marker.on('click', () => {
+                    syncListToMarker(item.id);
+                });
                 markers[item.id] = marker;
             });
         }
 
-        function focusOnMap(id) {
+        function focusHostel(id) {
+            currentSelectedId = id;
             const item = alberguesData.find(a => a.id === id);
             if(item) {
                 map.flyTo([item.lat, item.lng], 15, { duration: 1 });
                 markers[id].openPopup();
+                // Refresh list highlight
+                document.querySelectorAll('.hostel-card').forEach(c => c.classList.remove('selected'));
+                const card = document.getElementById(`card-${id}`);
+                if(card) card.classList.add('selected');
+            }
+        }
+
+        function syncListToMarker(id) {
+            currentSelectedId = id;
+            // Clear filters if needed so the item is visible
+            searchQuery = '';
+            filterLetter = 'All';
+            document.getElementById('search-input').value = '';
+            document.querySelectorAll('.alphabet-filter span').forEach(s => s.classList.remove('active'));
+            document.querySelector('.alphabet-filter span[onclick*="All"]').classList.add('active');
+            
+            renderAll();
+            
+            const card = document.getElementById(`card-${id}`);
+            if(card) {
+                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                card.classList.add('selected');
             }
         }
 
         function initAlphabetFilter() {
             const letters = new Set();
             alberguesData.forEach(item => {
-                const city = item.name.match(/\((.*?)\)/)?.[1];
-                if(city) letters.add(city.charAt(0).toUpperCase());
+                const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
+                if(cityName) letters.add(cityName.charAt(0).toUpperCase());
             });
             const sortedLetters = Array.from(letters).sort();
             sortedLetters.forEach(l => {
