@@ -206,14 +206,8 @@
         }
         .load-more-btn:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Dark mode overrides */
-        body.dark-mode .compose-box textarea {
-            background: rgba(31,41,55,0.5);
-            color: var(--text-main);
-            border-color: var(--border);
-        }
-        body.dark-mode .compose-box textarea:focus { border-color: var(--primary); }
-        body.dark-mode .comment-card { box-shadow: none; }
+        /* Dark mode overrides removed */
+
 
         /* Nav bar back button */
         .community-nav {
@@ -257,9 +251,6 @@
             홈
         </a>
         <span class="nav-title">💬 Pilgrim Board</span>
-        <div class="nav-right">
-            <button class="info-btn" id="themeBtnComm" title="Dark/Light Mode">🌗</button>
-        </div>
     </nav>
 
     <div class="community-wrap">
@@ -332,20 +323,6 @@
         document.getElementById('nickText').textContent = myNick;
         document.getElementById('nickInitial').textContent = myNick.charAt(0).toUpperCase();
         document.getElementById('nickInitial').style.background = myColor;
-
-        // ── Theme Toggle ────────────────────────────────────────────
-        const themeBtn = document.getElementById('themeBtnComm');
-        function applyTheme() {
-            const theme = localStorage.getItem('munibed_theme') || 'light';
-            document.getElementById('communityBody').classList.toggle('dark-mode', theme === 'dark');
-            themeBtn.textContent = theme === 'dark' ? '☀️' : '🌗';
-        }
-        themeBtn.addEventListener('click', () => {
-            const cur = localStorage.getItem('munibed_theme') || 'light';
-            localStorage.setItem('munibed_theme', cur === 'dark' ? 'light' : 'dark');
-            applyTheme();
-        });
-        applyTheme();
 
         // ── Char Count ───────────────────────────────────────────────
         const textarea = document.getElementById('commentInput');

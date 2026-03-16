@@ -25,42 +25,7 @@
             --sidebar-width: 400px;
         }
 
-        body.dark-mode {
-            --bg-body: #020617;
-            --card-bg: #111827;
-            --sidebar-bg: #0f172a;
-            --header-bg: #0f172a;
-            --border: #1f2937;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-        }
 
-        /* Dark Mode Specific Mood Adjustments */
-        body.dark-mode .btn-update.green { background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.2); }
-        body.dark-mode .btn-update.yellow { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-color: rgba(245, 158, 11, 0.2); }
-        body.dark-mode .btn-update.red { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
-        body.dark-mode .btn-update.gray { background: rgba(107, 114, 128, 0.1); color: #9ca3af; border-color: rgba(107, 114, 128, 0.2); }
-
-        body.dark-mode .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-        body.dark-mode .badge-yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-        body.dark-mode .badge-red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
-        body.dark-mode .badge-gray { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
-
-        body.dark-mode .search-box input { background: rgba(31, 41, 55, 0.5); border-color: var(--border); }
-        body.dark-mode .search-box input:focus { border-color: var(--primary); background: rgba(31, 41, 55, 0.8); }
-        
-        body.dark-mode .refresh-btn { background: #1d4ed8; }
-        body.dark-mode .group-header { border-bottom-color: var(--border); }
-        body.dark-mode .side-index { border-color: var(--border); background: rgba(17, 24, 39, 0.8); }
-
-        /* Dark Mode Popups */
-        body.dark-mode .leaflet-popup-content-wrapper,
-        body.dark-mode .leaflet-popup-tip {
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-        body.dark-mode .popup-status { color: var(--text-muted); }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -689,7 +654,6 @@
             </div>
         </div>
         <div class="header-icons">
-            <span id="theme-toggle" title="Dark/Light Mode" onclick="toggleTheme()">🌗</span>
             <span title="Community Board" onclick="window.location.href='community.html'">💬</span>
             <span title="Share" onclick="shareApp()">🔗</span>
             <span title="Information" onclick="openModal('info-modal')">ℹ️</span>
@@ -815,7 +779,7 @@
     <script>
         let map;
         let baseLayer;
-        let theme = localStorage.getItem('munibed_theme') || 'light';
+
         let markers = {};
         let alberguesData = window.ALBERGUES_DATA || [];
         let filterLetter = ''; // Empty by default
@@ -841,28 +805,9 @@
 
         function updateMapTiles() {
             if (baseLayer) map.removeLayer(baseLayer);
-            const url = theme === 'dark' 
-                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-                : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-            baseLayer = L.tileLayer(url, { attribution: '&copy; CARTO' }).addTo(map);
-        }
-
-        function applyTheme() {
-            const toggle = document.getElementById('theme-toggle');
-            if (theme === 'dark') {
-                document.body.classList.add('dark-mode');
-                if (toggle) toggle.textContent = '☀️';
-            } else {
-                document.body.classList.remove('dark-mode');
-                if (toggle) toggle.textContent = '🌗';
-            }
-        }
-
-        function toggleTheme() {
-            theme = theme === 'light' ? 'dark' : 'light';
-            localStorage.setItem('munibed_theme', theme);
-            applyTheme();
-            updateMapTiles();
+            baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; CARTO'
+            }).addTo(map);
         }
 
         function loadLocalState() {

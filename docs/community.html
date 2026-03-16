@@ -16,14 +16,6 @@
             --text-muted: #64748b;
             --transition: all 0.3s ease;
         }
-        body.dark-mode {
-            --bg-body: #020617;
-            --card-bg: #1e293b;
-            --sidebar-bg: #0f172a;
-            --border: #1e293b;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -158,8 +150,7 @@
 <body id="communityBody">
     <script>
         (function() {
-            const t = localStorage.getItem('munibed_theme') || 'light';
-            if (t === 'dark') document.getElementById('communityBody').classList.add('dark-mode');
+            // Removed dark mode initial check
         })();
     </script>
 
@@ -172,7 +163,7 @@
         </a>
         <span class="nav-title">💬 Pilgrim Board</span>
         <div class="nav-right">
-            <button class="info-btn" id="themeBtnComm">🌗</button>
+            
         </div>
     </nav>
 
@@ -253,20 +244,6 @@
         document.getElementById('nickText').textContent = myNick;
         document.getElementById('nickInitial').textContent = myNick.charAt(0).toUpperCase();
         document.getElementById('nickInitial').style.background = myColor;
-
-        // ── Theme Toggle ──────────────────────────────────────────────
-        const themeBtn = document.getElementById('themeBtnComm');
-        function applyTheme() {
-            const theme = localStorage.getItem('munibed_theme') || 'light';
-            document.getElementById('communityBody').classList.toggle('dark-mode', theme === 'dark');
-            themeBtn.textContent = theme === 'dark' ? '☀️' : '🌗';
-        }
-        themeBtn.addEventListener('click', () => {
-            const cur = localStorage.getItem('munibed_theme') || 'light';
-            localStorage.setItem('munibed_theme', cur === 'dark' ? 'light' : 'dark');
-            applyTheme();
-        });
-        applyTheme();
 
         // ── Char Count ────────────────────────────────────────────────
         const textarea = document.getElementById('commentInput');

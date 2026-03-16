@@ -13,28 +13,7 @@
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-body.dark-mode {
-    --bg: #020617;
-    --card-bg: #111827;
-    --text-main: #f3f4f6;
-    --text-muted: #9ca3af;
-    --border: #1f2937;
-    --bg-alt: #0f172a;
-}
 
-/* Night Mode Button/Badge Mood */
-body.dark-mode .btn-green { background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.2); }
-body.dark-mode .btn-yellow { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-color: rgba(245, 158, 11, 0.2); }
-body.dark-mode .btn-red { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
-body.dark-mode .btn-gray { background: rgba(107, 114, 128, 0.1); color: #9ca3af; border-color: rgba(107, 114, 128, 0.2); }
-
-body.dark-mode .badge[style*="background-color: var(--green)"] { background: rgba(16, 185, 129, 0.2) !important; color: #34d399 !important; }
-body.dark-mode .badge[style*="background-color: var(--yellow)"] { background: rgba(245, 158, 11, 0.2) !important; color: #fbbf24 !important; }
-body.dark-mode .badge[style*="background-color: var(--red)"] { background: rgba(239, 68, 68, 0.2) !important; color: #f87171 !important; }
-body.dark-mode .badge[style*="background-color: var(--gray)"] { background: rgba(107, 114, 128, 0.2) !important; color: #9ca3af !important; }
-
-body.dark-mode input[type="text"] { background: rgba(31, 41, 55, 0.5); color: var(--text-main); }
-body.dark-mode .refresh-btn { background: #1d4ed8; }
 
 * {
     box-sizing: border-box;

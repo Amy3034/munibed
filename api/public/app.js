@@ -3,45 +3,15 @@ let map;
 let markers = {};
 let alberguesData = [];
 let baseLayer;
-let currentTheme = localStorage.getItem('munibed_theme') || 'light';
 
 // Initialize Map
 function initMap() {
-    // Center roughly around Leon/Burgos region to see the whole Camino Frances
     map = L.map('map').setView([42.5987, -5.5671], 8);
-    updateMapTiles();
-    applyTheme();
-}
-
-function updateMapTiles() {
-    if (baseLayer) map.removeLayer(baseLayer);
-    const url = currentTheme === 'dark' 
-        ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-    baseLayer = L.tileLayer(url, {
+    baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
     }).addTo(map);
-}
-
-function applyTheme() {
-    const body = document.getElementById('mainBody');
-    const toggleBtn = document.getElementById('themeToggleBtn');
-    if (currentTheme === 'dark') {
-        body.classList.add('dark-mode');
-        if (toggleBtn) toggleBtn.textContent = '☀️';
-    } else {
-        body.classList.remove('dark-mode');
-        if (toggleBtn) toggleBtn.textContent = '🌗';
-    }
-}
-
-function toggleTheme() {
-    currentTheme = currentTheme === 'light' ? 'dark' : 'light';
-    localStorage.setItem('munibed_theme', currentTheme);
-    applyTheme();
-    updateMapTiles();
 }
 
 // Fetch Albergues Data
@@ -322,11 +292,7 @@ focusMapMarker = function(id, lat, lng) {
 const infoModal = document.getElementById('infoModal');
 const infoBtn = document.getElementById('infoBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
-const themeToggleBtn = document.getElementById('themeToggleBtn');
 
-if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', toggleTheme);
-}
 
 if (infoBtn) {
     infoBtn.addEventListener('click', () => {
