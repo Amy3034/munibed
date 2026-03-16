@@ -151,6 +151,8 @@ h1 {
     border-bottom: 1px solid var(--border);
     z-index: 2;
     transition: var(--transition);
+    height: 80px; /* Fixed height */
+    box-sizing: border-box;
 }
 
 .list-header h2 {
