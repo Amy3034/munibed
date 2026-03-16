@@ -352,6 +352,11 @@
         function renderAll(options = {}) {
             // Filter data
             let filtered = alberguesData.filter(item => {
+                // If soloId is provided, ONLY show that one
+                if (options.soloId) {
+                    return item.id === options.soloId;
+                }
+
                 const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
                 const hostelNamePart = item.name.split('(')[0].toLowerCase();
                 
@@ -462,19 +467,13 @@
 
         function syncListToMarker(id) {
             currentSelectedId = id;
-            // Clear filters if needed so the item is visible
-            searchQuery = '';
-            filterLetter = 'All';
-            document.getElementById('search-input').value = '';
-            document.querySelectorAll('.alphabet-filter span').forEach(s => s.classList.remove('active'));
-            document.querySelector('.alphabet-filter span[onclick*="All"]').classList.add('active');
-            
-            renderAll();
-            
-            const card = document.getElementById(`card-${id}`);
-            if(card) {
-                card.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                card.classList.add('selected');
+            // Filter the alberguesData to show ONLY this specific ID
+            const item = alberguesData.find(a => a.id === id);
+            if (item) {
+                // We'll temporarily set a flag to show only this one
+                // Or simply set the searchQuery/filter state to isolate it
+                // Let's use a more direct approach: modify renderAll to accept a "solo" mode
+                renderAll({ soloId: id });
             }
         }
 
