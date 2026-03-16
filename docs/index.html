@@ -3,181 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MuniBed - Camino de Santiago (Free Edition)</title>
+    <title>MuniBed - Camino de Santiago</title>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
+            --primary: #0084ff;
             --green: #4CAF50;
             --yellow: #FFC107;
             --red: #F44336;
             --gray: #94a3b8;
-            --bg-color: #f8f9fa;
-            --text-color: #333;
+            --bg-body: #f1f5f9;
+            --text-main: #1e293b;
+            --sidebar-width: 400px;
         }
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
             overflow: hidden;
-            background-color: var(--bg-color);
+            background: #fff;
         }
 
+        /* Header */
+        header {
+            height: 60px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e2e8f0;
+            background: #fff;
+            z-index: 1001;
+        }
+        .logo-area { display: flex; align-items: baseline; gap: 8px; }
+        .logo-area h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .logo-area span { font-size: 0.9rem; color: #64748b; font-weight: 600; }
+        .header-icons { display: flex; gap: 20px; color: #64748b; }
+        .header-icons span { cursor: pointer; font-size: 1.4rem; transition: color 0.2s; }
+        .header-icons span:hover { color: var(--primary); }
+
+        /* Main Container */
+        .main-container {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
+        /* Map Area */
         #map {
-            width: 100%;
+            flex: 1;
             height: 100%;
             z-index: 1;
         }
 
+        /* Sidebar Area */
+        #sidebar {
+            width: var(--sidebar-width);
+            background: #f8fafc;
+            border-left: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+        }
+
+        /* Search & Filter Header */
+        .sidebar-header {
+            padding: 24px;
+            background: #fff;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .sidebar-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .sidebar-title h2 { font-size: 1.1rem; font-weight: 800; }
+        .refresh-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 16px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+        .search-box input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(0,132,255,0.1); }
+
+        .alphabet-filter {
+            display: flex;
+            gap: 8px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -ms-overflow-style: none; scrollbar-width: none;
+        }
+        .alphabet-filter::-webkit-scrollbar { display: none; }
+        .alphabet-filter span {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .alphabet-filter span:hover, .alphabet-filter span.active { color: var(--primary); }
+
+        /* Hostel List */
+        .hostel-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .hostel-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: all 0.2s;
+        }
+        .hostel-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
+
+        .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+        .hostel-name { font-size: 1rem; font-weight: 800; line-height: 1.4; color: #0f172a; flex: 1; }
+        .status-badge {
+            font-size: 0.75rem;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 8px;
+            text-transform: uppercase;
+        }
+        .badge-green { background: #e8f5e9; color: #2e7d32; }
+        .badge-yellow { background: #fff8e1; color: #f57f17; }
+        .badge-red { background: #ffebee; color: #c62828; }
+        .badge-gray { background: #f1f5f9; color: #64748b; }
+
+        .update-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
+
+        .card-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .btn-update {
+            padding: 8px 4px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .btn-update:active { transform: scale(0.95); }
+        .btn-update.green { background: #e8f5e9; color: #2e7d32; border-color: #c8e6c9; }
+        .btn-update.yellow { background: #fff8e1; color: #f57f17; border-color: #ffecb3; }
+        .btn-update.red { background: #ffebee; color: #c62828; border-color: #ffcdd2; }
+        .btn-update.gray { background: #f1f5f9; color: #64748b; border-color: #e2e8f0; }
+
+        /* Map Popup Customization */
+        .leaflet-popup-content-wrapper { border-radius: 12px; padding: 0; overflow: hidden; }
+        .leaflet-popup-content { margin: 0; padding: 16px; font-family: inherit; }
+        .popup-title { font-weight: 800; font-size: 0.95rem; margin-bottom: 4px; }
+        .popup-status { font-weight: 600; font-size: 0.85rem; color: #64748b; }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            #sidebar { display: none; }
+            #bottom-sheet { display: flex; } /* Handle mobile separately if needed */
+        }
+
+        /* Mobile Bottom Sheet (Fall-back or for small screens) */
         #bottom-sheet {
             position: fixed;
             bottom: -100%;
             left: 0;
             width: 100%;
-            background-color: white;
-            border-top-left-radius: 24px;
-            border-top-right-radius: 24px;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
-            transition: bottom 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
-            z-index: 1000;
-            padding: 24px 20px 40px 20px;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        #bottom-sheet.active {
-            bottom: 0;
-        }
-
-        .sheet-handle {
-            width: 44px;
-            height: 5px;
-            background-color: #e0e0e0;
-            border-radius: 3px;
-            margin: 0 auto;
-        }
-
-        .albergue-info {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            text-align: center;
-            margin-bottom: 8px;
-        }
-
-        .albergue-name {
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--text-color);
-            margin: 0;
-            word-break: keep-all;
-        }
-
-        .update-time {
-            font-size: 0.95rem;
-            color: #757575;
-            margin: 0;
-        }
-
-        .status-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .btn-status {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            padding: 18px;
-            border: none;
-            border-radius: 16px;
-            font-size: 1.15rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .btn-status:active {
-            transform: scale(0.97);
-        }
-
-        .btn-green { background-color: #e8f5e9; color: #2e7d32; border: 2px solid var(--green); }
-        .btn-yellow { background-color: #fff8e1; color: #f57f17; border: 2px solid var(--yellow); }
-        .btn-red { background-color: #ffebee; color: #c62828; border: 2px solid var(--red); }
-        .btn-gray { background-color: #f1f5f9; color: #64748b; border: 2px solid var(--gray); }
-
-        .emoji {
-            margin-right: 12px;
-            font-size: 1.3rem;
-        }
-
-        .header-logo {
-            position: absolute;
-            top: 15px;
-            left: 50%;
-            transform: translateX(-50%);
             background: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            z-index: 1001;
-            font-weight: 800;
-            font-size: 1rem;
-            white-space: nowrap;
+            border-radius: 24px 24px 0 0;
+            z-index: 2000;
+            transition: bottom 0.35s;
+            padding: 24px;
+            box-shadow: 0 -8px 24px rgba(0,0,0,0.1);
         }
+        #bottom-sheet.active { bottom: 0; }
     </style>
 </head>
 <body>
 
-    <div class="header-logo">🛏️ MuniBed (Free)</div>
-
-    <div id="map"></div>
-
-    <div id="bottom-sheet">
-        <div class="sheet-handle"></div>
-        <div class="albergue-info">
-            <h2 id="sheet-name" class="albergue-name">알베르게 이름</h2>
-            <p id="sheet-time" class="update-time">최근 업데이트: 시간 정보</p>
+    <header>
+        <div class="logo-area">
+            <h1>🛏️ MuniBed</h1>
+            <span>for Camino de Santiago</span>
         </div>
-        <div class="status-buttons">
-            <button class="btn-status btn-green" onclick="updateStatus('green')">
-                <span class="emoji">🟢</span> 널널함 (Available)
-            </button>
-            <button class="btn-status btn-yellow" onclick="updateStatus('yellow')">
-                <span class="emoji">🟡</span> 거의 참 (Limited)
-            </button>
-            <button class="btn-status btn-red" onclick="updateStatus('red')">
-                <span class="emoji">🔴</span> 꽉 참 (Full)
-            </button>
-            <button class="btn-status btn-gray" onclick="updateStatus('gray')">
-                <span class="emoji">⚪</span> 미확인 (Unknown)
-            </button>
+        <div class="header-icons">
+            <span title="Messages">✉️</span>
+            <span title="Information">ℹ️</span>
         </div>
+    </header>
+
+    <div class="main-container">
+        <div id="map"></div>
+
+        <aside id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">
+                    <h2 id="list-count">숙소 목록 (0)</h2>
+                    <button class="refresh-btn" onclick="renderAll()">🔄 새로고침</button>
+                </div>
+                <div class="search-box">
+                    <input type="text" id="search-input" placeholder="도시명(eng) 검색 (예: Burgos)..." oninput="handleSearch()">
+                </div>
+                <div class="alphabet-filter" id="alphabet-filter">
+                    <span class="active" onclick="filterByLetter('All')">All</span>
+                    <!-- Dynamic letters R, A, B, C... -->
+                </div>
+            </div>
+            <div class="hostel-list" id="hostel-list">
+                <!-- Hostels will be injected here -->
+            </div>
+        </aside>
     </div>
 
     <!-- Static Data Load -->
     <script src="data.js"></script>
-    <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         let map;
         let markers = {};
         let alberguesData = window.ALBERGUES_DATA || [];
-        let currentSelectedId = null;
+        let filterLetter = 'All';
+        let searchQuery = '';
 
-        const bottomSheet = document.getElementById('bottom-sheet');
-        const sheetName = document.getElementById('sheet-name');
-        const sheetTime = document.getElementById('sheet-time');
+        const hostelListEl = document.getElementById('hostel-list');
+        const listCountEl = document.getElementById('list-count');
+        const alphabetFilterEl = document.getElementById('alphabet-filter');
 
-        // Load personal state from LocalStorage
+        const STATUS_MAP = {
+            'green': { label: '여유 (Available)', class: 'badge-green', text: '여유' },
+            'yellow': { label: '혼잡 (Limited)', class: 'badge-yellow', text: '혼잡' },
+            'red': { label: '만실 (Full)', class: 'badge-red', text: '만실' },
+            'gray': { label: '미확인 (Unknown)', class: 'badge-gray', text: '미확인' }
+        };
+
+        function initMap() {
+            map = L.map('map', { zoomControl: true }).setView([42.5, -5.5], 8);
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; CARTO'
+            }).addTo(map);
+        }
+
         function loadLocalState() {
             const saved = localStorage.getItem('munibed_state');
             if (saved) {
@@ -198,78 +313,115 @@
             localStorage.setItem('munibed_state', JSON.stringify(states));
         }
 
-        function initMap() {
-            map = L.map('map', { zoomControl: false }).setView([42.5, -5.5], 8);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; CARTO'
-            }).addTo(map);
+        function updateStatus(id, newStatus) {
+            const now = new Date();
+            const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            const fullTime = timeStr;
 
-            map.on('click', () => closeBottomSheet());
+            const idx = alberguesData.findIndex(a => a.id === id);
+            if (idx !== -1) {
+                alberguesData[idx].status = newStatus;
+                alberguesData[idx].lastUpdated = fullTime;
+                saveLocalState(id, newStatus, fullTime);
+                renderAll();
+            }
         }
 
-        function renderMarkers() {
+        function handleSearch() {
+            searchQuery = document.getElementById('search-input').value.toLowerCase();
+            renderAll();
+        }
+
+        function filterByLetter(letter) {
+            filterLetter = letter;
+            document.querySelectorAll('.alphabet-filter span').forEach(s => {
+                if(s.textContent === letter) s.classList.add('active');
+                else s.classList.remove('active');
+            });
+            renderAll();
+        }
+
+        function renderAll() {
+            // Filter data
+            let filtered = alberguesData.filter(item => {
+                const matchesSearch = item.name.toLowerCase().includes(searchQuery);
+                const firstLetter = item.name.match(/\((.*?)\)/)?.[1]?.charAt(0).toUpperCase() || 'Other';
+                const matchesLetter = filterLetter === 'All' || firstLetter === filterLetter;
+                return matchesSearch && matchesLetter;
+            });
+
+            listCountEl.textContent = `숙소 목록 (${filtered.length})`;
+
+            // Render List
+            hostelListEl.innerHTML = '';
+            filtered.forEach(item => {
+                const status = STATUS_MAP[item.status] || STATUS_MAP['gray'];
+                const card = document.createElement('div');
+                card.className = 'hostel-card';
+                card.innerHTML = `
+                    <div class="card-header" onclick="focusOnMap(${item.id})">
+                        <div class="hostel-name">${item.name}</div>
+                        <div class="status-badge ${status.class}">${status.label.split(' ')[1]} (${status.text})</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> ${item.lastUpdated}
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="updateStatus(${item.id}, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update yellow" onclick="updateStatus(${item.id}, 'yellow')">혼잡<span>(Limited)</span></button>
+                        <button class="btn-update red" onclick="updateStatus(${item.id}, 'red')">만실<span>(Full)</span></button>
+                        <button class="btn-update gray" onclick="updateStatus(${item.id}, 'gray')">미확인<span>(Unknown)</span></button>
+                    </div>
+                `;
+                hostelListEl.appendChild(card);
+            });
+
+            // Render Markers
             Object.values(markers).forEach(m => map.removeLayer(m));
             markers = {};
-
-            const statusColors = {
-                'green': '#4CAF50',
-                'yellow': '#FFC107',
-                'red': '#F44336',
-                'gray': '#94a3b8'
-            };
-
+            const markerColors = { green: '#4CAF50', yellow: '#FFC107', red: '#F44336', gray: '#94a3b8' };
+            
             alberguesData.forEach(item => {
-                const color = statusColors[item.status] || statusColors['gray'];
+                const color = markerColors[item.status] || markerColors['gray'];
                 const icon = L.divIcon({
                     className: 'custom-marker',
                     html: `<div style="width: 14px; height: 14px; border-radius: 50%; background-color: ${color}; border: 2px solid white; box-shadow: 0 2px 4px rgba(0,0,0,0.3);"></div>`,
                     iconSize: [18, 18]
                 });
-
                 const marker = L.marker([item.lat, item.lng], { icon }).addTo(map);
-                marker.on('click', (e) => {
-                    L.DomEvent.stopPropagation(e);
-                    openBottomSheet(item);
-                });
+                marker.bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-status">상태: ${STATUS_MAP[item.status]?.label || '미확인'}</div>`);
                 markers[item.id] = marker;
             });
         }
 
-        function openBottomSheet(albergue) {
-            currentSelectedId = albergue.id;
-            sheetName.textContent = albergue.name;
-            sheetTime.textContent = `최근 업데이트: ${albergue.lastUpdated}`;
-            bottomSheet.classList.add('active');
-            map.flyTo([albergue.lat - 0.005, albergue.lng], 15, { duration: 0.5 });
-        }
-
-        function closeBottomSheet() {
-            bottomSheet.classList.remove('active');
-            currentSelectedId = null;
-        }
-
-        function updateStatus(newStatus) {
-            if (!currentSelectedId) return;
-            
-            const now = new Date();
-            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-            const fullTime = `오늘 ${timeStr} (본인)`;
-
-            const idx = alberguesData.findIndex(a => a.id === currentSelectedId);
-            if (idx !== -1) {
-                alberguesData[idx].status = newStatus;
-                alberguesData[idx].lastUpdated = fullTime;
-                renderMarkers();
-                sheetTime.textContent = `최근 업데이트: ${fullTime}`;
-                saveLocalState(currentSelectedId, newStatus, fullTime);
-                setTimeout(closeBottomSheet, 500);
+        function focusOnMap(id) {
+            const item = alberguesData.find(a => a.id === id);
+            if(item) {
+                map.flyTo([item.lat, item.lng], 15, { duration: 1 });
+                markers[id].openPopup();
             }
+        }
+
+        function initAlphabetFilter() {
+            const letters = new Set();
+            alberguesData.forEach(item => {
+                const city = item.name.match(/\((.*?)\)/)?.[1];
+                if(city) letters.add(city.charAt(0).toUpperCase());
+            });
+            const sortedLetters = Array.from(letters).sort();
+            sortedLetters.forEach(l => {
+                const span = document.createElement('span');
+                span.textContent = l;
+                span.onclick = () => filterByLetter(l);
+                alphabetFilterEl.appendChild(span);
+            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
             loadLocalState();
             initMap();
-            renderMarkers();
+            initAlphabetFilter();
+            renderAll();
         });
     </script>
 </body>
