@@ -347,18 +347,34 @@
                 const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
                 const hostelNamePart = item.name.split('(')[0].toLowerCase();
                 
-                // Detailed matching logic
+                // Aliases for major cities
+                const aliases = {
+                    'pamplona': 'pampelune',
+                    'roncesvalles': 'roncevaux',
+                    'najera': 'nájera',
+                    'logrono': 'logroño',
+                    'viana': 'viana',
+                    'navarette': 'navarrete',
+                    'santiago': 'santiago de compostela'
+                };
+                
                 let matchesSearch = true;
                 if (searchQuery) {
-                    // Match if:
-                    // 1. City starts with query (e.g., "S" -> "Saint-Jean...")
-                    // 2. Any word in city starts with query (e.g., "M" -> "Cizur Minor")
-                    // 3. Hostel name contains query
-                    const cityWords = cityName.split(/[\s-]+/);
-                    const cityMatches = cityWords.some(word => word.startsWith(searchQuery));
-                    const hostelMatches = hostelNamePart.includes(searchQuery);
+                    const mappedQuery = aliases[searchQuery] || searchQuery;
                     
-                    matchesSearch = (cityMatches || hostelMatches);
+                    // 1. Check if ANY word in city starts with query
+                    const cityWords = cityName.split(/[\s-]+/);
+                    const cityWordStarts = cityWords.some(word => word.startsWith(mappedQuery));
+                    
+                    // 2. Check if hostel name contains query (only for 3+ chars to avoid clutter)
+                    const hostelMatches = searchQuery.length >= 3 && hostelNamePart.includes(searchQuery);
+                    
+                    // 3. Special case for single char: only city prefix
+                    if (searchQuery.length === 1) {
+                        matchesSearch = cityWordStarts;
+                    } else {
+                        matchesSearch = cityWordStarts || hostelMatches || cityName.includes(mappedQuery);
+                    }
                 }
 
                 const firstLetter = cityName.charAt(0).toUpperCase() || 'Other';
