@@ -1,0 +1,8 @@
+node_modules/
+database.sqlite
+*.log
+.env
+lt.log
+tunnel.log
+server.log
+serveo.log

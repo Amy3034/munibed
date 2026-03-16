@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: munibed-api
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: munibed-db
+          property: connectionString
+
+databases:
+  - name: munibed-db
+    databaseName: munibed
+    user: munibed
+    plan: free
