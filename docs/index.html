@@ -16,8 +16,23 @@
             --red: #F44336;
             --gray: #94a3b8;
             --bg-body: #f1f5f9;
+            --card-bg: #ffffff;
+            --sidebar-bg: #f8fafc;
+            --header-bg: #ffffff;
+            --border: #e2e8f0;
             --text-main: #1e293b;
+            --text-muted: #64748b;
             --sidebar-width: 400px;
+        }
+
+        body.dark-mode {
+            --bg-body: #020617;
+            --card-bg: #1e293b;
+            --sidebar-bg: #0f172a;
+            --header-bg: #0f172a;
+            --border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -28,7 +43,8 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            background: #fff;
+            background: var(--bg-body);
+            transition: background 0.3s, color 0.3s;
         }
 
         /* Header */
@@ -38,9 +54,10 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 1px solid #e2e8f0;
-            background: #fff;
+            border-bottom: 1px solid var(--border);
+            background: var(--header-bg);
             z-index: 1001;
+            transition: all 0.3s;
         }
         .logo-area { display: flex; align-items: baseline; gap: 8px; }
         .logo-area h1 { font-size: 1.5rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 8px; }
@@ -63,7 +80,7 @@
             animation: fadeIn 0.3s;
         }
         .modal-content {
-            background-color: #fff;
+            background-color: var(--card-bg);
             margin: 5% auto;
             padding: 0;
             border-radius: 20px;
@@ -93,7 +110,7 @@
         .modal-body {
             padding: 32px;
             line-height: 1.8;
-            color: #334155;
+            color: var(--text-main);
             font-size: 1.05rem;
         }
 
@@ -113,8 +130,8 @@
             word-break: keep-all;
         }
         .contact-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 24px;
             display: flex;
@@ -130,7 +147,7 @@
         .contact-label {
             font-size: 0.95rem;
             font-weight: 800;
-            color: #1e293b;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -195,14 +212,14 @@
         .modal-body {
             padding: 32px;
             line-height: 1.8;
-            color: #334155;
+            color: var(--text-main);
             font-size: 1.05rem;
         }
         .modal-body p { margin-bottom: 20px; }
         .modal-body ul { padding-left: 0; list-style: none; margin-bottom: 24px; }
         .modal-body li { margin-bottom: 16px; position: relative; padding-left: 24px; }
         .modal-body li::before { content: "•"; position: absolute; left: 0; color: #1e293b; font-weight: 800; }
-        .modal-body strong { color: #0f172a; font-weight: 800; }
+        .modal-body strong { color: var(--text-main); font-weight: 800; }
 
         .info-subtitle {
             font-size: 1.2rem;
@@ -263,8 +280,8 @@
         /* Sidebar Area */
         #sidebar {
             width: var(--sidebar-width);
-            background: #f8fafc;
-            border-left: 1px solid #e2e8f0;
+            background: var(--sidebar-bg);
+            border-left: 1px solid var(--border);
             display: flex;
             flex-direction: column;
             z-index: 1000;
@@ -281,7 +298,7 @@
             flex-direction: column;
             gap: 1px;
             z-index: 1001;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--card-bg);
             backdrop-filter: blur(4px);
             padding: 10px 2px;
             border-radius: 20px;
@@ -308,8 +325,8 @@
         /* Search & Filter Header */
         .sidebar-header {
             padding: 24px;
-            background: #fff;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border);
             position: sticky;
             top: 0;
             z-index: 10;
@@ -351,14 +368,15 @@
         .search-box input {
             width: 100%;
             padding: 12px 16px;
-            background: #f1f5f9;
-            border: 1px solid #e2e8f0;
+            background: var(--bg-body);
+            border: 1px solid var(--border);
             border-radius: 12px;
             font-size: 0.95rem;
+            color: var(--text-main);
             outline: none;
             transition: all 0.2s;
         }
-        .search-box input:focus { border-color: var(--primary); background: #fff; box-shadow: 0 0 0 3px rgba(0,132,255,0.1); }
+        .search-box input:focus { border-color: var(--primary); background: var(--card-bg); box-shadow: 0 0 0 3px rgba(0,132,255,0.1); }
 
         .alphabet-filter {
             display: flex;
@@ -413,7 +431,7 @@
         .group-header {
             position: sticky;
             top: -20px; /* Offset for list padding */
-            background: #f8fafc;
+            background: var(--sidebar-bg);
             padding: 8px 0;
             margin: 0;
             font-size: 0.9rem;
@@ -425,8 +443,8 @@
         }
 
         .hostel-card {
-            background: #fff;
-            border: 1px solid #e2e8f0;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 20px;
             display: flex;
@@ -438,13 +456,13 @@
         }
         .hostel-card.selected {
             border-color: var(--primary);
-            background: #eff6ff;
+            background: var(--card-bg);
             box-shadow: 0 0 0 2px rgba(0,132,255,0.2);
         }
         .hostel-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
 
         .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        .hostel-name { font-size: 1rem; font-weight: 800; line-height: 1.4; color: #0f172a; flex: 1; }
+        .hostel-name { font-size: 1rem; font-weight: 800; line-height: 1.4; color: var(--text-main); flex: 1; }
         .status-badge {
             font-size: 0.75rem;
             font-weight: 800;
@@ -580,7 +598,7 @@
             bottom: 24px;
             left: 24px;
             z-index: 5000;
-            background: rgba(255, 255, 255, 0.9);
+            background: var(--card-bg);
             backdrop-filter: blur(8px);
             width: 44px;
             height: 44px;
@@ -590,7 +608,7 @@
             justify-content: center;
             cursor: pointer;
             box-shadow: 0 8px 16px rgba(0,0,0,0.12);
-            border: 1px solid rgba(226, 232, 240, 0.8);
+            border: 1px solid var(--border);
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         .geo-btn:hover { 
@@ -603,7 +621,13 @@
         .geo-btn svg { width: 22px; height: 22px; stroke: var(--primary); }
     </style>
 </head>
-<body>
+<body id="mainBody">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('munibed_theme') || 'light';
+            if (savedTheme === 'dark') document.getElementById('mainBody').classList.add('dark-mode');
+        })();
+    </script>
 
     <header>
         <div class="logo-area">
@@ -611,6 +635,7 @@
             <span>for Camino de Santiago</span>
         </div>
         <div class="header-icons">
+            <span id="theme-toggle" title="Dark/Light Mode" onclick="toggleTheme()">🌗</span>
             <span title="Information" onclick="openModal('info-modal')">ℹ️</span>
             <span title="Contact" onclick="openModal('contact-modal')">✉️</span>
         </div>
@@ -737,6 +762,8 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
         let map;
+        let baseLayer;
+        let theme = localStorage.getItem('munibed_theme') || 'light';
         let markers = {};
         let alberguesData = window.ALBERGUES_DATA || [];
         let filterLetter = ''; // Empty by default
@@ -756,9 +783,34 @@
 
         function initMap() {
             map = L.map('map', { zoomControl: true }).setView([42.5, -5.5], 8);
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; CARTO'
-            }).addTo(map);
+            updateMapTiles();
+            applyTheme();
+        }
+
+        function updateMapTiles() {
+            if (baseLayer) map.removeLayer(baseLayer);
+            const url = theme === 'dark' 
+                ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+                : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+            baseLayer = L.tileLayer(url, { attribution: '&copy; CARTO' }).addTo(map);
+        }
+
+        function applyTheme() {
+            const toggle = document.getElementById('theme-toggle');
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                if (toggle) toggle.textContent = '☀️';
+            } else {
+                document.body.classList.remove('dark-mode');
+                if (toggle) toggle.textContent = '🌗';
+            }
+        }
+
+        function toggleTheme() {
+            theme = theme === 'light' ? 'dark' : 'light';
+            localStorage.setItem('munibed_theme', theme);
+            applyTheme();
+            updateMapTiles();
         }
 
         function loadLocalState() {

@@ -11,7 +11,13 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body id="mainBody">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('munibed_theme') || 'light';
+            if (savedTheme === 'dark') document.getElementById('mainBody').classList.add('dark-mode');
+        })();
+    </script>
     <header class="app-header">
         <div class="header-container" style="display: flex; justify-content: space-between; align-items: center;">
             <div>
@@ -22,6 +28,7 @@
                 <p class="subtitle">for Camino de Santiago</p>
             </div>
             <div style="display: flex; gap: 0.5rem;">
+                <button id="themeToggleBtn" class="info-btn" title="Dark/Light Mode">🌗</button>
                 <button id="contactBtn" class="info-btn" title="Contact Developer">✉️</button>
                 <button id="infoBtn" class="info-btn" title="About MuniBed">ℹ️</button>
             </div>
