@@ -481,8 +481,20 @@
         function initAlphabetFilter() {
             const letters = new Set();
             alberguesData.forEach(item => {
-                const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
-                if(cityName) letters.add(cityName.charAt(0).toUpperCase());
+                // Improved extraction: look for the city name in parentheses, cleaning any accidental leading brackets
+                let cityName = item.name.match(/\(([^()]*?)\)/)?.[1] || "";
+                if (!cityName) {
+                    // Fallback for cases like ((City) ...)
+                    cityName = item.name.match(/\(\((.*?)\)\)/)?.[1] || "";
+                }
+                
+                if (cityName) {
+                    const firstChar = cityName.trim().charAt(0).toUpperCase();
+                    // Only add if it's a letter (A-Z)
+                    if (/[A-Z]/.test(firstChar)) {
+                        letters.add(firstChar);
+                    }
+                }
             });
             const sortedLetters = Array.from(letters).sort();
             sortedLetters.forEach(l => {
