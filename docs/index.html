@@ -27,13 +27,40 @@
 
         body.dark-mode {
             --bg-body: #020617;
-            --card-bg: #1e293b;
+            --card-bg: #111827;
             --sidebar-bg: #0f172a;
             --header-bg: #0f172a;
-            --border: #334155;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --border: #1f2937;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
         }
+
+        /* Dark Mode Specific Mood Adjustments */
+        body.dark-mode .btn-update.green { background: rgba(16, 185, 129, 0.1); color: #34d399; border-color: rgba(16, 185, 129, 0.2); }
+        body.dark-mode .btn-update.yellow { background: rgba(245, 158, 11, 0.1); color: #fbbf24; border-color: rgba(245, 158, 11, 0.2); }
+        body.dark-mode .btn-update.red { background: rgba(239, 68, 68, 0.1); color: #f87171; border-color: rgba(239, 68, 68, 0.2); }
+        body.dark-mode .btn-update.gray { background: rgba(107, 114, 128, 0.1); color: #9ca3af; border-color: rgba(107, 114, 128, 0.2); }
+
+        body.dark-mode .badge-green { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+        body.dark-mode .badge-yellow { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
+        body.dark-mode .badge-red { background: rgba(239, 68, 68, 0.15); color: #f87171; }
+        body.dark-mode .badge-gray { background: rgba(107, 114, 128, 0.15); color: #9ca3af; }
+
+        body.dark-mode .search-box input { background: rgba(31, 41, 55, 0.5); border-color: var(--border); }
+        body.dark-mode .search-box input:focus { border-color: var(--primary); background: rgba(31, 41, 55, 0.8); }
+        
+        body.dark-mode .refresh-btn { background: #1d4ed8; }
+        body.dark-mode .group-header { border-bottom-color: var(--border); }
+        body.dark-mode .side-index { border-color: var(--border); background: rgba(17, 24, 39, 0.8); }
+
+        /* Dark Mode Popups */
+        body.dark-mode .leaflet-popup-content-wrapper,
+        body.dark-mode .leaflet-popup-tip {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border);
+        }
+        body.dark-mode .popup-status { color: var(--text-muted); }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -467,8 +494,8 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
         }
         .hostel-card.selected {
@@ -537,7 +564,7 @@
                 z-index: 3000;
                 transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
                 border-right: none;
-                border-left: 1px solid #e2e8f0;
+                border-left: 1px solid var(--border);
             }
             #sidebar.active { right: 0; left: auto; }
             .sidebar-header .close-drawer { display: block; }
