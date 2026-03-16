@@ -16,6 +16,9 @@ app.set('json spaces', 2);
 // public 폴더의 정적 파일 제공 (프론트엔드 연결)
 app.use(express.static(path.join(__dirname, 'public')));
 
+const fs = require('fs');
+const { parse } = require('csv-parse/sync');
+
 // DB 초기화 및 연결
 const dbPath = path.resolve(__dirname, 'database.sqlite');
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -24,24 +27,54 @@ const db = new sqlite3.Database(dbPath, (err) => {
   } else {
     console.log('SQLite 데이터베이스에 성공적으로 연결되었습니다.');
     
-    // 빈 테이블 생성 (초기 데이터 없음)
-    const createTableQuery = `
-      CREATE TABLE IF NOT EXISTS Albergues (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        lat REAL NOT NULL,
-        lng REAL NOT NULL,
-        status TEXT DEFAULT 'gray',
-        lastUpdated TEXT DEFAULT '업데이트 없음'
-      )
-    `;
-    
-    db.run(createTableQuery, (err) => {
-      if (err) {
-        console.error('테이블 생성 실패:', err.message);
-      } else {
-        console.log('Albergues 테이블 확인 완료.');
-      }
+    db.serialize(() => {
+      // 테이블 생성
+      db.run(`
+        CREATE TABLE IF NOT EXISTS Albergues (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          lat REAL NOT NULL,
+          lng REAL NOT NULL,
+          status TEXT DEFAULT 'gray',
+          lastUpdated TEXT DEFAULT '업데이트 없음'
+        )
+      `);
+      
+      // 데이터가 없는 경우 자동 임포트
+      db.get("SELECT COUNT(*) as count FROM Albergues", (err, row) => {
+        if (err) {
+          console.error('데이터 확인 실패:', err.message);
+        } else if (row.count === 0) {
+          console.log('데이터가 비어있습니다. CSV 파일에서 데이터를 임포트합니다...');
+          try {
+            const csvFilePath = path.resolve(__dirname, 'full_data.csv');
+            if (fs.existsSync(csvFilePath)) {
+              const csvData = fs.readFileSync(csvFilePath, 'utf8');
+              const records = parse(csvData, { columns: true, skip_empty_lines: true });
+              
+              const startPoint = { lat: 43.1636, lng: -1.2374 };
+              const endPoint = { lat: 42.8806, lng: -8.5448 };
+              
+              const stmt = db.prepare('INSERT INTO Albergues (name, lat, lng, status, lastUpdated) VALUES (?, ?, ?, ?, ?)');
+              records.forEach((record, i) => {
+                const city = record.ville;
+                const name = `${record.refuges} (${city})`;
+                const progress = i / (records.length - 1 || 1);
+                const latOffset = Math.sin(progress * Math.PI) * 0.3;
+                const lat = startPoint.lat + (endPoint.lat - startPoint.lat) * progress + latOffset;
+                const lng = startPoint.lng + (endPoint.lng - startPoint.lng) * progress;
+                stmt.run(name, lat, lng, 'gray', '업데이트 없음');
+              });
+              stmt.finalize();
+              console.log(`${records.length}개의 숙소 정보를 성공적으로 임포트했습니다.`);
+            }
+          } catch (importErr) {
+            console.error('데이터 임포트 실패:', importErr.message);
+          }
+        } else {
+          console.log(`현재 ${row.count}개의 숙소 정보가 존재합니다.`);
+        }
+      });
     });
   }
 });
