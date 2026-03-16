@@ -644,8 +644,7 @@
                     <input type="text" id="search-input" placeholder="도시명(eng) 검색 (예: Burgos)..." oninput="handleSearch()">
                 </div>
                 <div class="alphabet-filter" id="alphabet-filter">
-                    <span class="active" onclick="filterByLetter('All')">All</span>
-                    <!-- Dynamic letters R, A, B, C... -->
+                    <!-- Dynamic letters A, B, C... -->
                 </div>
             </div>
             <div class="hostel-list" id="hostel-list">
@@ -677,7 +676,7 @@
         let map;
         let markers = {};
         let alberguesData = window.ALBERGUES_DATA || [];
-        let filterLetter = 'All';
+        let filterLetter = ''; // Empty by default
         let searchQuery = '';
         let currentSelectedId = null;
 
@@ -739,9 +738,19 @@
         }
 
         function filterByLetter(letter) {
-            filterLetter = letter;
+            // Toggle filter: if already active, clear it
+            if (filterLetter === letter) {
+                filterLetter = '';
+                searchQuery = ''; // Clear search too for a clean state
+                document.getElementById('search-input').value = '';
+            } else {
+                filterLetter = letter;
+                searchQuery = ''; // Clear search when selecting a letter
+                document.getElementById('search-input').value = '';
+            }
+
             document.querySelectorAll('.alphabet-filter span').forEach(s => {
-                if(s.textContent === letter) s.classList.add('active');
+                if(s.textContent === filterLetter) s.classList.add('active');
                 else s.classList.remove('active');
             });
             renderAll();
@@ -750,15 +759,13 @@
         function renderAll(options = {}) {
             // Filter data
             let filtered = alberguesData.filter(item => {
-                // If soloId is provided, ONLY show that one
-                if (options.soloId) {
-                    return item.id === options.soloId;
-                }
+                if (options.soloId) return item.id === options.soloId;
 
-                const cityName = item.name.match(/\((.*?)\)/)?.[1]?.toLowerCase() || "";
+                // Improved Regex: Handle nested or extra parentheses
+                const cityMatch = item.name.match(/\(([^()]*?)\)(?:\s|\d|km|$)/);
+                const cityName = cityMatch ? cityMatch[1].trim().toLowerCase() : "";
                 const hostelNamePart = item.name.split('(')[0].toLowerCase();
                 
-                // Aliases for major cities
                 const aliases = {
                     'pamplona': 'pampelune',
                     'roncesvalles': 'roncevaux',
@@ -769,25 +776,24 @@
                     'santiago': 'santiago de compostela'
                 };
                 
+                // SEARCH-FIRST LOGIC: If no search query and no filter letter, skip
+                if (!searchQuery && !filterLetter) return false;
+
                 let matchesSearch = true;
                 if (searchQuery) {
-                    const mappedQuery = searchQuery.replace(/[()]/g, ''); // Clean query
-                    const cleanCity = cityName.replace(/[()]/g, ''); // Clean city name
+                    const mappedQuery = searchQuery.replace(/[()]/g, '');
+                    const cleanCity = cityName.replace(/[()]/g, '');
                     const cleanMappedQuery = (aliases[mappedQuery] || mappedQuery).toLowerCase();
                     
                     const cityWords = cleanCity.split(/[\s-]+/);
                     const cityWordStarts = cityWords.some(word => word.startsWith(cleanMappedQuery));
                     const hostelMatches = mappedQuery.length >= 3 && hostelNamePart.includes(mappedQuery);
                     
-                    if (mappedQuery.length === 1) {
-                        matchesSearch = cityWordStarts;
-                    } else {
-                        matchesSearch = cityWordStarts || hostelMatches || cleanCity.includes(cleanMappedQuery);
-                    }
+                    matchesSearch = mappedQuery.length === 1 ? cityWordStarts : (cityWordStarts || hostelMatches || cleanCity.includes(cleanMappedQuery));
                 }
 
-                const firstLetter = cityName.charAt(0).toUpperCase() || 'Other';
-                const matchesLetter = filterLetter === 'All' || firstLetter === filterLetter;
+                const firstLetter = cityName.charAt(0).toUpperCase();
+                const matchesLetter = !filterLetter || firstLetter === filterLetter;
                 return matchesSearch && matchesLetter;
             });
 
@@ -804,14 +810,24 @@
             const scrollPos = options.keepScroll ? hostelListEl.scrollTop : 0;
 
             // Render List with Alphabet Grouping
-            hostelListEl.innerHTML = '';
-            let currentGroup = '';
+            // Empty State Handling
+            if (filtered.length === 0 && !searchQuery && !filterLetter) {
+                hostelListEl.innerHTML = `
+                    <div style="padding: 40px 20px; text-align: center; color: #94a3b8;">
+                        <div style="font-size: 3rem; margin-bottom: 16px;">🔍</div>
+                        <div style="font-weight: 800; font-size: 1.1rem; color: #475569; margin-bottom: 8px;">Find your Albergue</div>
+                        <p style="font-size: 0.95rem; line-height: 1.5;">도시명을 검색하거나 알파벳을 눌러<br>순례길 숙소 현황을 확인해보세요!</p>
+                    </div>
+                `;
+                return;
+            }
 
             filtered.forEach(item => {
-                const cityName = item.name.match(/\((.*?)\)/)?.[1] || "Other";
-                const firstLetter = cityName.trim().charAt(0).toUpperCase();
+                const cityMatch = item.name.match(/\(([^()]*?)\)(?:\s|\d|km|$)/);
+                const cityNameRaw = cityMatch ? cityMatch[1].trim() : "Other";
+                const firstLetter = cityNameRaw.charAt(0).toUpperCase();
 
-                if (firstLetter !== currentGroup && filterLetter === 'All') {
+                if (firstLetter !== currentGroup && filterLetter === '') { // Only group if searching/general browsing
                     currentGroup = firstLetter;
                     const groupTitle = document.createElement('div');
                     groupTitle.className = 'group-header';
@@ -963,7 +979,7 @@
             const sortedLetters = Array.from(letters).sort();
             
             // Sidebar Header Filter
-            alphabetFilterEl.innerHTML = '<span class="active" onclick="filterByLetter(\'All\')">All</span>';
+            alphabetFilterEl.innerHTML = '';
             sortedLetters.forEach(l => {
                 const span = document.createElement('span');
                 span.textContent = l;
