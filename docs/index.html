@@ -513,6 +513,28 @@
         }
         .sheet-header { display: flex; justify-content: space-between; align-items: flex-start; }
         .sheet-close { font-size: 24px; cursor: pointer; color: #94a3b8; }
+
+        /* Geolocation Button */
+        .geo-btn {
+            position: absolute;
+            bottom: 40px;
+            left: 24px;
+            z-index: 1000;
+            background: white;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .geo-btn:hover { transform: scale(1.1); background: #f8fafc; }
+        .geo-btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
@@ -600,6 +622,7 @@
 
     <div class="main-container">
         <div id="map"></div>
+        <div class="geo-btn" title="My Location" onclick="locateMe()">📍</div>
 
         <aside id="sidebar">
             <div class="sidebar-header">
@@ -1014,6 +1037,33 @@
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }
+        }
+
+        function locateMe() {
+            if (!navigator.geolocation) {
+                alert("Geolocation is not supported by your browser");
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    map.flyTo([latitude, longitude], 15, { duration: 1.5 });
+                    
+                    // Add a temporary blue dot for user location
+                    L.circleMarker([latitude, longitude], {
+                        radius: 8,
+                        fillColor: "#0084ff",
+                        color: "#fff",
+                        weight: 3,
+                        opacity: 1,
+                        fillOpacity: 0.8
+                    }).addTo(map).bindPopup("You are here").openPopup();
+                },
+                (error) => {
+                    alert("Unable to retrieve your location: " + error.message);
+                }
+            );
         }
 
         window.addEventListener('DOMContentLoaded', () => {
