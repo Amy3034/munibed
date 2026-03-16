@@ -184,24 +184,60 @@ document.getElementById('refreshBtn').addEventListener('click', () => {
     fetchAlbergues();
 });
 
+// Mobile Sidebar Logic
+const mobileFab = document.getElementById('mobileFab');
+const mobileOverlay = document.getElementById('mobileOverlay');
+const listSection = document.getElementById('listSection');
+
+function toggleMobileSidebar(active) {
+    if (active) {
+        listSection.classList.add('active');
+        mobileOverlay.classList.add('active');
+    } else {
+        listSection.classList.remove('active');
+        mobileOverlay.classList.remove('active');
+    }
+}
+
+if (mobileFab) {
+    mobileFab.addEventListener('click', () => toggleMobileSidebar(true));
+}
+
+if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', () => toggleMobileSidebar(false));
+}
+
+// Ensure clicking a hostel in the list closes the sidebar on mobile
+const originalFocusMapMarker = focusMapMarker;
+focusMapMarker = function(id, lat, lng) {
+    originalFocusMapMarker(id, lat, lng);
+    if (window.innerWidth <= 900) {
+        toggleMobileSidebar(false);
+    }
+};
+
 // Modal Logic
 const infoModal = document.getElementById('infoModal');
 const infoBtn = document.getElementById('infoBtn');
 const closeModalBtn = document.getElementById('closeModalBtn');
 
-infoBtn.addEventListener('click', () => {
-    infoModal.classList.add('active');
-});
-
-closeModalBtn.addEventListener('click', () => {
-    infoModal.classList.remove('active');
-});
-
-infoModal.addEventListener('click', (e) => {
-    if (e.target === infoModal) {
+if (infoBtn) {
+    infoBtn.addEventListener('click', () => {
+        infoModal.classList.add('active');
+    });
+}
+if (closeModalBtn) {
+    closeModalBtn.addEventListener('click', () => {
         infoModal.classList.remove('active');
-    }
-});
+    });
+}
+if (infoModal) {
+    infoModal.addEventListener('click', (e) => {
+        if (e.target === infoModal) {
+            infoModal.classList.remove('active');
+        }
+    });
+}
 
 // Contact Modal Logic
 const contactModal = document.getElementById('contactModal');
@@ -213,13 +249,11 @@ if (contactBtn) {
         contactModal.classList.add('active');
     });
 }
-
 if (closeContactBtn) {
     closeContactBtn.addEventListener('click', () => {
         contactModal.classList.remove('active');
     });
 }
-
 if (contactModal) {
     contactModal.addEventListener('click', (e) => {
         if (e.target === contactModal) {

@@ -128,6 +128,7 @@ h1 {
     background: #f1f5f9;
     max-width: 550px;
     min-width: 400px;
+    transition: var(--transition);
 }
 
 .list-header {
@@ -402,21 +403,70 @@ h1 {
 /* Responsive */
 @media (max-width: 900px) {
     .app-container {
-        flex-direction: column;
-        overflow: auto;
+        flex-direction: row; /* Keep it side-by-side but one hidden */
+        position: relative;
     }
     .map-section {
-        flex: none;
-        height: 50vh;
+        flex: 1;
+        height: 100vh;
         border-right: none;
-        border-bottom: 1px solid var(--border);
     }
     .list-section {
-        flex: none;
-        max-width: none;
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 85%;
+        height: 100%;
+        max-width: 400px;
         min-width: 0;
+        z-index: 2000;
+        box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+        background: #fff;
+    }
+    .list-section.active {
+        right: 0;
+    }
+    
+    /* Mobile Overlay */
+    .mobile-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 1500;
+        backdrop-filter: blur(2px);
+    }
+    .mobile-overlay.active {
+        display: block;
+    }
+
+    /* Mobile FAB */
+    .mobile-fab {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), #0369a1);
+        color: white;
+        border-radius: 20px;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.8rem;
+        box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4);
+        z-index: 1000;
+        cursor: pointer;
+        border: 2px solid rgba(255,255,255,0.2);
+        box-sizing: border-box;
     }
 }
+
+.mobile-fab { display: none; }
+.mobile-overlay { display: none; }
 
 /* =========================================
    Modal Styling
