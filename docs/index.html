@@ -517,24 +517,30 @@
         /* Geolocation Button */
         .geo-btn {
             position: absolute;
-            bottom: 120px; /* Raised to be above mobile attribution/bottom-sheet */
+            bottom: 24px;
             left: 24px;
-            z-index: 5000; /* Higher than Leaflet and Bottom-sheet */
-            background: white;
-            width: 54px; /* Slightly larger */
-            height: 54px;
-            border-radius: 50%;
+            z-index: 5000;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
             cursor: pointer;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.25);
-            border: 2px solid var(--primary); /* Blue border for visibility */
+            box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+            border: 1px solid rgba(226, 232, 240, 0.8);
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .geo-btn:hover { transform: scale(1.15) rotate(-15deg); background: #f0f7ff; }
-        .geo-btn:active { transform: scale(0.9); }
+        .geo-btn:hover { 
+            transform: scale(1.05); 
+            background: #fff; 
+            box-shadow: 0 12px 24px rgba(0,0,0,0.18);
+            border-color: var(--primary);
+        }
+        .geo-btn:active { transform: scale(0.95); }
+        .geo-btn svg { width: 22px; height: 22px; stroke: var(--primary); }
     </style>
 </head>
 <body>
@@ -622,7 +628,11 @@
 
     <div class="main-container">
         <div id="map"></div>
-        <div class="geo-btn" title="My Location" onclick="locateMe()">📍</div>
+        <div class="geo-btn" title="My Location" onclick="locateMe()">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2C12.5523 2 13 2.44772 13 3V5.07089C16.3916 5.5323 18.9677 8.10842 19.4291 11.5H21.5C22.0523 11.5 22.5 11.9477 22.5 12.5C22.5 13.0523 22.0523 13.5 21.5 13.5H19.4291C18.9677 16.8916 16.3916 19.4677 13 19.9291V22C13 22.5523 12.5523 23 12 23C11.4477 23 11 22.5523 11 22V19.9291C7.60842 19.4677 5.0323 16.8916 4.57089 13.5H2.5C1.94772 13.5 1.5 13.0523 1.5 12.5C1.5 11.9477 1.94772 11.5 2.5 11.5H4.57089C5.0323 8.10842 7.60842 5.5323 11 5.07089V3C11 2.44772 11.4477 2 12 2ZM12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7ZM12 9C13.6569 9 15 10.3431 15 12C15 13.6569 13.6569 15 12 15C10.3431 15 9 13.6569 9 12C9 10.3431 10.3431 9 12 9Z" fill="currentColor"/>
+            </svg>
+        </div>
 
         <aside id="sidebar">
             <div class="sidebar-header">
