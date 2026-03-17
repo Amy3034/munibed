@@ -309,6 +309,7 @@ async function initDB() {
     await client.query(`
       CREATE TABLE IF NOT EXISTS "Comments" (
         id SERIAL PRIMARY KEY,
+        albergue_id INTEGER NOT NULL,
         nickname TEXT NOT NULL,
         content TEXT NOT NULL,
         "createdAt" TEXT NOT NULL
@@ -352,18 +353,20 @@ app.patch('/api/albergues/:id', async (req, res) => {
   }
 });
 
-// GET comments
-app.get('/api/comments', async (req, res) => {
+// GET comments for an albergue
+app.get('/api/albergues/:id/comments', async (req, res) => {
+  const albergueId = req.params.id;
   try {
-    const { rows } = await pool.query('SELECT * FROM "Comments" ORDER BY id DESC LIMIT 100');
+    const { rows } = await pool.query('SELECT * FROM "Comments" WHERE albergue_id = $1 ORDER BY id DESC LIMIT 100', [albergueId]);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// POST comment
-app.post('/api/comments', async (req, res) => {
+// POST comment for an albergue
+app.post('/api/albergues/:id/comments', async (req, res) => {
+  const albergueId = req.params.id;
   const { nickname, content } = req.body;
   if (!nickname || !content) {
     return res.status(400).json({ error: 'nickname and content are required.' });
@@ -372,8 +375,8 @@ app.post('/api/comments', async (req, res) => {
   const createdAt = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   try {
     const { rows } = await pool.query(
-      'INSERT INTO "Comments" (nickname, content, "createdAt") VALUES ($1, $2, $3) RETURNING *',
-      [nickname, content, createdAt]
+      'INSERT INTO "Comments" (albergue_id, nickname, content, "createdAt") VALUES ($1, $2, $3, $4) RETURNING *',
+      [albergueId, nickname, content, createdAt]
     );
     res.json(rows[0]);
   } catch (err) {

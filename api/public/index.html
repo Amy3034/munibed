@@ -39,7 +39,6 @@
             <div id="map"></div>
             <div class="map-overlay-legend">
                 <div class="legend-item"><span class="dot dot-green"></span> 여유 (Available)</div>
-                <div class="legend-item"><span class="dot dot-yellow"></span> 혼잡 (Limited)</div>
                 <div class="legend-item"><span class="dot dot-red"></span> 만실 (Full)</div>
                 <div class="legend-item"><span class="dot dot-gray"></span> 미확인 (Unknown)</div>
             </div>
@@ -74,6 +73,27 @@
         </section>
     </main>
 
+    <!-- Comments Modal -->
+    <div id="commentsModal" class="modal-overlay">
+        <div class="modal-content" style="max-height: 80vh; display: flex; flex-direction: column;">
+            <div class="modal-header">
+                <h2 id="commentsModalTitle" style="font-size: 1.1rem; flex: 1; margin-right: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">숙소 이름</h2>
+                <div class="modal-actions">
+                    <button id="closeCommentsBtn" class="close-btn">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body" style="flex: 1; overflow-y: auto; padding: 15px;">
+                <div class="comments-list" id="modalCommentsList" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
+                    <!-- Comments go here -->
+                </div>
+                <div class="compose-box" style="display: flex; flex-direction: column; gap: 8px;">
+                    <textarea id="modalCommentInput" placeholder="이 숙소에 대한 정보를 공유해주세요 (예: 침대 여유, 온수 상태 등)" style="width: 100%; height: 80px; padding: 10px; border: 1px solid var(--border); border-radius: 8px; resize: none;"></textarea>
+                    <button id="modalSendCommentBtn" style="background: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; cursor: pointer; font-weight: 600;">댓글 남기기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Info Modal -->
     <div id="infoModal" class="modal-overlay">
         <div class="modal-content">
@@ -93,7 +113,7 @@
                     
                     <h3>🌟 어떻게 사용하나요?</h3>
                     <ul>
-                        <li><strong>색상 확인:</strong> 지도의 마커나 리스트의 배지 색상으로 숙소의 남은 자리를 직관적으로 확인하세요. (🟢 여유, 🟡 혼잡, 🔴 만실, ⚪ 미확인)</li>
+                        <li><strong>색상 확인:</strong> 지도의 마커나 리스트의 배지 색상으로 숙소의 남은 자리를 직관적으로 확인하세요. (🟢 여유, 🔴 만실, ⚪ 미확인)</li>
                         <li><strong>검색 & 필터링:</strong> 찾고 싶은 마을 이름이나 숙소 이름을 검색하거나 아래의 A-Z 알파벳 버튼을 눌러 손쉽게 조회할 수 있습니다.</li>
                         <li><strong>직접 업데이트:</strong> 현재 머물고 계신 알베르게의 상황을 클릭 한 번으로 업데이트하여 뒤따라오는 다른 순례자들에게 도움을 주세요!</li>
                     </ul>
@@ -109,7 +129,7 @@
                     
                     <h3>🌟 How to use?</h3>
                     <ul>
-                        <li><strong>Check Colors:</strong> Intuitively check the availability of beds using the colors of map markers or list badges. (🟢 Available, 🟡 Limited, 🔴 Full, ⚪ Unknown)</li>
+                        <li><strong>Check Colors:</strong> Intuitively check the availability of beds using the colors of map markers or list badges. (🟢 Available, 🔴 Full, ⚪ Unknown)</li>
                         <li><strong>Search & Filter:</strong> Simply search for the name of the town or albergue, or use the A-Z alphabet index below to quickly find your stop.</li>
                         <li><strong>Update Yourself:</strong> Help fellow pilgrims behind you by updating the status of the albergue you are currently staying at with just one click!</li>
                     </ul>
@@ -125,7 +145,7 @@
                     
                     <h3>🌟 ¿Cómo usarlo?</h3>
                     <ul>
-                        <li><strong>Revisa los colores:</strong> Comprueba intuitivamente la disponibilidad de camas usando los colores de los marcadores del mapa o las insignias de la lista. (🟢 Disponible, 🟡 Limitado, 🔴 Lleno, ⚪ Desconocido)</li>
+                        <li><strong>Revisa los colores:</strong> Comprueba intuitivamente la disponibilidad de camas usando los colores de los marcadores del mapa o las insignias de la lista. (🟢 Disponible, 🔴 Lleno, ⚪ Desconocido)</li>
                         <li><strong>Busca y Filtra:</strong> Simplemente busca el nombre del pueblo o albergue, o usa el índice alfabético A-Z de abajo para encontrar tu parada rápidamente.</li>
                         <li><strong>Actualízalo tú mismo:</strong> Ayuda a los peregrinos que vienen detrás actualizando el estado del albergue en el que te hospedas con un solo clic.</li>
                     </ul>

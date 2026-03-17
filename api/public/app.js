@@ -40,7 +40,6 @@ function renderMapMarkers() {
 
     const statusColors = {
         'green': '#10b981',
-        'yellow': '#f59e0b',
         'red': '#ef4444',
         'gray': '#94a3b8'
     };
@@ -127,9 +126,11 @@ function renderList(dataToRender = alberguesData) {
             </div>
             <div class="card-actions" onclick="event.stopPropagation()">
                 <button class="status-btn btn-green ${item.status === 'green' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'green')">여유<br>(Available)</button>
-                <button class="status-btn btn-yellow ${item.status === 'yellow' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'yellow')">혼잡<br>(Limited)</button>
                 <button class="status-btn btn-red ${item.status === 'red' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'red')">만실<br>(Full)</button>
                 <button class="status-btn btn-gray ${item.status === 'gray' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'gray')">미확인<br>(Unknown)</button>
+            </div>
+            <div class="card-footer" style="padding: 10px 15px; border-top: 1px solid var(--border); background: var(--bg-alt); text-align: center;" onclick="event.stopPropagation()">
+                <button class="comment-btn" style="background: transparent; color: var(--primary); border: 1.5px solid var(--primary); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%;" onclick="openCommentsModal(${item.id}, '${item.name.replace(/'/g, "\\'")}')">💬 순례자 코멘트 (Review)</button>
             </div>
         `;
         listContainer.appendChild(card);
@@ -207,7 +208,6 @@ function scrollToLetter(letter) {
 function getStatusText(status) {
     const statusMap = {
         'green': '여유 (Available)',
-        'yellow': '혼잡 (Limited)',
         'red': '만실 (Full)',
         'gray': '미확인 (Unknown)'
     };
@@ -370,6 +370,122 @@ window.addEventListener('DOMContentLoaded', () => {
         setupSearch();
         initAlphabetIndex();
     });
+});
+
+// ======== Comments Modal Logic ============
+let currentAlbergueId = null;
+
+function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+async function loadAlbergueComments(albergueId) {
+    const list = document.getElementById('modalCommentsList');
+    list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">댓글을 불러오는 중...</div>';
+    try {
+        const res = await fetch(`/api/albergues/${albergueId}/comments`);
+        if (!res.ok) throw new Error('Failed to load comments');
+        const comments = await res.json();
+        
+        if (comments.length === 0) {
+            list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">아직 등록된 의견이 없습니다. 첫 번째 순례자가 되어주세요!</div>';
+            return;
+        }
+
+        list.innerHTML = '';
+        comments.forEach(c => {
+            const myNick = localStorage.getItem('munibed_nickname') || '';
+            const isMine = c.nickname === myNick;
+            const item = document.createElement('div');
+            item.style.padding = '12px';
+            item.style.background = isMine ? 'rgba(2,132,199,0.04)' : 'var(--bg-alt)';
+            item.style.border = isMine ? '1px solid rgba(2,132,199,0.3)' : '1px solid var(--border)';
+            item.style.borderRadius = '8px';
+            
+            const meta = document.createElement('div');
+            meta.style.display = 'flex';
+            meta.style.justifyContent = 'space-between';
+            meta.style.marginBottom = '6px';
+            meta.style.fontSize = '0.8rem';
+            meta.innerHTML = `<span style="font-weight:bold;">${escapeHtml(c.nickname)} ${isMine ? '(나)' : ''}</span><span style="color:var(--text-muted);">${c.createdAt}</span>`;
+            
+            const body = document.createElement('div');
+            body.style.fontSize = '0.9rem';
+            body.style.lineHeight = '1.4';
+            body.innerHTML = escapeHtml(c.content).replace(/\n/g, '<br>');
+            
+            item.appendChild(meta);
+            item.appendChild(body);
+            list.appendChild(item);
+        });
+    } catch (e) {
+        list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--red);">댓글을 불러오는 데 실패했습니다.</div>';
+    }
+}
+
+function openCommentsModal(id, title) {
+    currentAlbergueId = id;
+    const modal = document.getElementById('commentsModal');
+    document.getElementById('commentsModalTitle').innerText = title;
+    document.getElementById('modalCommentInput').value = '';
+    modal.classList.add('active');
+    loadAlbergueComments(id);
+}
+
+document.getElementById('closeCommentsBtn').addEventListener('click', () => {
+    document.getElementById('commentsModal').classList.remove('active');
+    currentAlbergueId = null;
+});
+
+document.addEventListener('click', (e) => {
+    const modal = document.getElementById('commentsModal');
+    if (e.target === modal) {
+        modal.classList.remove('active');
+        currentAlbergueId = null;
+    }
+});
+
+function getMyNicknameForComments() {
+    let nick = localStorage.getItem('munibed_nickname');
+    if (!nick) {
+        const ADJECTIVES = ['용감한','든든한','따뜻한','신비로운','씩씩한','느긋한','명랑한','차분한','참신한','지혜로운'];
+        const NOUNS = ['순례자','까미노러','알베르게인','배낭여행자','Pilgrim','Wanderer','Walker'];
+        const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
+        const noun = NOUNS[Math.floor(Math.random() * NOUNS.length)];
+        const num = Math.floor(Math.random() * 900) + 100;
+        nick = `${adj} ${noun} ${num}`;
+        localStorage.setItem('munibed_nickname', nick);
+    }
+    return nick;
+}
+
+document.getElementById('modalSendCommentBtn').addEventListener('click', async () => {
+    if (!currentAlbergueId) return;
+    const input = document.getElementById('modalCommentInput');
+    const content = input.value.trim();
+    if (!content) return;
+
+    const nickname = getMyNicknameForComments();
+    const btn = document.getElementById('modalSendCommentBtn');
+    btn.disabled = true;
+    btn.textContent = '전송 중...';
+
+    try {
+        const res = await fetch(`/api/albergues/${currentAlbergueId}/comments`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nickname, content })
+        });
+        if (!res.ok) throw new Error('Failed');
+        input.value = '';
+        await loadAlbergueComments(currentAlbergueId);
+    } catch (e) {
+        alert('댓글 작성에 실패했습니다.');
+    } finally {
+        btn.disabled = false;
+        btn.textContent = '댓글 남기기';
+    }
 });
 
 // ======== New Features: Search & Index ============
