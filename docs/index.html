@@ -338,7 +338,7 @@
             position: sticky;
             top: 0;
             z-index: 10;
-            height: 180px; /* Fixed height to prevent resizing */
+            height: 200px; /* Increased height */
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -358,6 +358,7 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
+            margin-top: 45px; /* Increased margin to push away from X button */
         }
         .sidebar-title h2 { font-size: 1.1rem; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .refresh-btn {
@@ -477,12 +478,13 @@
         }
         .hostel-card:hover { transform: translateY(-2px); box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
 
-        .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-        .hostel-name { font-size: 1rem; font-weight: 800; line-height: 1.4; color: var(--text-main); flex: 1; }
+        .card-header { display: block; margin-bottom: 8px; }
+        .hostel-name { font-size: 1.1rem; font-weight: 800; line-height: 1.4; color: var(--text-main); width: 100%; margin-bottom: 8px; display: block; }
         .status-badge {
+            display: inline-block;
             font-size: 0.75rem;
             font-weight: 800;
-            padding: 4px 8px;
+            padding: 4px 10px;
             border-radius: 8px;
             text-transform: uppercase;
         }
@@ -495,9 +497,9 @@
 
         .card-actions {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            margin-top: 4px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 12px;
         }
         .btn-update {
             padding: 8px 4px;
@@ -635,6 +637,39 @@
         }
         .geo-btn:active { transform: scale(0.95); }
         .geo-btn svg { width: 22px; height: 22px; stroke: var(--primary); }
+
+        /* Comment Modal Styles */
+        #comment-modal .modal-content { max-width: 600px; max-height: 90vh; display: flex; flex-direction: column; }
+        #comment-modal .modal-body { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        .comment-input-area { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--border); padding-top: 16px; margin-top: auto; }
+        .comment-input-area textarea {
+            width: 100%; height: 80px; border: 1px solid var(--border); border-radius: 12px; padding: 12px;
+            font-family: inherit; font-size: 0.95rem; resize: none;
+        }
+        .comment-input-area button {
+            background: var(--primary); color: white; border: none; padding: 12px; border-radius: 12px;
+            font-weight: 800; cursor: pointer; transition: opacity 0.2s;
+        }
+        .comment-input-area button:hover { opacity: 0.9; }
+        .comments-list-inner { display: flex; flex-direction: column; gap: 12px; }
+        .comment-item { background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+        .comment-meta { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+        .comment-nick { font-weight: 800; color: var(--text-main); }
+        .comment-text { font-size: 0.95rem; line-height: 1.5; }
+        .btn-comment-open {
+            margin-top: 8px;
+            background: #fff;
+            border: 1.5px solid var(--primary);
+            color: var(--primary);
+            padding: 10px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .btn-comment-open:hover { background: var(--primary); color: white; }
     </style>
 </head>
 <body id="mainBody">
@@ -688,6 +723,24 @@
                 <div class="info-note">
                     <span style="font-size: 1.2rem;">💡</span>
                     <span id="info-note-text">참고: 모든 데이터는 매일 새벽 2시(현지 시각)에 새로운 날을 맞이하여 '미확인(Unknown)' 상태로 자동 초기화됩니다.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Comment Modal -->
+    <div id="comment-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="comment-hostel-name" style="font-size: 1.1rem;">익명 게시판</h2>
+                <span class="close-modal-btn" onclick="closeModal('comment-modal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div class="comments-list-inner" id="comments-list-inner">
+                    <!-- Comments go here -->
+                </div>
+                <div class="comment-input-area">
+                    <textarea id="comment-text-input" placeholder="순례자들과 정보를 나눠보세요..."></textarea>
+                    <button onclick="postComment()">댓글 남기기 / Post</button>
                 </div>
             </div>
         </div>
@@ -976,6 +1029,7 @@
                     <div class="update-item">
                         <span>🕒</span> <span id="time-${item.id}">${item.lastUpdated}</span>
                     </div>
+                    <button class="btn-comment-open" onclick="event.stopPropagation(); openCommentModal(${item.id}, '${item.name.replace(/'/g, "\\'")}')">💬 코멘트 남기기 (Review)</button>
                     <div class="card-actions">
                         <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(${item.id}, 'green')">여유<span>(Available)</span></button>
                         <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(${item.id}, 'red')">만실<span>(Full)</span></button>
@@ -1279,6 +1333,73 @@
                     hint.style.transition = 'opacity 1s';
                     setTimeout(() => hint.remove(), 1000);
                 }, 4000);
+            }
+        }
+
+        // ── Comment Logic ─────────────────────────────────────────────
+        let currentAlbergueId = null;
+        // Temporary public API for comments (can be updated later)
+        const COMMENT_API = 'https://kind-turtles-stick.loca.lt/api/albergues';
+
+        function openCommentModal(id, name) {
+            currentAlbergueId = id;
+            document.getElementById('comment-hostel-name').textContent = name;
+            document.getElementById('comment-modal').style.display = 'block';
+            loadComments(id);
+        }
+
+        async function loadComments(id) {
+            const list = document.getElementById('comments-list-inner');
+            list.innerHTML = '<div style="text-align:center; padding:20px;">불러오는 중...</div>';
+            try {
+                const res = await fetch(`${COMMENT_API}/${id}/comments`, {
+                    headers: { 'bypass-tunnel-reminder': 'true' }
+                });
+                const data = await res.json();
+                list.innerHTML = '';
+                if (data.length === 0) {
+                    list.innerHTML = '<div style="text-align:center; padding:20px; color:#94a3b8;">아직 댓글이 없습니다.</div>';
+                } else {
+                    data.forEach(c => {
+                        const div = document.createElement('div');
+                        div.className = 'comment-item';
+                        div.innerHTML = `
+                            <div class="comment-meta">
+                                <span class="comment-nick">${c.nickname}</span>
+                                <span>${c.createdAt}</span>
+                            </div>
+                            <div class="comment-text">${c.content}</div>
+                        `;
+                        list.appendChild(div);
+                    });
+                }
+            } catch (e) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:#f44336;">댓글 기능을 사용하려면 서버 연결이 필요합니다.</div>';
+            }
+        }
+
+        async function postComment() {
+            const input = document.getElementById('comment-text-input');
+            const content = input.value.trim();
+            if (!content) return;
+
+            // Simple anonymous nickname logic
+            let nick = localStorage.getItem('munibed_nickname');
+            if (!nick) {
+                nick = "익명의 순례자 " + Math.floor(Math.random() * 9000 + 1000);
+                localStorage.setItem('munibed_nickname', nick);
+            }
+
+            try {
+                await fetch(`${COMMENT_API}/${currentAlbergueId}/comments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'bypass-tunnel-reminder': 'true' },
+                    body: JSON.stringify({ nickname: nick, content })
+                });
+                input.value = '';
+                loadComments(currentAlbergueId);
+            } catch (e) {
+                alert('전송 실패: 서버가 오프라인이거나 연결할 수 없습니다.');
             }
         }
 
