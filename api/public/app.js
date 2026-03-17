@@ -175,15 +175,24 @@ async function updateStatus(id, newStatus) {
 
 function scrollToLetter(letter) {
     const container = document.getElementById('albergueList');
-    // If list is filtered, render all first to ensure target exists
-    if (document.getElementById('searchInput').value !== '') {
-        document.getElementById('searchInput').value = '';
+    // If list is filtered or searched, clear search to ensure all groups are present
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput.value !== '') {
+        searchInput.value = '';
         renderList(alberguesData);
     }
     
     const target = document.getElementById(`group-${letter}`);
     if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // On mobile, we need to account for sticky headers
+        const headerOffset = window.innerWidth <= 900 ? 550 : 150; 
+        const elementPosition = target.getBoundingClientRect().top;
+        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+        });
         
         // Highlight the group header briefly
         target.style.color = 'var(--red)';
@@ -243,36 +252,19 @@ if (shareBtn) {
     });
 }
 
-// Mobile Sidebar Logic
-const mobileFab = document.getElementById('mobileFab');
-const mobileOverlay = document.getElementById('mobileOverlay');
-const listSection = document.getElementById('listSection');
-
-function toggleMobileSidebar(active) {
-    if (active) {
-        listSection.classList.add('active');
-        mobileOverlay.classList.add('active');
-    } else {
-        listSection.classList.remove('active');
-        mobileOverlay.classList.remove('active');
+// Mobile Interaction Logic
+function handleMobileView(item) {
+    if (window.innerWidth <= 900) {
+        // Scroll to map top when clicking list item
+        document.querySelector('.map-section').scrollIntoView({ behavior: 'smooth' });
     }
 }
 
-if (mobileFab) {
-    mobileFab.addEventListener('click', () => toggleMobileSidebar(true));
-}
-
-if (mobileOverlay) {
-    mobileOverlay.addEventListener('click', () => toggleMobileSidebar(false));
-}
-
-// Ensure clicking a hostel in the list closes the sidebar on mobile
+// Ensure clicking a hostel in the list scrolls to map on mobile
 const originalFocusMapMarker = focusMapMarker;
 focusMapMarker = function(id, lat, lng) {
     originalFocusMapMarker(id, lat, lng);
-    if (window.innerWidth <= 900) {
-        toggleMobileSidebar(false);
-    }
+    handleMobileView();
 };
 
 // Modal Logic
@@ -388,6 +380,8 @@ function setupSearch() {
         autocompleteList.innerHTML = '';
         
         if (!query || query === 'all') {
+            document.querySelectorAll('.alpha-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector('.alpha-btn').classList.add('active'); // Set 'All' to active
             autocompleteList.classList.remove('active');
             renderList(alberguesData);
             return;
@@ -540,12 +534,12 @@ function filterByLetter(letter, clickedBtn) {
     document.getElementById('searchInput').value = '';
 
     if (letter === 'All') {
-        renderList(alberguesData);
+        const listContainer = document.getElementById('albergueList');
+        listContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         return;
     }
 
-    const filtered = alberguesData.filter(item => getCityFirstLetter(item.name) === letter);
-    renderList(filtered);
+    scrollToLetter(letter);
 }
 
 function getCityFirstLetter(fullName) {

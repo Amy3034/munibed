@@ -420,71 +420,74 @@ h1 {
 
 /* Responsive */
 @media (max-width: 900px) {
+    body {
+        overflow: auto;
+    }
     .app-container {
-        flex-direction: row; /* Keep it side-by-side but one hidden */
-        position: relative;
+        flex-direction: column;
+        overflow: visible;
+        height: auto;
     }
     .map-section {
-        flex: 1;
-        height: 100vh;
+        flex: none;
+        height: 45vh;
+        width: 100%;
         border-right: none;
+        border-bottom: 1px solid var(--border);
+        position: sticky;
+        top: 0;
+        z-index: 500;
     }
     .list-section {
-        position: fixed;
-        top: 0;
-        right: -100%;
-        width: 85%;
-        height: 100%;
-        max-width: 400px;
+        flex: none;
+        width: 100%;
+        max-width: none;
         min-width: 0;
-        z-index: 2000;
-        box-shadow: -10px 0 20px rgba(0,0,0,0.1);
+        height: auto;
         background: #fff;
+        position: relative;
+        right: 0;
+        z-index: 10;
+        box-shadow: none;
     }
     .list-section.active {
         right: 0;
     }
     
-    /* Mobile Overlay */
-    .mobile-overlay {
-        display: none;
-        position: fixed;
+    .search-container {
+        position: sticky;
         top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.5);
-        z-index: 1500;
-        backdrop-filter: blur(2px);
+        z-index: 100;
+        background: var(--card-bg);
+        padding-top: 1rem;
     }
-    .mobile-overlay.active {
-        display: block;
+    
+    .alphabet-index {
+        position: sticky;
+        top: 60px; /* Adjust based on search input height */
+        z-index: 100;
+        background: var(--card-bg);
+        border-bottom: 1px solid var(--border);
     }
 
-    /* Mobile FAB */
-    .mobile-fab {
-        display: flex;
-        position: fixed;
-        bottom: 24px;
-        right: 24px;
-        width: 60px;
-        height: 60px;
-        background: linear-gradient(135deg, var(--primary), #0369a1);
-        color: white;
-        border-radius: 20px;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.8rem;
-        box-shadow: 0 8px 24px rgba(2, 132, 199, 0.4);
-        z-index: 1000;
-        cursor: pointer;
-        border: 2px solid rgba(255,255,255,0.2);
-        box-sizing: border-box;
+    .albergue-list {
+        overflow-y: visible;
+        height: auto;
+        padding-bottom: 4rem;
+    }
+
+    /* Hide Mobile Sidebar Specific Elements as we use stacked view now */
+    .mobile-overlay, .mobile-fab {
+        display: none !important;
+    }
+
+    .map-overlay-legend {
+        bottom: 10px;
+        left: 10px;
+        padding: 8px 12px;
+        font-size: 0.75rem;
     }
 }
-
-.mobile-fab { display: none; }
-.mobile-overlay { display: none; }
 
 /* =========================================
    Modal Styling
@@ -528,8 +531,9 @@ h1 {
 
 .modal-content {
     background: var(--card-bg);
-    width: 90%;
+    width: 95%;
     max-width: 500px;
+    margin: 10px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     transform: translateY(20px) scale(0.95);
