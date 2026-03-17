@@ -357,6 +357,7 @@ window.addEventListener('DOMContentLoaded', () => {
     fetchAlbergues().then(() => {
         setupSearch();
         initAlphabetIndex();
+        setupGeolocation();
     });
 });
 
@@ -564,4 +565,50 @@ function getCityFirstLetter(fullName) {
     // Fallback if no parentheses are found: just text the first letter of the name
     const fallbackMatch = fullName.match(/[a-zA-Z]/);
     return fallbackMatch ? fallbackMatch[0].toUpperCase() : '#';
+}
+
+// Current Location Logic
+function setupGeolocation() {
+    const locateBtn = document.getElementById('locateBtn');
+    if (!locateBtn) return;
+
+    locateBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            alert('지오로케이션(Geolocation)을 지원하지 않는 브라우저입니다.');
+            return;
+        }
+
+        const originalText = locateBtn.innerHTML;
+        locateBtn.innerHTML = '⌛'; // Show loading
+        
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                
+                // Add or move a specific marker for current location
+                if (window.myLocationMarker) {
+                    window.myLocationMarker.setLatLng([latitude, longitude]);
+                } else {
+                    const myIcon = L.divIcon({
+                        className: 'my-location-marker',
+                        html: '<div class="pulse"></div>',
+                        iconSize: [20, 20],
+                        iconAnchor: [10, 10]
+                    });
+                    window.myLocationMarker = L.marker([latitude, longitude], { icon: myIcon }).addTo(map);
+                }
+
+                map.setView([latitude, longitude], 15);
+                locateBtn.innerHTML = originalText;
+            },
+            (error) => {
+                console.error('Geolocation error:', error);
+                let msg = '위치 정보를 가져올 수 없습니다.';
+                if (error.code === 1) msg = '위치 정보 공유가 거부되었습니다. 설정에서 권한을 허용해주세요.';
+                alert(msg);
+                locateBtn.innerHTML = originalText;
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        );
+    });
 }

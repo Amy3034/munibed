@@ -136,6 +136,59 @@ h1 {
     border: 1px solid var(--border);
 }
 
+.locate-btn {
+    position: absolute;
+    bottom: 120px;
+    left: 24px;
+    width: 44px;
+    height: 44px;
+    background: var(--card-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    font-size: 1.25rem;
+    cursor: pointer;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow);
+    transition: var(--transition);
+}
+
+.locate-btn:hover {
+    transform: scale(1.1);
+    background: #fff;
+}
+
+.locate-btn:active {
+    transform: scale(0.95);
+}
+
+/* My Location Marker Pulse Effect */
+.my-location-marker .pulse {
+    width: 14px;
+    height: 14px;
+    background: #4285F4;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 rgba(66, 133, 244, 0.4);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(66, 133, 244, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+    }
+}
+
 .legend-item {
     display: flex;
     align-items: center;
@@ -513,31 +566,81 @@ h1 {
         padding: 8px 12px;
         font-size: 0.75rem;
     }
-    
-    .app-header {
-        padding: 0.5rem 0.75rem;
-    }
-    
-    .logo-icon {
-        font-size: 1.25rem;
-    }
-    
-    h1 {
+
+    .locate-btn {
+        bottom: 65px;
+        left: 10px;
+        width: 38px;
+        height: 38px;
         font-size: 1.1rem;
     }
     
-    .subtitle-group {
-        border-left: none;
-        padding-left: 0;
-        gap: 2px;
+    .app-header {
+        padding: 0.5rem;
+        height: auto;
+        min-height: auto;
+    }
+
+    .header-container {
+        gap: 0.5rem;
+        justify-content: center;
     }
     
     .logo-group {
-        gap: 8px;
+        gap: 6px;
+        flex: 1 1 auto;
+        justify-content: center;
+        width: 100%;
     }
 
+    .logo {
+        gap: 4px;
+    }
+    
+    .logo-icon {
+        font-size: 1.1rem;
+    }
+    
+    h1 {
+        font-size: 1rem;
+        white-space: nowrap;
+    }
+    
+    .subtitle-group {
+        border-left: 1px solid var(--border);
+        padding-left: 6px;
+        gap: 0;
+    }
+
+    .subtitle {
+        font-size: 0.7rem;
+        line-height: 1.1;
+        white-space: nowrap;
+    }
+    
+    .header-actions {
+        margin: 0 auto;
+        gap: 0.25rem;
+    }
+
+    .info-btn {
+        padding: 0.4rem;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .subtitle-group {
+        display: none; /* Hide subtitle on extremely small screens to save space */
+    }
+    
+    .logo-group {
+        justify-content: flex-start;
+    }
+    
     .header-actions {
         margin-left: auto;
+        margin-right: 0;
     }
 }
 
