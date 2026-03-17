@@ -891,8 +891,8 @@
                     'santiago': 'santiago de compostela'
                 };
                 
-                // SEARCH-FIRST LOGIC: If no search query and no filter letter, skip
-                if (!searchQuery && !filterLetter) return false;
+                // Show all by default
+                // if (!searchQuery && !filterLetter) return false;
 
                 let matchesSearch = true;
                 if (searchQuery) {
@@ -926,12 +926,12 @@
 
             // Render List with Alphabet Grouping
             // Empty State Handling (Return early for list, but markers are already rendered above)
-            if (filtered.length === 0 && !searchQuery && !filterLetter) {
+            if (filtered.length === 0) {
                 hostelListEl.innerHTML = `
                     <div style="padding: 40px 20px; text-align: center; color: #94a3b8;">
                         <div style="font-size: 3rem; margin-bottom: 16px;">🔍</div>
-                        <div style="font-weight: 800; font-size: 1.1rem; color: #475569; margin-bottom: 8px;">Find your Albergue</div>
-                        <p style="font-size: 0.95rem; line-height: 1.5;">도시명을 검색하거나 알파벳을 눌러<br>순례길 숙소 현황을 확인해보세요!</p>
+                        <div style="font-weight: 800; font-size: 1.1rem; color: #475569; margin-bottom: 8px;">검색 결과가 없습니다</div>
+                        <p style="font-size: 0.95rem; line-height: 1.5;">다른 검색어나 알파벳을 선택해주세요.</p>
                     </div>
                 `;
                 return;
