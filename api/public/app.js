@@ -20,11 +20,17 @@ async function fetchAlbergues() {
         const response = await fetch(API_URL);
         const data = await response.json();
         alberguesData = data;
-        
+        // Sort alphabetically by city name (the part in parentheses)
+        alberguesData.sort((a, b) => {
+            const cityA = a.name.match(/\(([^()]*?)\)/)?.[1]?.trim() || "Z";
+            const cityB = b.name.match(/\(([^()]*?)\)/)?.[1]?.trim() || "Z";
+            return cityA.localeCompare(cityB);
+        });
+
         document.getElementById('count').textContent = data.length;
         renderMapMarkers();
         renderList();
-        renderSideIndex();
+        initAlphabetIndex();
     } catch (error) {
         console.error('API 로드 실패:', error);
         document.getElementById('albergueList').innerHTML = 
@@ -129,9 +135,6 @@ function renderList(dataToRender = alberguesData) {
                 <button class="status-btn btn-red ${item.status === 'red' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'red')">만실<br>(Full)</button>
                 <button class="status-btn btn-gray ${item.status === 'gray' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'gray')">미확인<br>(Unknown)</button>
             </div>
-            <div class="card-footer" style="padding: 10px 15px; border-top: 1px solid var(--border); background: var(--bg-alt); text-align: center;" onclick="event.stopPropagation()">
-                <button class="comment-btn" style="background: transparent; color: var(--primary); border: 1.5px solid var(--primary); padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; width: 100%;" onclick="openCommentsModal(${item.id}, '${item.name.replace(/'/g, "\\'")}')">💬 순례자 코멘트 (Review)</button>
-            </div>
         `;
         listContainer.appendChild(card);
     });
@@ -170,37 +173,21 @@ async function updateStatus(id, newStatus) {
     }
 }
 
-function renderSideIndex() {
-    const sideIndexEl = document.getElementById('side-index');
-    if (!sideIndexEl) return;
-    sideIndexEl.innerHTML = '';
-
-    const letters = new Set();
-    alberguesData.forEach(item => {
-        let cityName = item.name.match(/\(([^()]*?)\)/)?.[1] || "";
-        if (cityName) {
-            const firstChar = cityName.trim().charAt(0).toUpperCase();
-            if (/[A-Z]/.test(firstChar)) {
-                letters.add(firstChar);
-            }
-        }
-    });
-
-    const sortedLetters = Array.from(letters).sort();
-    sortedLetters.forEach(l => {
-        const span = document.createElement('span');
-        span.textContent = l;
-        span.onclick = () => scrollToLetter(l);
-        sideIndexEl.appendChild(span);
-    });
-}
-
 function scrollToLetter(letter) {
+    const container = document.getElementById('albergueList');
+    // If list is filtered, render all first to ensure target exists
+    if (document.getElementById('searchInput').value !== '') {
+        document.getElementById('searchInput').value = '';
+        renderList(alberguesData);
+    }
+    
     const target = document.getElementById(`group-${letter}`);
     if (target) {
-        const container = document.getElementById('albergueList');
-        const offset = target.offsetTop - container.offsetTop;
-        container.scrollTo({ top: offset, behavior: 'smooth' });
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        
+        // Highlight the group header briefly
+        target.style.color = 'var(--red)';
+        setTimeout(() => { target.style.color = 'var(--primary)'; }, 2000);
     }
 }
 
@@ -372,127 +359,13 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// ======== Comments Modal Logic ============
-let currentAlbergueId = null;
-
-function escapeHtml(str) {
-    if (!str) return '';
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-async function loadAlbergueComments(albergueId) {
-    const list = document.getElementById('modalCommentsList');
-    list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">댓글을 불러오는 중...</div>';
-    try {
-        const res = await fetch(`/api/albergues/${albergueId}/comments`);
-        if (!res.ok) throw new Error('Failed to load comments');
-        const comments = await res.json();
-        
-        if (comments.length === 0) {
-            list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--text-muted);">아직 등록된 의견이 없습니다. 첫 번째 순례자가 되어주세요!</div>';
-            return;
-        }
-
-        list.innerHTML = '';
-        comments.forEach(c => {
-            const myNick = localStorage.getItem('munibed_nickname') || '';
-            const isMine = c.nickname === myNick;
-            const item = document.createElement('div');
-            item.style.padding = '12px';
-            item.style.background = isMine ? 'rgba(2,132,199,0.04)' : 'var(--bg-alt)';
-            item.style.border = isMine ? '1px solid rgba(2,132,199,0.3)' : '1px solid var(--border)';
-            item.style.borderRadius = '8px';
-            
-            const meta = document.createElement('div');
-            meta.style.display = 'flex';
-            meta.style.justifyContent = 'space-between';
-            meta.style.marginBottom = '6px';
-            meta.style.fontSize = '0.8rem';
-            meta.innerHTML = `<span style="font-weight:bold;">${escapeHtml(c.nickname)} ${isMine ? '(나)' : ''}</span><span style="color:var(--text-muted);">${c.createdAt}</span>`;
-            
-            const body = document.createElement('div');
-            body.style.fontSize = '0.9rem';
-            body.style.lineHeight = '1.4';
-            body.innerHTML = escapeHtml(c.content).replace(/\n/g, '<br>');
-            
-            item.appendChild(meta);
-            item.appendChild(body);
-            list.appendChild(item);
-        });
-    } catch (e) {
-        list.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--red);">댓글을 불러오는 데 실패했습니다.</div>';
-    }
-}
-
-function openCommentsModal(id, title) {
-    currentAlbergueId = id;
-    const modal = document.getElementById('commentsModal');
-    document.getElementById('commentsModalTitle').innerText = title;
-    document.getElementById('modalCommentInput').value = '';
-    modal.classList.add('active');
-    loadAlbergueComments(id);
-}
-
-document.getElementById('closeCommentsBtn').addEventListener('click', () => {
-    document.getElementById('commentsModal').classList.remove('active');
-    currentAlbergueId = null;
-});
-
-document.addEventListener('click', (e) => {
-    const modal = document.getElementById('commentsModal');
-    if (e.target === modal) {
-        modal.classList.remove('active');
-        currentAlbergueId = null;
-    }
-});
-
-function getMyNicknameForComments() {
-    let nick = localStorage.getItem('munibed_nickname');
-    if (!nick) {
-        const ADJECTIVES = ['용감한','든든한','따뜻한','신비로운','씩씩한','느긋한','명랑한','차분한','참신한','지혜로운'];
-        const NOUNS = ['순례자','까미노러','알베르게인','배낭여행자','Pilgrim','Wanderer','Walker'];
-        const adj = ADJECTIVES[Math.floor(Math.random() * ADJECTIVES.length)];
-        const noun = NOUNS[Math.floor(Math.random() * NOUNS.length)];
-        const num = Math.floor(Math.random() * 900) + 100;
-        nick = `${adj} ${noun} ${num}`;
-        localStorage.setItem('munibed_nickname', nick);
-    }
-    return nick;
-}
-
-document.getElementById('modalSendCommentBtn').addEventListener('click', async () => {
-    if (!currentAlbergueId) return;
-    const input = document.getElementById('modalCommentInput');
-    const content = input.value.trim();
-    if (!content) return;
-
-    const nickname = getMyNicknameForComments();
-    const btn = document.getElementById('modalSendCommentBtn');
-    btn.disabled = true;
-    btn.textContent = '전송 중...';
-
-    try {
-        const res = await fetch(`/api/albergues/${currentAlbergueId}/comments`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nickname, content })
-        });
-        if (!res.ok) throw new Error('Failed');
-        input.value = '';
-        await loadAlbergueComments(currentAlbergueId);
-    } catch (e) {
-        alert('댓글 작성에 실패했습니다.');
-    } finally {
-        btn.disabled = false;
-        btn.textContent = '댓글 남기기';
-    }
-});
 
 // ======== New Features: Search & Index ============
 
 function setupSearch() {
     const searchInput = document.getElementById('searchInput');
     const autocompleteList = document.getElementById('autocompleteList');
+    let currentFocus = -1;
     
     // Extract unique full city names for the dropdown
     const uniqueCities = new Set();
@@ -506,6 +379,7 @@ function setupSearch() {
 
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
+        currentFocus = -1;
         
         // Remove active state from alphabet buttons
         document.querySelectorAll('.alpha-btn').forEach(btn => btn.classList.remove('active'));
@@ -513,35 +387,31 @@ function setupSearch() {
         // Clear autocomplete
         autocompleteList.innerHTML = '';
         
-        if (!query) {
+        if (!query || query === 'all') {
             autocompleteList.classList.remove('active');
             renderList(alberguesData);
             return;
         }
 
-        // 1. Populate Autocomplete Dropdown with matching Cities that START with the query
-        const matchingCities = cityList.filter(city => city.toLowerCase().startsWith(query));
+        // 1. Populate Autocomplete Dropdown with matching Cities that START with or CONTAIN the query
+        const matchingCities = cityList.filter(city => city.toLowerCase().includes(query));
         
         if (matchingCities.length > 0) {
             autocompleteList.classList.add('active');
-            matchingCities.forEach(city => {
+            matchingCities.forEach((city, index) => {
                 const itemDiv = document.createElement('div');
-                // Highlight matching part (always at the beginning now)
-                const matchStr = city.substring(0, query.length);
-                const after = city.substring(query.length);
+                itemDiv.className = 'autocomplete-item';
                 
-                itemDiv.innerHTML = `<b>${matchStr}</b>${after}`;
+                // Highlight matching part
+                const matchIndex = city.toLowerCase().indexOf(query);
+                const before = city.substring(0, matchIndex);
+                const middle = city.substring(matchIndex, matchIndex + query.length);
+                const after = city.substring(matchIndex + query.length);
+                
+                itemDiv.innerHTML = `${before}<b>${middle}</b>${after}`;
                 
                 itemDiv.addEventListener('click', () => {
-                    // When clicked, fill input, hide dropdown, and render list
-                    searchInput.value = city;
-                    autocompleteList.classList.remove('active');
-                    
-                    const filtered = alberguesData.filter(item => {
-                         const m = item.name.match(/\(([^)]+)\)/);
-                         return m && m[1].trim() === city;
-                    });
-                    renderList(filtered);
+                    selectCity(city);
                 });
                 autocompleteList.appendChild(itemDiv);
             });
@@ -552,15 +422,75 @@ function setupSearch() {
         // 2. Render the actual list below (live searching)
         const filtered = alberguesData.filter(item => {
             const match = item.name.match(/\(([^)]+)\)/);
-            // Match city name starting with query
-            if (match && match[1] && match[1].trim().toLowerCase().startsWith(query)) {
-                return true;
-            }
-            // Fallback: match albergue name starting with query
-            return item.name.toLowerCase().startsWith(query);
+            return (match && match[1] && match[1].toLowerCase().includes(query)) || 
+                   item.name.toLowerCase().includes(query);
         });
         renderList(filtered);
     });
+
+    // Keyboard navigation
+    searchInput.addEventListener('keydown', function(e) {
+        const items = autocompleteList.getElementsByTagName('div');
+        if (e.key === 'ArrowDown') {
+            currentFocus++;
+            addActive(items);
+        } else if (e.key === 'ArrowUp') {
+            currentFocus--;
+            addActive(items);
+        } else if (e.key === 'Enter') {
+            e.preventDefault();
+            if (currentFocus > -1) {
+                if (items[currentFocus]) items[currentFocus].click();
+            }
+        }
+    });
+
+    function addActive(items) {
+        if (!items) return false;
+        removeActive(items);
+        if (currentFocus >= items.length) currentFocus = 0;
+        if (currentFocus < 0) currentFocus = (items.length - 1);
+        items[currentFocus].classList.add('active');
+        items[currentFocus].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function removeActive(items) {
+        for (let i = 0; i < items.length; i++) {
+            items[i].classList.remove('active');
+        }
+    }
+
+    function selectCity(city) {
+        searchInput.value = city;
+        autocompleteList.classList.remove('active');
+        
+        // Render full list and scroll to the city
+        renderList(alberguesData);
+        
+        // Find the first albergue of this city
+        const cityIndexChar = city.charAt(0).toUpperCase();
+        const cityPattern = city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regex = new RegExp(`\\(${cityPattern}\\)`, 'i');
+        
+        const firstAlbergue = alberguesData.find(item => regex.test(item.name));
+        
+        if (firstAlbergue) {
+            // Give the browser a moment to render the list
+            setTimeout(() => {
+                const groupHeader = document.getElementById(`group-${cityIndexChar}`);
+                if (groupHeader) groupHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                
+                // Find all cards for this city and highlight them
+                const cards = document.querySelectorAll('.card');
+                cards.forEach(card => {
+                    if (card.innerText.includes(`(${city})`)) {
+                        card.classList.add('card-highlight');
+                        setTimeout(() => card.classList.remove('card-highlight'), 3000);
+                    }
+                });
+            }, 100);
+        }
+    }
 
     // Hide autocomplete when clicking outside
     document.addEventListener('click', (e) => {
