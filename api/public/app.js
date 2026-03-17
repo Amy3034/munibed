@@ -12,6 +12,11 @@ function initMap() {
         subdomains: 'abcd',
         maxZoom: 20
     }).addTo(map);
+    
+    // Ensure map layout is correct
+    setTimeout(() => {
+        map.invalidateSize();
+    }, 500);
 }
 
 // Fetch Albergues Data
@@ -82,7 +87,11 @@ function renderMapMarkers() {
 
     // Fit map to bounds if we have points
     if (bounds.length > 0) {
-        map.fitBounds(bounds, { padding: [50, 50] });
+        // Use a small timeout to ensure map container size is correct on mobile
+        setTimeout(() => {
+            map.invalidateSize();
+            map.fitBounds(bounds, { padding: [50, 50] });
+        }, 100);
     }
 }
 
@@ -262,7 +271,7 @@ function handleMobileView(item) {
 
 // Ensure clicking a hostel in the list scrolls to map on mobile
 const originalFocusMapMarker = focusMapMarker;
-focusMapMarker = function(id, lat, lng) {
+window.focusMapMarker = function(id, lat, lng) {
     originalFocusMapMarker(id, lat, lng);
     handleMobileView();
 };

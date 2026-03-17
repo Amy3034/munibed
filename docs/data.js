@@ -5,7 +5,7 @@ window.ALBERGUES_DATA = [
     "lat": 43.1636,
     "lng": -1.2374,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 2,
@@ -13,7 +13,7 @@ window.ALBERGUES_DATA = [
     "lat": 43.0098,
     "lng": -1.3197,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 3,
@@ -21,7 +21,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9774,
     "lng": -1.3533,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 4,
@@ -29,7 +29,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9304,
     "lng": -1.5032,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 5,
@@ -37,7 +37,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8887,
     "lng": -1.5457,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 6,
@@ -45,7 +45,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8306,
     "lng": -1.6146,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 7,
@@ -53,7 +53,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8125,
     "lng": -1.6458,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 8,
@@ -61,7 +61,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7937,
     "lng": -1.6705,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 9,
@@ -69,7 +69,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7167,
     "lng": -1.7483,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 10,
@@ -77,7 +77,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6828,
     "lng": -1.7852,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 11,
@@ -85,7 +85,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6718,
     "lng": -1.8136,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 12,
@@ -93,7 +93,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6583,
     "lng": -1.9056,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 13,
@@ -101,7 +101,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6681,
     "lng": -1.9669,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 14,
@@ -109,7 +109,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6583,
     "lng": -1.9961,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 15,
@@ -117,7 +117,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6717,
     "lng": -2.0308,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 16,
@@ -125,7 +125,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6567,
     "lng": -2.0461,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 17,
@@ -133,15 +133,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.6322,
     "lng": -2.1006,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 18,
-    "name": "Ref. municipal / Raf privé Atharli (Los Arcos)",
+    "name": "Ref. municipal / Ref. privé Atharli (Los Arcos)",
     "lat": 42.5694,
     "lng": -2.1833,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 19,
@@ -149,7 +149,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5561,
     "lng": -2.2611,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 20,
@@ -157,7 +157,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5528,
     "lng": -2.2711,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 21,
@@ -165,15 +165,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.5147,
     "lng": -2.3719,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 22,
-    "name": "Ref. Ass. La Rioja / Ref. mun. Munoz (Logroño)",
+    "name": "Ref. Ass. La Rioja / Albergue Municipal (Logroño)",
     "lat": 42.4627,
     "lng": -2.445,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 23,
@@ -181,7 +181,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4286,
     "lng": -2.5606,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 24,
@@ -189,7 +189,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4042,
     "lng": -2.6281,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 25,
@@ -197,7 +197,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4178,
     "lng": -2.735,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 26,
@@ -205,7 +205,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4228,
     "lng": -2.8028,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 27,
@@ -213,7 +213,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4419,
     "lng": -2.9536,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 28,
@@ -221,7 +221,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4497,
     "lng": -3.0275,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 29,
@@ -229,7 +229,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4361,
     "lng": -3.0642,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 30,
@@ -237,7 +237,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4239,
     "lng": -3.1067,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 31,
@@ -245,7 +245,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4161,
     "lng": -3.1369,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 32,
@@ -253,7 +253,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4192,
     "lng": -3.1897,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 33,
@@ -261,7 +261,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4067,
     "lng": -3.2425,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 34,
@@ -269,7 +269,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3994,
     "lng": -3.2769,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 35,
@@ -277,7 +277,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3872,
     "lng": -3.3131,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 36,
@@ -285,7 +285,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3769,
     "lng": -3.4267,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 37,
@@ -293,7 +293,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3756,
     "lng": -3.4739,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 38,
@@ -301,7 +301,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3789,
     "lng": -3.5042,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 39,
@@ -309,7 +309,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3592,
     "lng": -3.6169,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 40,
@@ -317,7 +317,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3439,
     "lng": -3.6969,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 41,
@@ -325,7 +325,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3361,
     "lng": -3.7806,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 42,
@@ -333,7 +333,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3508,
     "lng": -3.8183,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 43,
@@ -341,7 +341,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3392,
     "lng": -3.9219,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 44,
@@ -349,7 +349,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3131,
     "lng": -4.045,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 45,
@@ -357,7 +357,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2961,
     "lng": -4.0778,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 46,
@@ -365,7 +365,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2878,
     "lng": -4.1378,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 47,
@@ -373,7 +373,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2742,
     "lng": -4.2542,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 48,
@@ -381,7 +381,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2842,
     "lng": -4.2611,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 49,
@@ -389,7 +389,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2597,
     "lng": -4.3481,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 50,
@@ -397,7 +397,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2667,
     "lng": -4.4069,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 51,
@@ -405,7 +405,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.2722,
     "lng": -4.4539,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 52,
@@ -413,7 +413,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3164,
     "lng": -4.5422,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 53,
@@ -421,7 +421,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3389,
     "lng": -4.6028,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 54,
@@ -429,7 +429,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3197,
     "lng": -4.7931,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 55,
@@ -437,7 +437,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3389,
     "lng": -4.8561,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 56,
@@ -445,7 +445,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3411,
     "lng": -4.8889,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 57,
@@ -453,7 +453,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3503,
     "lng": -4.9542,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 58,
@@ -461,7 +461,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3719,
     "lng": -5.0319,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 59,
@@ -469,7 +469,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3908,
     "lng": -5.0803,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 60,
@@ -477,7 +477,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.3831,
     "lng": -5.1436,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 61,
@@ -485,7 +485,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4239,
     "lng": -5.2217,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 62,
@@ -493,7 +493,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4828,
     "lng": -5.3528,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 63,
@@ -501,7 +501,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4969,
     "lng": -5.4161,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 64,
@@ -509,7 +509,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5186,
     "lng": -5.4856,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 65,
@@ -517,7 +517,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5458,
     "lng": -5.5297,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 66,
@@ -525,7 +525,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5987,
     "lng": -5.5671,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 67,
@@ -533,7 +533,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5769,
     "lng": -5.6386,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 68,
@@ -541,7 +541,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5161,
     "lng": -5.7656,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 69,
@@ -549,7 +549,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4636,
     "lng": -5.7331,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 70,
@@ -557,7 +557,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.465,
     "lng": -5.8822,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 71,
@@ -565,7 +565,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.455,
     "lng": -6.0594,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 72,
@@ -573,7 +573,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4497,
     "lng": -6.1106,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 73,
@@ -581,7 +581,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.4536,
     "lng": -6.1664,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 74,
@@ -589,7 +589,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.46,
     "lng": -6.215,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 75,
@@ -597,7 +597,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.48,
     "lng": -6.2842,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 76,
@@ -605,7 +605,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5028,
     "lng": -6.3406,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 77,
@@ -613,7 +613,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5153,
     "lng": -6.3742,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 78,
@@ -621,7 +621,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5317,
     "lng": -6.4464,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 79,
@@ -629,7 +629,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5414,
     "lng": -6.4822,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 80,
@@ -637,7 +637,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5381,
     "lng": -6.52,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 81,
@@ -645,7 +645,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.5464,
     "lng": -6.5908,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 82,
@@ -653,15 +653,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.5986,
     "lng": -6.7258,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 83,
-    "name": "Ref. municipal / Ref: prive Jato (Villafranca del Bierzo)",
+    "name": "Ref. municipal / Ref. privé Jato (Villafranca del Bierzo)",
     "lat": 42.6067,
     "lng": -6.8111,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 84,
@@ -669,7 +669,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6306,
     "lng": -6.8406,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 85,
@@ -677,7 +677,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6481,
     "lng": -6.8817,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 86,
@@ -685,15 +685,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.6567,
     "lng": -6.9158,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 87,
-    "name": "Ref. privé Das Anima (Ambanastas)",
+    "name": "Ref. privé Das Anima (Ambasmestas)",
     "lat": 42.6608,
     "lng": -6.9275,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 88,
@@ -701,7 +701,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6653,
     "lng": -6.9469,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 89,
@@ -709,7 +709,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6739,
     "lng": -6.9639,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 90,
@@ -717,7 +717,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.6869,
     "lng": -6.9953,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 91,
@@ -725,7 +725,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7042,
     "lng": -7.0208,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 92,
@@ -733,7 +733,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7114,
     "lng": -7.0433,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 93,
@@ -741,7 +741,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7247,
     "lng": -7.0864,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 94,
@@ -749,7 +749,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7483,
     "lng": -7.1483,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 95,
@@ -757,7 +757,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7567,
     "lng": -7.2431,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 96,
@@ -765,15 +765,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.7317,
     "lng": -7.3275,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 97,
-    "name": "Ref. ACAG ((Calvor) 12 km)",
+    "name": "Ref. ACAG (Calvor)",
     "lat": 42.7661,
     "lng": -7.3692,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 98,
@@ -781,7 +781,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7806,
     "lng": -7.4147,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 99,
@@ -789,7 +789,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.7656,
     "lng": -7.4606,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 100,
@@ -797,15 +797,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.8258,
     "lng": -7.5303,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 101,
-    "name": "Raf privé Ferramanteiro / Ref. mun. Et Caminante (Portomarin)",
+    "name": "Ref. privé Ferramanteiro / Ref. mun. El Caminante (Portomarin)",
     "lat": 42.8081,
     "lng": -7.6167,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 102,
@@ -813,7 +813,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8339,
     "lng": -7.6975,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 103,
@@ -821,7 +821,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.855,
     "lng": -7.7664,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 104,
@@ -829,7 +829,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8589,
     "lng": -7.7817,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 105,
@@ -837,7 +837,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8681,
     "lng": -7.8183,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 106,
@@ -845,15 +845,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.8722,
     "lng": -7.8344,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 107,
-    "name": "Ref.ACAG / Ref. prive Buen Camino (Palas del Rei)",
+    "name": "Ref. ACAG / Ref. privé Buen Camino (Palas de Rei)",
     "lat": 42.8731,
     "lng": -7.8686,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 108,
@@ -861,7 +861,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.88,
     "lng": -7.9042,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 109,
@@ -869,7 +869,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8842,
     "lng": -7.9422,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 110,
@@ -877,7 +877,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8872,
     "lng": -7.9575,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 111,
@@ -885,7 +885,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.8986,
     "lng": -7.9867,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 112,
@@ -893,7 +893,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.915,
     "lng": -8.0169,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 113,
@@ -901,7 +901,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9242,
     "lng": -8.1342,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 114,
@@ -909,7 +909,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9272,
     "lng": -8.1639,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 115,
@@ -917,7 +917,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9153,
     "lng": -8.3242,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 116,
@@ -925,7 +925,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9067,
     "lng": -8.3619,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 117,
@@ -933,15 +933,15 @@ window.ALBERGUES_DATA = [
     "lat": 42.8886,
     "lng": -8.4947,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 118,
-    "name": "Séminaire Menor / Ref. privé Acuario (Santiago de Compostella)",
-    "lat": 42.5,
-    "lng": -4,
+    "name": "Seminario Menor / Ref. privé Acuario (Santiago de Compostela)",
+    "lat": 42.8806,
+    "lng": -8.5448,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 119,
@@ -949,7 +949,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.905,
     "lng": -8.7369,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 120,
@@ -957,7 +957,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9242,
     "lng": -8.845,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 121,
@@ -965,7 +965,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9786,
     "lng": -9.0442,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 122,
@@ -973,7 +973,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9536,
     "lng": -9.1883,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 123,
@@ -981,7 +981,7 @@ window.ALBERGUES_DATA = [
     "lat": 42.9467,
     "lng": -9.1936,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 124,
@@ -989,6 +989,6 @@ window.ALBERGUES_DATA = [
     "lat": 42.9061,
     "lng": -9.2636,
     "status": "gray",
-    "lastUpdated": "데이터 복구됨"
+    "lastUpdated": "2026-03-17 검수 완료"
   }
 ];
