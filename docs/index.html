@@ -782,6 +782,11 @@
 
         let markers = {};
         let alberguesData = window.ALBERGUES_DATA || [];
+        
+        // Safety check: if window.ALBERGUES_DATA is defined after this line (rare) or updated
+        if (alberguesData.length === 0 && window.ALBERGUES_DATA) {
+            alberguesData = window.ALBERGUES_DATA;
+        }
         let filterLetter = ''; // Empty by default
         let searchQuery = '';
         let currentSelectedId = null;
@@ -1262,6 +1267,9 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            if (alberguesData.length === 0 && window.ALBERGUES_DATA) {
+                alberguesData = window.ALBERGUES_DATA;
+            }
             loadLocalState();
             initMap();
             initAlphabetFilter();
