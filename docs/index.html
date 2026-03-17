@@ -849,9 +849,13 @@
             }
         }
 
+        let searchTimeout;
         function handleSearch() {
-            searchQuery = document.getElementById('search-input').value.toLowerCase();
-            renderAll();
+            clearTimeout(searchTimeout);
+            searchQuery = document.getElementById('search-input').value.toLowerCase().trim();
+            searchTimeout = setTimeout(() => {
+                renderAll();
+            }, 150);
         }
 
         function filterByLetter(letter) {
@@ -901,15 +905,15 @@
 
                 let matchesSearch = true;
                 if (searchQuery) {
-                    const mappedQuery = searchQuery.replace(/[()]/g, '');
-                    const cleanCity = cityName.replace(/[()]/g, '');
-                    const cleanMappedQuery = (aliases[mappedQuery] || mappedQuery).toLowerCase();
+                    const cleanCity = cityName.replace(/[()]/g, '').trim();
+                    const cleanHostel = hostelNamePart.trim();
                     
-                    const cityWords = cleanCity.split(/[\s-]+/);
-                    const cityWordStarts = cityWords.some(word => word.startsWith(cleanMappedQuery));
-                    const hostelMatches = mappedQuery.length >= 3 && hostelNamePart.includes(mappedQuery);
+                    // User requested: "s를 누르면 s로 시작하는 지역에 있는 알베르게만"
+                    // If searching for 's', check if city starts with 's' or hostel starts with 's'
+                    const cityStarts = cleanCity.startsWith(searchQuery);
+                    const hostelStarts = cleanHostel.startsWith(searchQuery);
                     
-                    matchesSearch = mappedQuery.length === 1 ? cityWordStarts : (cityWordStarts || hostelMatches || cleanCity.includes(cleanMappedQuery));
+                    matchesSearch = (cityStarts || hostelStarts);
                 }
 
                 const firstLetter = cityName.charAt(0).toUpperCase();
@@ -973,9 +977,7 @@
                     </div>
                     <div class="card-actions">
                         <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(${item.id}, 'green')">여유<span>(Available)</span></button>
-                        <button class="btn-update yellow" onclick="event.stopPropagation(); updateStatus(${item.id}, 'yellow')">혼잡<span>(Limited)</span></button>
                         <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(${item.id}, 'red')">만실<span>(Full)</span></button>
-                        <button class="btn-update gray" onclick="event.stopPropagation(); updateStatus(${item.id}, 'gray')">미확인<span>(Unknown)</span></button>
                     </div>
                 `;
                 hostelListEl.appendChild(card);
@@ -1064,10 +1066,8 @@
             `;
             
             actionsEl.innerHTML = `
-                <button class="btn-update green" style="padding:12px;" onclick="updateStatus(${item.id}, 'green'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">여유<span>(Available)</span></button>
-                <button class="btn-update yellow" style="padding:12px;" onclick="updateStatus(${item.id}, 'yellow'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">혼잡<span>(Limited)</span></button>
-                <button class="btn-update red" style="padding:12px;" onclick="updateStatus(${item.id}, 'red'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">만실<span>(Full)</span></button>
-                <button class="btn-update gray" style="padding:12px;" onclick="updateStatus(${item.id}, 'gray'); showBottomSheet(alberguesData.find(a=>a.id==${item.id}))">미확인<span>(Unknown)</span></button>
+                <button class="btn-update green" style="padding:12px;" onclick="updateStatus(${item.id}, 'green'); closeBottomSheet()">여유<span>(Available)</span></button>
+                <button class="btn-update red" style="padding:12px;" onclick="updateStatus(${item.id}, 'red'); closeBottomSheet()">만실<span>(Full)</span></button>
             `;
             
             sheet.classList.add('active');
@@ -1265,6 +1265,20 @@
                 }
             );
         }
+
+        window.addEventListener('load', () => {
+            const checkData = () => {
+                if (alberguesData.length === 0 && window.ALBERGUES_DATA) {
+                    alberguesData = window.ALBERGUES_DATA;
+                    initAlphabetFilter();
+                    renderAll();
+                }
+            };
+            checkData();
+            // Just in case of slow loading
+            setTimeout(checkData, 500);
+            setTimeout(checkData, 2000);
+        });
 
         window.addEventListener('DOMContentLoaded', () => {
             if (alberguesData.length === 0 && window.ALBERGUES_DATA) {
