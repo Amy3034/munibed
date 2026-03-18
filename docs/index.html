@@ -1359,32 +1359,48 @@
         }
 
 
-        window.addEventListener('load', () => {
-            const checkData = () => {
-                if ((alberguesData.length === 0 || alberguesData.length !== (window.ALBERGUES_DATA?.length || 0)) && window.ALBERGUES_DATA) {
+        function performRobustDataSync() {
+            if (window.ALBERGUES_DATA && window.ALBERGUES_DATA.length > 0) {
+                // Determine if we need to update
+                if (alberguesData.length !== window.ALBERGUES_DATA.length) {
                     alberguesData = window.ALBERGUES_DATA;
+                    loadLocalState();
+                    if (!map) initMap();
+                    initAlphabetFilter();
+                    renderAll();
+                    updateLevelUI();
+                } else if (!map) {
+                    // Fallback to ensure map and everything initialized
+                    initMap();
                     initAlphabetFilter();
                     renderAll();
                 }
-            };
-            checkData();
-            setTimeout(checkData, 500);
-            setTimeout(checkData, 1500);
-            setTimeout(checkData, 4000);
-            showMobileHint();
-            updateLevelUI();
-        });
-        window.addEventListener('DOMContentLoaded', () => {
-            if (alberguesData.length === 0 && window.ALBERGUES_DATA) {
-                alberguesData = window.ALBERGUES_DATA;
+                return true; // We have data and it's rendered
             }
-            loadLocalState();
-            initMap();
-            initAlphabetFilter();
-            renderAll();
+            return false; // Not ready yet
+        }
+
+        window.addEventListener('load', () => {
+            showMobileHint();
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Give it a first shot
+            performRobustDataSync();
+            
+            // Auto open sidebar on mobile
             if (window.innerWidth <= 900) {
                 toggleSidebar(true);
             }
+
+            // Keep polling for a short time to catch data.js if it's lagging or deferred
+            let attempts = 0;
+            const dataInterval = setInterval(() => {
+                attempts++;
+                if (performRobustDataSync() || attempts > 20) {
+                    clearInterval(dataInterval); // Stop once we succeed or hit ~10 seconds
+                }
+            }, 500);
         });
     </script>
 </body>
