@@ -561,6 +561,48 @@
             }
             
             .geo-btn { bottom: 100px; } /* Lift geo button to avoid FAB area */
+
+            header {
+                height: auto;
+                padding: 10px 16px;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 10px;
+            }
+            .logo-area {
+                width: 100%;
+                justify-content: center;
+                gap: 8px;
+            }
+            .logo-area h1 {
+                font-size: 1.2rem;
+            }
+            .logo-area .subtitle-group {
+                padding-left: 8px;
+            }
+            .logo-area .camino-text {
+                font-size: 0.75rem;
+                white-space: nowrap;
+            }
+            .logo-area .tracker-text {
+                font-size: 0.65rem;
+                white-space: nowrap;
+            }
+            .header-icons {
+                gap: 12px;
+            }
+            .header-icons span {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .logo-area .subtitle-group {
+                display: none;
+            }
+            .header-icons {
+                gap: 8px;
+            }
         }
 
         .mobile-fab {

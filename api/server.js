@@ -1,22 +1,56 @@
 const express = require('express');
 const cors = require('cors');
 const { Pool } = require('pg');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const cron = require('node-cron');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+const usePostgres = !!process.env.DATABASE_URL;
+let pool;
+
+if (usePostgres) {
+  pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: { rejectUnauthorized: false }
+  });
+} else {
+  const sqlite = new sqlite3.Database(path.join(__dirname, 'database.sqlite'));
+  // Polyfill pool object for SQLite
+  pool = {
+    query: (text, params) => {
+      return new Promise((resolve, reject) => {
+        const isSelect = text.trim().toUpperCase().startsWith('SELECT');
+        const method = isSelect ? 'all' : 'run';
+        
+        // Convert Postgres-style $1, $2 to SQLite-style ?
+        const sqliteText = text.replace(/\$(\d+)/g, '?');
+        
+        sqlite[method](sqliteText, params || [], function(err, result) {
+          if (err) {
+            console.error('SQLite Error:', err);
+            return reject(err);
+          }
+          resolve({ 
+            rows: isSelect ? result : [], 
+            rowCount: isSelect ? result.length : this.changes 
+          });
+        });
+      });
+    },
+    connect: async () => ({
+      query: (text, params) => pool.query(text, params),
+      release: () => {}
+    })
+  };
+}
+
 app.use(cors());
 app.use(express.json());
 app.set('json spaces', 2);
 app.use(express.static(path.join(__dirname, 'public')));
-
-// ── PostgreSQL Pool ─────────────────────────────────────────────
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false
-});
 
 // ── Albergue Seed Data ──────────────────────────────────────────
 const coordsMap = {
@@ -279,20 +313,29 @@ async function initDB() {
   const client = await pool.connect();
   try {
     // Create Albergues table
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS "Albergues" (
-        id SERIAL PRIMARY KEY,
-        name TEXT NOT NULL,
-        lat REAL NOT NULL,
-        lng REAL NOT NULL,
-        status TEXT DEFAULT 'gray',
-        "lastUpdated" TEXT DEFAULT '업데이트 없음'
-      )
-    `);
+    const tableQuery = usePostgres 
+      ? `CREATE TABLE IF NOT EXISTS "Albergues" (
+          id SERIAL PRIMARY KEY,
+          name TEXT NOT NULL,
+          lat REAL NOT NULL,
+          lng REAL NOT NULL,
+          status TEXT DEFAULT 'gray',
+          "lastUpdated" TEXT DEFAULT '업데이트 없음'
+        )`
+      : `CREATE TABLE IF NOT EXISTS Albergues (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL,
+          lat REAL NOT NULL,
+          lng REAL NOT NULL,
+          status TEXT DEFAULT 'gray',
+          lastUpdated TEXT DEFAULT '업데이트 없음'
+        )`;
+    await client.query(tableQuery);
 
     // Seed Albergues only if empty
-    const { rows } = await client.query('SELECT COUNT(*) FROM "Albergues"');
-    if (parseInt(rows[0].count) === 0) {
+    const { rows } = await client.query('SELECT COUNT(*) as count FROM "Albergues"');
+    const count = parseInt(usePostgres ? rows[0].count : rows[0].count);
+    if (count === 0) {
       console.log('Seeding Albergues data...');
       const defaultCoords = { lat: 42.5, lng: -4.0 };
       for (const [name, city] of albergueRows) {
@@ -306,15 +349,22 @@ async function initDB() {
     }
 
     // Create Comments table
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS "Comments" (
-        id SERIAL PRIMARY KEY,
-        albergue_id INTEGER NOT NULL,
-        nickname TEXT NOT NULL,
-        content TEXT NOT NULL,
-        "createdAt" TEXT NOT NULL
-      )
-    `);
+    const commentsTableQuery = usePostgres
+      ? `CREATE TABLE IF NOT EXISTS "Comments" (
+          id SERIAL PRIMARY KEY,
+          albergue_id INTEGER NOT NULL,
+          nickname TEXT NOT NULL,
+          content TEXT NOT NULL,
+          "createdAt" TEXT NOT NULL
+        )`
+      : `CREATE TABLE IF NOT EXISTS Comments (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          albergue_id INTEGER NOT NULL,
+          nickname TEXT NOT NULL,
+          content TEXT NOT NULL,
+          createdAt TEXT NOT NULL
+        )`;
+    await client.query(commentsTableQuery);
 
     console.log('✅ Database initialized.');
   } finally {
