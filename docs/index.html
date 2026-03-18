@@ -1382,6 +1382,9 @@
             initMap();
             initAlphabetFilter();
             renderAll();
+            if (window.innerWidth <= 900) {
+                toggleSidebar(true);
+            }
         });
     </script>
 </body>
