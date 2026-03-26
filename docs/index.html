@@ -215,12 +215,22 @@
             line-height: 1.8;
             color: var(--text-main);
             font-size: 1.05rem;
+            max-height: calc(100vh - 200px);
+            overflow-y: auto;
         }
         .modal-body p { margin-bottom: 20px; }
         .modal-body ul { padding-left: 0; list-style: none; margin-bottom: 24px; }
         .modal-body li { margin-bottom: 16px; position: relative; padding-left: 24px; }
         .modal-body li::before { content: "•"; position: absolute; left: 0; color: #1e293b; font-weight: 800; }
         .modal-body strong { color: var(--text-main); font-weight: 800; }
+
+        @media (max-width: 768px) {
+            .modal-body {
+                padding: 20px;
+                font-size: 0.95rem;
+                max-height: calc(100vh - 150px);
+            }
+        }
 
         .info-subtitle {
             font-size: 1.2rem;
@@ -756,13 +766,1640 @@
                     <!-- Dynamic letters A, B, C... -->
                 </div>
             </div>
-            <div class="hostel-list" id="hostel-list">
-                <div style="padding: 40px; text-align: center; color: var(--text-muted); line-height: 1.5;">
-                    <span style="font-size: 2rem; display: block; margin-bottom: 12px;">🔄</span>
-                    상단 새로고침 버튼을 눌러주세요.<br>
-                    (Please press the refresh button above.)
+                                            <div class="hostel-list" id="hostel-list">
+                <div class="group-header" id="group-A">A</div>
+                <div id="card-37" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(37)">
+                        <div class="hostel-name">Ref. mun. San Rafael / Ref. privé El Pajar (Agès)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-37">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(37, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(37, 'red')">만실<span>(Full)</span></button>
+                    </div>
                 </div>
-            </div>
+                <div id="card-87" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(87)">
+                        <div class="hostel-name">Ref. privé Das Anima (Ambasmestas)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-87">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(87, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(87, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-116" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(116)">
+                        <div class="hostel-name">Ref. ACAG (Arca O Pino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-116">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(116, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(116, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-65" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(65)">
+                        <div class="hostel-name">Ref. privé La Torre (Arcahueja)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-65">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(65, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(65, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-6" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(6)">
+                        <div class="hostel-name">Ref. des Frères Maristes (Arre-Villava)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-6">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(6, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(6, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-114" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(114)">
+                        <div class="hostel-name">Ref. ACAG (Arzua)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-114">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(114, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(114, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-71" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(71)">
+                        <div class="hostel-name">Ref. Siervas de Maria / Ref. municipal (Astorga)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-71">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(71, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(71, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-38" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(38)">
+                        <div class="hostel-name">Ref. privé La Hutte / Ref, privé Rocio Garcia (Atapuerca)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-38">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(38, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(38, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-16" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(16)">
+                        <div class="hostel-name">Ref.Mun.San Cipriano (Ayegui)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-16">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(16, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(16, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-26" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(26)">
+                        <div class="hostel-name">Ref. municipal (Azofra)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-26">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(26, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(26, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-B">B</div>
+                <div id="card-99" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(99)">
+                        <div class="hostel-name">Ref. ACAG / Ref. privé Casa Carmen (Barbadelo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-99">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(99, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(99, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-32" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(32)">
+                        <div class="hostel-name">Ref. paroissial / Refuge mun. El Corro (Belorado)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-32">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(32, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(32, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-60" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(60)">
+                        <div class="hostel-name">Ref. par.Casa rectoral / Ref. Ass. Léon (Bercianos del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-60">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(60, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(60, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-49" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(49)">
+                        <div class="hostel-name">Ref. municipal / Centre Tourisme rural (Boadilla del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-49">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(49, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(49, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-40" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(40)">
+                        <div class="hostel-name">Ref. Asso Burgos / Ref privé Emmaus (Burgos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-40">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(40, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(40, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-C">C</div>
+                <div id="card-82" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(82)">
+                        <div class="hostel-name">Ref. municipal (Cacabelos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-82">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(82, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(82, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-97" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(97)">
+                        <div class="hostel-name">Ref. ACAG (Calvor)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-97">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(97, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(97, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-59" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(59)">
+                        <div class="hostel-name">Ref. municipal (Calzada del Coto)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-59">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(59, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(59, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-54" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(54)">
+                        <div class="hostel-name">Ref. prive Camino Real (Calzadilla de la Cueza)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-54">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(54, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(54, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-3" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(3)">
+                        <div class="hostel-name">Auberge privée (Camping Urrobi-Espinal)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-3">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(3, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(3, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-39" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(39)">
+                        <div class="hostel-name">Ref. municipal (Cardeñuels - Riopico)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-39">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(39, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(39, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-53" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(53)">
+                        <div class="hostel-name">Ref. paroissial / Ref. privé Clarisses (Carrion de los Condes)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-53">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(53, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(53, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-110" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(110)">
+                        <div class="hostel-name">Ref. ACAG (Casanova Mato)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-110">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(110, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(110, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-46" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(46)">
+                        <div class="hostel-name">Ref, municipal / Ref. Privé Casa Nostra (Castrojeriz)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-46">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(46, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(46, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-122" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(122)">
+                        <div class="hostel-name">Protection Civile (Cee)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-122">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(122, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(122, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-12" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(12)">
+                        <div class="hostel-name">Ref. privé Maralotx / Ref. paroissial (Cirauqui)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-12">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(12, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(12, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-8" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(8)">
+                        <div class="hostel-name">Ref. privé Roncal (Cizur Minor)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-8">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(8, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(8, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-123" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(123)">
+                        <div class="hostel-name">Ref. Ass. Galega (Corcubion Redonda)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-123">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(123, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(123, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-D">D</div>
+                <div id="card-119" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(119)">
+                        <div class="hostel-name">Ref. municipal (De Santiago à Negreira)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-119">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(119, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(119, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-E">E</div>
+                <div id="card-106" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(106)">
+                        <div class="hostel-name">Ref.ACAG (Eirexe)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-106">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(106, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(106, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-78" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(78)">
+                        <div class="hostel-name">Ref. privé Florez (El Acebo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-78">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(78, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(78, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-61" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(61)">
+                        <div class="hostel-name">Ref. privé El Nogal / Centre turismo rural (El Burgo Ranero)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-61">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(61, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(61, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-74" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(74)">
+                        <div class="hostel-name">Ref. municipal (El Ganso)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-74">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(74, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(74, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-34" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(34)">
+                        <div class="hostel-name">Ref. privé La Campana (Espinosa del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-34">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(34, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(34, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-15" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(15)">
+                        <div class="hostel-name">Ref. Asso. Estella / Ref. Asso. Anfas (Estella)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-15">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(15, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(15, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-F">F</div>
+                <div id="card-100" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(100)">
+                        <div class="hostel-name">Ref. ACAG / Ref. municipal (Ferreiros)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-100">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(100, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(100, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-124" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(124)">
+                        <div class="hostel-name">Ref. municipal (Fisterra)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-124">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(124, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(124, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-76" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(76)">
+                        <div class="hostel-name">Ref. paroissial / RP Monte Irago (Foncabadon)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-76">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(76, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(76, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-94" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(94)">
+                        <div class="hostel-name">Ref. privé Reboleira (Fonfria)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-94">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(94, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(94, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-50" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(50)">
+                        <div class="hostel-name">Ref.municipal (Fromista)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-50">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(50, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(50, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-G">G</div>
+                <div id="card-102" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(102)">
+                        <div class="hostel-name">Ref. ACAG (Gonzar)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-102">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(102, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(102, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-28" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(28)">
+                        <div class="hostel-name">Ref. paroissial (Grañon)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-28">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(28, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(28, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-H">H</div>
+                <div id="card-44" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(44)">
+                        <div class="hostel-name">Ref. municipal / Raf privé Puntido (Hontanas)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-44">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(44, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(44, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-43" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(43)">
+                        <div class="hostel-name">Ref. municipal (Hornillos del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-43">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(43, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(43, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-93" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(93)">
+                        <div class="hostel-name">Ref. ACAG (Hospital de la Condesa)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-93">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(93, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(93, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-103" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(103)">
+                        <div class="hostel-name">Ref. ACAG (Hospital de la Cruz)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-103">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(103, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(103, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-70" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(70)">
+                        <div class="hostel-name">Ref. mun. El Camping / Ref. paroissial (Hospital de Orbigo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-70">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(70, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(70, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-I">I</div>
+                <div id="card-47" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(47)">
+                        <div class="hostel-name">Ref. municipal / Ref. San Nicolas (Italie) (Puente Fitero San Nicolas)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-47">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(47, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(47, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-48" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(48)">
+                        <div class="hostel-name">Ref. municipal / Ref. privé Itero (Itero de la Vega)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-48">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(48, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(48, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-L">L</div>
+                <div id="card-90" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(90)">
+                        <div class="hostel-name">Ref. Ass. Allemande (La Faba)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-90">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(90, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(90, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-86" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(86)">
+                        <div class="hostel-name">Centre tourisme rural (La Portela de Valcarce)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-86">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(86, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(86, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-91" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(91)">
+                        <div class="hostel-name">Ref. privé (Laguna de Castilla)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-91">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(91, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(91, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-5" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(5)">
+                        <div class="hostel-name">Ref. municipal (Larrasoana)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-5">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(5, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(5, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-111" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(111)">
+                        <div class="hostel-name">Ref. municipal (Leboreiro)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-111">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(111, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(111, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-55" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(55)">
+                        <div class="hostel-name">Ref. privé El Palomar (Ledigos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-55">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(55, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(55, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-66" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(66)">
+                        <div class="hostel-name">Ref. municipal / Ref. Bénédictines (Leon)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-66">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(66, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(66, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-105" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(105)">
+                        <div class="hostel-name">Ref ACAG (Ligonde)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-105">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(105, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(105, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-22" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(22)">
+                        <div class="hostel-name">Ref. Ass. La Rioja / Albergue Municipal (Logroño)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-22">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(22, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(22, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-13" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(13)">
+                        <div class="hostel-name">Ref. privé Ramon / RP La Bodega del Camino (Lorca)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-13">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(13, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(13, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-18" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(18)">
+                        <div class="hostel-name">Ref. municipal / Ref. privé Atharli (Los Arcos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-18">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(18, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(18, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-M">M</div>
+                <div id="card-77" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(77)">
+                        <div class="hostel-name">Ref. privé Martinez (Manjarin)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-77">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(77, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(77, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-63" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(63)">
+                        <div class="hostel-name">Ref. municipal (Mansilla de las Mulas)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-63">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(63, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(63, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-112" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(112)">
+                        <div class="hostel-name">Ref. ACAG (Melide)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-112">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(112, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(112, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-80" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(80)">
+                        <div class="hostel-name">Ref. municipal / RP Santa Marina (Molinaseca)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-80">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(80, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(80, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-117" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(117)">
+                        <div class="hostel-name">Ref. ACAG (Monte del Gozo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-117">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(117, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(117, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-72" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(72)">
+                        <div class="hostel-name">Rof. privé Las Aguadas (Murias de Rechivaldo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-72">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(72, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(72, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-N">N</div>
+                <div id="card-25" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(25)">
+                        <div class="hostel-name">Ref. Ass. Najera / Ref. La Juderia (Najera)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-25">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(25, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(25, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-23" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(23)">
+                        <div class="hostel-name">Ref. privé El Cantaro (Navarrete)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-23">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(23, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(23, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-O">O</div>
+                <div id="card-92" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(92)">
+                        <div class="hostel-name">Ref. ACAG (O Cebreiro)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-92">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(92, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(92, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-10" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(10)">
+                        <div class="hostel-name">USDA Privé (Obanos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-10">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(10, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(10, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-121" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(121)">
+                        <div class="hostel-name">Ref. municipal (Olveiroa)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-121">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(121, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(121, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-P">P</div>
+                <div id="card-107" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(107)">
+                        <div class="hostel-name">Ref. ACAG / Ref. privé Buen Camino (Palas de Rei)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-107">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(107, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(107, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-7" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(7)">
+                        <div class="hostel-name">Ref. Jésus et Maria / Ref. privé Paderborn (Pampelune)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-7">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(7, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(7, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-84" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(84)">
+                        <div class="hostel-name">Ref. municipal (Pereje)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-84">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(84, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(84, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-51" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(51)">
+                        <div class="hostel-name">Ref.municipal (Poblacion de Campos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-51">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(51, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(51, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-81" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(81)">
+                        <div class="hostel-name">Ref. paroissial (Ponferrada)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-81">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(81, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(81, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-109" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(109)">
+                        <div class="hostel-name">Ref. privé Casa Domingo (Ponte Campana)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-109">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(109, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(109, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-101" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(101)">
+                        <div class="hostel-name">Ref. privé Ferramanteiro / Ref. mun. El Caminante (Portomarin)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-101">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(101, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(101, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-11" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(11)">
+                        <div class="hostel-name">Ref. Padres Reparadores / Ref. privé Jakue (Puente La Reina)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-11">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(11, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(11, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-R">R</div>
+                <div id="card-75" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(75)">
+                        <div class="hostel-name">Ref. Asso. Gaucelmo / Ref. privé N.S. del Pilar (Rabanal del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-75">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(75, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(75, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-29" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(29)">
+                        <div class="hostel-name">Ref. mun, San Lazaro (Redecilla del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-29">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(29, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(29, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-62" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(62)">
+                        <div class="hostel-name">Ref. municipal (Rellegos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-62">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(62, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(62, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-113" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(113)">
+                        <div class="hostel-name">Ref. ACAG (Ribadiso de Baixo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-113">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(113, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(113, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-79" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(79)">
+                        <div class="hostel-name">Ref. privé (Riego de Ambros)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-79">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(79, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(79, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-2" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(2)">
+                        <div class="hostel-name">Collégiale / Auberge de Jeunesse (Roncevaux)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-2">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(2, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(2, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-89" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(89)">
+                        <div class="hostel-name">Ref. privé Potala (Ruitelan)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-89">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(89, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(89, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-S">S</div>
+                <div id="card-58" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(58)">
+                        <div class="hostel-name">Ref. municipal Cluny / Ref. privé Viatoris (Sahagun)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-58">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(58, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(58, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-1" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(1)">
+                        <div class="hostel-name">Ref. municipal (Saint-Jean-Pied-de-Port)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-1">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(1, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(1, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-96" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(96)">
+                        <div class="hostel-name">Monastère Bénédictins (Samos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-96">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(96, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(96, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-45" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(45)">
+                        <div class="hostel-name">Ref. association (San Anton)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-45">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(45, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(45, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-36" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(36)">
+                        <div class="hostel-name">Ref. paroissial San Juan (San Juan de Ortega)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-36">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(36, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(36, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-57" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(57)">
+                        <div class="hostel-name">Ref. privé Laganares (San Nicolas del Real Carnino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-57">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(57, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(57, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-108" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(108)">
+                        <div class="hostel-name">RP O Abrigadoiro (San Xulian)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-108">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(108, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(108, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-19" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(19)">
+                        <div class="hostel-name">Ref. Privé Arcadi y Nines (Sansol)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-19">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(19, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(19, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-73" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(73)">
+                        <div class="hostel-name">Ref. municipal (Santa Catalina de Somoza)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-73">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(73, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(73, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-115" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(115)">
+                        <div class="hostel-name">Ref. ACAG / Ref, privé Calvo (Santa Irene)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-115">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(115, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(115, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-118" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(118)">
+                        <div class="hostel-name">Seminario Menor / Ref. privé Acuario (Santiago de Compostela)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-118">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(118, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(118, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-27" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(27)">
+                        <div class="hostel-name">Ref. Casa. Del Santo / Ref. abbaye Cistercienne (Santo Domingo de la Calzada)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-27">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(27, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(27, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-98" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(98)">
+                        <div class="hostel-name">Ref. ACAG (Sarria)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-98">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(98, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(98, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-T">T</div>
+                <div id="card-42" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(42)">
+                        <div class="hostel-name">Ref. municipal (Tardajos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-42">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(42, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(42, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-56" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(56)">
+                        <div class="hostel-name">Ref. privé J. de Molay / Ref privélos Templarios (Terradillos de Los Templarios)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-56">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(56, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(56, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-20" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(20)">
+                        <div class="hostel-name">Ref. privé Casa Man (Torres del Rio)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-20">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(20, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(20, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-33" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(33)">
+                        <div class="hostel-name">Ref.privé A Santiago / Ref. paroissial (Tosantos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-33">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(33, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(33, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-85" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(85)">
+                        <div class="hostel-name">Ref.municipal (Trabadelo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-85">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(85, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(85, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-95" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(95)">
+                        <div class="hostel-name">Ref. ACAG (Triacastela)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-95">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(95, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(95, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-U">U</div>
+                <div id="card-9" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(9)">
+                        <div class="hostel-name">Ref. prive Ana Calvo (Uterga)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-9">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(9, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(9, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-V">V</div>
+                <div id="card-88" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(88)">
+                        <div class="hostel-name">Ref. municipal / RP NS do Brazil (Vega de Valcarce)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-88">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(88, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(88, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-104" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(104)">
+                        <div class="hostel-name">Ref. Privé Casa Molar / Ref Privé O Cruceiro (Ventas de Naron)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-104">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(104, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(104, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-24" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(24)">
+                        <div class="hostel-name">Ref. privé San Saturnino ((Ventosa) 4 km)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-24">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(24, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(24, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-21" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(21)">
+                        <div class="hostel-name">Ref. mun. Munoz (Viana)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-21">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(21, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(21, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-120" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(120)">
+                        <div class="hostel-name">Ref. municipal (Vilaserio)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-120">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(120, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(120, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-68" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(68)">
+                        <div class="hostel-name">Ref. municipal (Villadangos del Paramo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-68">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(68, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(68, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-83" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(83)">
+                        <div class="hostel-name">Ref. municipal / Ref. privé Jato (Villafranca del Bierzo)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-83">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(83, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(83, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-35" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(35)">
+                        <div class="hostel-name">Ref. municipal (Villafranca Montes de Oca)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-35">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(35, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(35, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-41" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(41)">
+                        <div class="hostel-name">Ref. municipal (Villalbilla de Burgos)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-41">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(41, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(41, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-52" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(52)">
+                        <div class="hostel-name">Ref. prive Aurea (Villalcazar de Sirga)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-52">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(52, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(52, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-17" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(17)">
+                        <div class="hostel-name">Ref. paroissial / Ref. privé Hollandais (Villamajor de Monjardin)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-17">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(17, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(17, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-31" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(31)">
+                        <div class="hostel-name">Ref. prive San Luis (Villamayor del Rio)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-31">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(31, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(31, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-69" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(69)">
+                        <div class="hostel-name">Ref. privé San Anton / Ref. privé Tio Pepe ((Villar de Mazarife) variante)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-69">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(69, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(69, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-64" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(64)">
+                        <div class="hostel-name">Ref. privé San Pelayo (Villarente)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-64">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(64, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(64, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-14" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(14)">
+                        <div class="hostel-name">Ref. prive Arandigoyen (Villatuerta)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-14">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(14, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(14, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-30" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(30)">
+                        <div class="hostel-name">Rel. privé Acacia y Orieta (Viloria de Rioja)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-30">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(30, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(30, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div id="card-67" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(67)">
+                        <div class="hostel-name">Ref. municipal (Virgen del Camino)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-67">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(67, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(67, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                <div class="group-header" id="group-Z">Z</div>
+                <div id="card-4" class="hostel-card ">
+                    <div class="card-header" onclick="focusHostel(4)">
+                        <div class="hostel-name">Ref. municipal / Auberge privée Zaldiko (Zubiri)</div>
+                        <div class="status-badge badge-gray">(Unknown) (미확인)</div>
+                    </div>
+                    <div class="update-item">
+                        <span>🕒</span> <span id="time-4">2026-03-17 검수 완료</span>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-update green" onclick="event.stopPropagation(); updateStatus(4, 'green')">여유<span>(Available)</span></button>
+                        <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(4, 'red')">만실<span>(Full)</span></button>
+                    </div>
+                </div>
+                </div>
         </aside>
 
         <!-- Bottom Sheet (Moved outside sidebar for mobile visibility) -->
