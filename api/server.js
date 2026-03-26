@@ -253,7 +253,7 @@ const albergueRows = [
   ["Ref. privé San Anton / Ref. privé Tio Pepe ((Villar de Mazarife) variante)","(Villar de Mazarife) variante"],
   ["Ref. mun. El Camping / Ref. paroissial (Hospital de Orbigo)","Hospital de Orbigo"],
   ["Ref. Siervas de Maria / Ref. municipal (Astorga)","Astorga"],
-  ["Rof. privé Las Aguadas (Murias de Rechivaldo)","Murias de Rechivaldo"],
+  ["Ref. privé Las Aguadas (Murias de Rechivaldo)","Murias de Rechivaldo"],
   ["Ref. municipal (Santa Catalina de Somoza)","Santa Catalina de Somoza"],
   ["Ref. municipal (El Ganso)","El Ganso"],
   ["Ref. Asso. Gaucelmo / Ref. privé N.S. del Pilar (Rabanal del Camino)","Rabanal del Camino"],
@@ -333,17 +333,18 @@ async function initDB() {
     await client.query(tableQuery);
 
     // Seed Albergues only if empty
-    const { rows } = await client.query('SELECT COUNT(*) as count FROM "Albergues"');
-    const count = parseInt(usePostgres ? rows[0].count : rows[0].count);
+    const countResult = await client.query(usePostgres ? 'SELECT COUNT(*) as count FROM "Albergues"' : 'SELECT COUNT(*) as count FROM Albergues');
+    const rows = countResult.rows;
+    const count = parseInt(rows[0].count);
     if (count === 0) {
       console.log('Seeding Albergues data...');
       const defaultCoords = { lat: 42.5, lng: -4.0 };
       for (const [name, city] of albergueRows) {
         const coords = coordsMap[city] || defaultCoords;
-        await client.query(
-          'INSERT INTO "Albergues" (name, lat, lng, status, "lastUpdated") VALUES ($1, $2, $3, $4, $5)',
-          [name, coords.lat, coords.lng, 'gray', '업데이트 없음']
-        );
+        const insertQuery = usePostgres 
+          ? 'INSERT INTO "Albergues" (name, lat, lng, status, "lastUpdated") VALUES ($1, $2, $3, $4, $5)'
+          : 'INSERT INTO Albergues (name, lat, lng, status, lastUpdated) VALUES ($1, $2, $3, $4, $5)';
+        await client.query(insertQuery, [name, coords.lat, coords.lng, 'gray', '업데이트 없음']);
       }
       console.log(`✅ Seeded ${albergueRows.length} albergues.`);
     }
@@ -377,7 +378,10 @@ async function initDB() {
 // GET all albergues
 app.get('/api/albergues', async (req, res) => {
   try {
-    const { rows } = await pool.query('SELECT * FROM "Albergues" ORDER BY id');
+    const query = usePostgres 
+      ? 'SELECT * FROM "Albergues" ORDER BY id'
+      : 'SELECT * FROM Albergues ORDER BY id';
+    const { rows } = await pool.query(query);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -392,10 +396,10 @@ app.patch('/api/albergues/:id', async (req, res) => {
     return res.status(400).json({ error: 'status and lastUpdated are required.' });
   }
   try {
-    const result = await pool.query(
-      'UPDATE "Albergues" SET status = $1, "lastUpdated" = $2 WHERE id = $3',
-      [status, lastUpdated, id]
-    );
+    const query = usePostgres 
+      ? 'UPDATE "Albergues" SET status = $1, "lastUpdated" = $2 WHERE id = $3'
+      : 'UPDATE Albergues SET status = $1, lastUpdated = $2 WHERE id = $3';
+    const result = await pool.query(query, [status, lastUpdated, id]);
     if (result.rowCount === 0) return res.status(404).json({ error: 'Not found.' });
     res.json({ message: '업데이트 성공', updatedId: id, newStatus: status, newLastUpdated: lastUpdated });
   } catch (err) {
@@ -407,7 +411,10 @@ app.patch('/api/albergues/:id', async (req, res) => {
 app.get('/api/albergues/:id/comments', async (req, res) => {
   const albergueId = req.params.id;
   try {
-    const { rows } = await pool.query('SELECT * FROM "Comments" WHERE albergue_id = $1 ORDER BY id DESC LIMIT 100', [albergueId]);
+    const query = usePostgres
+      ? 'SELECT * FROM "Comments" WHERE albergue_id = $1 ORDER BY id DESC LIMIT 100'
+      : 'SELECT * FROM Comments WHERE albergue_id = $1 ORDER BY id DESC LIMIT 100';
+    const { rows } = await pool.query(query, [albergueId]);
     res.json(rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -424,11 +431,12 @@ app.post('/api/albergues/:id/comments', async (req, res) => {
   const now = new Date();
   const createdAt = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
   try {
-    const { rows } = await pool.query(
-      'INSERT INTO "Comments" (albergue_id, nickname, content, "createdAt") VALUES ($1, $2, $3, $4) RETURNING *',
-      [albergueId, nickname, content, createdAt]
-    );
-    res.json(rows[0]);
+    const query = usePostgres
+      ? 'INSERT INTO "Comments" (albergue_id, nickname, content, "createdAt") VALUES ($1, $2, $3, $4) RETURNING *'
+      : 'INSERT INTO Comments (albergue_id, nickname, content, createdAt) VALUES ($1, $2, $3, $4)';
+    const result = await pool.query(query, [albergueId, nickname, content, createdAt]);
+    const respRow = result.rows ? result.rows[0] : { albergueId, nickname, content, createdAt };
+    res.json(respRow);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -438,9 +446,10 @@ app.post('/api/albergues/:id/comments', async (req, res) => {
 cron.schedule('0 2 * * *', async () => {
   console.log('⏰ Resetting all albergue statuses...');
   try {
-    const result = await pool.query(
-      'UPDATE "Albergues" SET status = \'gray\', "lastUpdated" = \'새벽 2시 일괄 초기화됨\''
-    );
+    const query = usePostgres
+      ? 'UPDATE "Albergues" SET status = \'gray\', "lastUpdated" = \'새벽 2시 일괄 초기화됨\''
+      : 'UPDATE Albergues SET status = \'gray\', lastUpdated = \'새벽 2시 일괄 초기화됨\'';
+    const result = await pool.query(query);
     console.log(`✅ Reset ${result.rowCount} albergues.`);
   } catch (err) {
     console.error('Reset failed:', err.message);

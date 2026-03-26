@@ -270,9 +270,9 @@ function handleMobileView(item) {
 }
 
 // Ensure clicking a hostel in the list scrolls to map on mobile
-const originalFocusMapMarker = focusMapMarker;
+const originalFocusMapMarker_fn = focusMapMarker;
 window.focusMapMarker = function(id, lat, lng) {
-    originalFocusMapMarker(id, lat, lng);
+    originalFocusMapMarker_fn(id, lat, lng);
     handleMobileView();
 };
 
