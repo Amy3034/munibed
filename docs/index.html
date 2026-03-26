@@ -2965,6 +2965,11 @@
         });
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Always initialize map first to ensure it displays
+            if (!map) initMap();
+            // Initialize alphabet filter UI
+            initAlphabetFilter();
+            
             // Give it a first shot
             performRobustDataSync();
             
