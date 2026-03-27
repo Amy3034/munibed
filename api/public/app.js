@@ -6,7 +6,7 @@ let baseLayer;
 
 // Initialize Map
 function initMap() {
-    map = L.map('map').setView([42.5987, -5.5671], 8);
+    map = L.map('map').setView([42.9, -4.9], 7);
     baseLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
