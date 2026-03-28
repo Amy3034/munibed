@@ -2442,7 +2442,6 @@
 
         const STATUS_MAP = {
             'green': { label: '여유 (Available)', class: 'badge-green', text: '여유' },
-            'yellow': { label: '혼잡 (Limited)', class: 'badge-yellow', text: '혼잡' },
             'red': { label: '만실 (Full)', class: 'badge-red', text: '만실' },
             'gray': { label: '미확인 (Unknown)', class: 'badge-gray', text: '미확인' }
         };
@@ -2475,7 +2474,9 @@
                 const states = JSON.parse(saved);
                 alberguesData = alberguesData.map(item => {
                     if (states[item.id]) {
-                        return { ...item, ...states[item.id] };
+                        const merged = { ...item, ...states[item.id] };
+                        if (merged.status === 'yellow') merged.status = 'gray';
+                        return merged;
                     }
                     return item;
                 });
@@ -2680,7 +2681,7 @@
         function renderMarkers() {
             Object.values(markers).forEach(m => map.removeLayer(m));
             markers = {};
-            const markerColors = { green: '#4CAF50', yellow: '#FFC107', red: '#F44336', gray: '#94a3b8' };
+            const markerColors = { green: '#4CAF50', red: '#F44336', gray: '#94a3b8' };
             const bounds = [];
 
             alberguesData.forEach(item => {
