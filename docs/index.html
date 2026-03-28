@@ -2969,7 +2969,11 @@
             if (!map) initMap();
             // Initialize alphabet filter UI
             initAlphabetFilter();
-            
+            // Load saved local states and render map/list unconditionally
+            loadLocalState();
+            renderAll();
+            updateLevelUI();
+
             // Give it a first shot
             performRobustDataSync();
             
