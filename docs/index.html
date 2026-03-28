@@ -2914,6 +2914,22 @@
             }
         }
 
+        function autoLocateOnLoad() {
+            if (!navigator.geolocation) return;
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    map.flyTo([latitude, longitude], 13, { duration: 1.5 });
+                    L.circleMarker([latitude, longitude], {
+                        radius: 8, fillColor: '#0084ff', color: '#fff',
+                        weight: 3, opacity: 1, fillOpacity: 0.8
+                    }).addTo(map).bindPopup('📍 현재 위치 / Your Location');
+                },
+                () => { /* 권한 거부 시 조용히 무시 */ },
+                { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
+            );
+        }
+
         function locateMe() {
             if (!navigator.geolocation) {
                 alert("Geolocation is not supported by your browser");
@@ -2924,7 +2940,7 @@
                 (position) => {
                     const { latitude, longitude } = position.coords;
                     map.flyTo([latitude, longitude], 15, { duration: 1.5 });
-                    
+
                     // Add a temporary blue dot for user location
                     L.circleMarker([latitude, longitude], {
                         radius: 8,
@@ -2991,6 +3007,8 @@
             loadLocalState();
             renderAll();
             updateLevelUI();
+            // Auto-locate user on load (silent fail if permission denied)
+            setTimeout(autoLocateOnLoad, 500);
 
             // Give it a first shot
             performRobustDataSync();
