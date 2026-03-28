@@ -2447,6 +2447,13 @@
             'gray': { label: '미확인 (Unknown)', class: 'badge-gray', text: '미확인' }
         };
 
+        // Extract city name from the LAST parentheses group at end of string
+        // e.g. "Ref. San Nicolas (Italie) (Puente Fitero)" → "Puente Fitero"
+        function getCityName(name) {
+            const m = name.match(/\(([^()]+)\)\s*$/);
+            return m ? m[1].trim() : "";
+        }
+
         function initMap() {
             map = L.map('map', { zoomControl: true }).setView([42.7, -5.25], 7);
             updateMapTiles();
@@ -2560,9 +2567,7 @@
             let filtered = alberguesData.filter(item => {
                 if (options.soloId) return item.id === options.soloId;
 
-                // Improved Regex: Handle nested or extra parentheses
-                const cityMatch = item.name.match(/\(([^()]*?)\)(?:\s|\d|km|$)/);
-                const cityName = cityMatch ? cityMatch[1].trim().toLowerCase() : "";
+                const cityName = getCityName(item.name).toLowerCase();
                 const hostelNamePart = item.name.split('(')[0].toLowerCase();
                 
                 const aliases = {
@@ -2595,10 +2600,10 @@
                 return matchesSearch && matchesLetter;
             });
 
-            // Sort alphabetically by city name (from parentheses)
+            // Sort alphabetically by city name (last parentheses group)
             filtered.sort((a, b) => {
-                const cityA = a.name.match(/\((.*?)\)/)?.[1] || "";
-                const cityB = b.name.match(/\((.*?)\)/)?.[1] || "";
+                const cityA = getCityName(a.name);
+                const cityB = getCityName(b.name);
                 return cityA.localeCompare(cityB, 'en', { sensitivity: 'base' });
             });
 
@@ -2624,8 +2629,7 @@
             let currentGroup = '';
 
             filtered.forEach(item => {
-                const cityMatch = item.name.match(/\(([^()]*?)\)(?:\s|\d|km|$)/);
-                const cityNameRaw = cityMatch ? cityMatch[1].trim() : "Other";
+                const cityNameRaw = getCityName(item.name) || "Other";
                 const firstLetter = cityNameRaw.charAt(0).toUpperCase();
 
                 if (firstLetter !== currentGroup && filterLetter === '') { // Only group if searching/general browsing
@@ -2801,8 +2805,8 @@
                 // Fallback to finding first card if group header somehow missing
                 const firstCard = Array.from(document.querySelectorAll('.hostel-card')).find(card => {
                     const name = card.querySelector('.hostel-name').textContent;
-                    const cityName = name.match(/\((.*?)\)/)?.[1] || "";
-                    return cityName.trim().toUpperCase().startsWith(letter);
+                    const cityName = getCityName(name);
+                    return cityName.toUpperCase().startsWith(letter);
                 });
                 if (firstCard) {
                     const container = document.getElementById('hostel-list');
@@ -2816,10 +2820,9 @@
             const letters = new Set();
 
             alberguesData.forEach(item => {
-                let cityMatch = item.name.match(/\(([^()]*?)\)/);
-                let cityName = cityMatch ? cityMatch[1].trim() : "";
+                const cityName = getCityName(item.name);
                 if (cityName) {
-                    const firstChar = cityName.trim().charAt(0).toUpperCase();
+                    const firstChar = cityName.charAt(0).toUpperCase();
                     if (/[A-Z]/.test(firstChar)) {
                         letters.add(firstChar);
                     }
