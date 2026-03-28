@@ -786,6 +786,7 @@
 
         let markers = {};
         let alberguesData = window.ALBERGUES_DATA || [];
+        let mapFitDone = false;
         
         // Safety check: if window.ALBERGUES_DATA is defined after this line (rare) or updated
         if (alberguesData.length === 0 && window.ALBERGUES_DATA) {
@@ -1017,7 +1018,8 @@
                 bounds.push([item.lat, item.lng]);
             });
 
-            if (bounds.length > 0) {
+            if (bounds.length > 0 && !mapFitDone) {
+                mapFitDone = true;
                 setTimeout(() => {
                     map.invalidateSize();
                     map.fitBounds(bounds, { padding: [40, 40] });
