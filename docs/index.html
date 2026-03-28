@@ -2447,11 +2447,13 @@
             'gray': { label: '미확인 (Unknown)', class: 'badge-gray', text: '미확인' }
         };
 
-        // Extract city name from the LAST parentheses group at end of string
-        // e.g. "Ref. San Nicolas (Italie) (Puente Fitero)" → "Puente Fitero"
+        // Extract city name: finds all innermost (no-nested) paren groups, returns the last one
+        // Handles: "Ref. (Italie) (City)" → "City"
+        //          "Ref. ((City) variant)" → "City"
         function getCityName(name) {
-            const m = name.match(/\(([^()]+)\)\s*$/);
-            return m ? m[1].trim() : "";
+            const matches = name.match(/\([^()]+\)/g);
+            if (!matches) return '';
+            return matches[matches.length - 1].slice(1, -1).trim();
         }
 
         function initMap() {
