@@ -279,12 +279,14 @@
             flex: 1;
             display: flex;
             position: relative;
+            min-height: 0;
+            overflow: hidden;
         }
 
         /* Map Area */
         #map {
             flex: 1;
-            height: 100%;
+            min-height: 0;
             z-index: 1;
         }
 
@@ -2448,6 +2450,7 @@
         function initMap() {
             map = L.map('map', { zoomControl: true }).setView([42.7, -5.25], 7);
             updateMapTiles();
+            setTimeout(() => { map.invalidateSize(); }, 300);
         }
 
         function updateMapTiles() {
@@ -2672,7 +2675,8 @@
             Object.values(markers).forEach(m => map.removeLayer(m));
             markers = {};
             const markerColors = { green: '#4CAF50', yellow: '#FFC107', red: '#F44336', gray: '#94a3b8' };
-            
+            const bounds = [];
+
             alberguesData.forEach(item => {
                 const color = markerColors[item.status] || markerColors['gray'];
                 const icon = L.divIcon({
@@ -2686,7 +2690,15 @@
                     syncListToMarker(item.id);
                 });
                 markers[item.id] = marker;
+                bounds.push([item.lat, item.lng]);
             });
+
+            if (bounds.length > 0) {
+                setTimeout(() => {
+                    map.invalidateSize();
+                    map.fitBounds(bounds, { padding: [40, 40] });
+                }, 150);
+            }
         }
 
         function focusHostel(id) {
