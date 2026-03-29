@@ -454,6 +454,8 @@ cron.schedule('0 2 * * *', async () => {
   } catch (err) {
     console.error('Reset failed:', err.message);
   }
+}, {
+  timezone: 'Europe/Madrid'
 });
 
 // ── Start ────────────────────────────────────────────────────────
