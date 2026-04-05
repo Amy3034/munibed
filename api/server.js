@@ -591,8 +591,28 @@ cron.schedule('0 2 * * *', async () => {
   timezone: 'Europe/Madrid'
 });
 
+// ── Stale Data Reset (runs on startup to cover missed cron) ─────
+async function resetStaleStatuses() {
+  const today = getMadridDate();
+  try {
+    // Reset any albergue whose lastUpdated is not from today and not already gray
+    const query = usePostgres
+      ? `UPDATE "Albergues" SET status = 'gray', "lastUpdated" = '새벽 2시 일괄 초기화됨'
+         WHERE status != 'gray' AND "lastUpdated" NOT LIKE $1`
+      : `UPDATE Albergues SET status = 'gray', lastUpdated = '새벽 2시 일괄 초기화됨'
+         WHERE status != 'gray' AND lastUpdated NOT LIKE $1`;
+    const result = await pool.query(query, [`${today}%`]);
+    if (result.rowCount > 0) {
+      console.log(`✅ Startup reset: cleared ${result.rowCount} stale albergue statuses.`);
+    }
+  } catch (err) {
+    console.error('Startup reset failed:', err.message);
+  }
+}
+
 // ── Start ────────────────────────────────────────────────────────
-initDB().then(() => {
+initDB().then(async () => {
+  await resetStaleStatuses();
   app.listen(PORT, () => {
     console.log(`========================================`);
     console.log(`🚀 Server running on port ${PORT}`);
