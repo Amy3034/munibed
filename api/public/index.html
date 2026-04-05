@@ -52,7 +52,10 @@
         <section id="listSection" class="list-section">
             <div class="list-header">
                 <h2>숙소 목록 / Albergues (<span id="count">0</span>)</h2>
-                <button id="refreshBtn" class="refresh-btn" title="새로고침 / Refresh">🔄</button>
+                <div style="display:flex;align-items:center;gap:0.5rem">
+                    <span id="dailyCounter" class="daily-counter"></span>
+                    <button id="refreshBtn" class="refresh-btn" title="새로고침 / Refresh">🔄</button>
+                </div>
             </div>
             
             <!-- 통합 검색 및 색인 영역 -->

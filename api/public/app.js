@@ -4,6 +4,165 @@ let markers = {};
 let alberguesData = [];
 let baseLayer;
 
+// ── Daily Update Limit ──────────────────────────────────────────
+const DAILY_LIMIT = 4;
+
+function getMadridDateClient() {
+    return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' }); // YYYY-MM-DD
+}
+
+function getTodayUpdatedAlbergues() {
+    const today = getMadridDateClient();
+    if (localStorage.getItem('munibed_daily_date') !== today) {
+        localStorage.setItem('munibed_daily_date', today);
+        localStorage.setItem('munibed_daily_albergues', '[]');
+        return new Set();
+    }
+    try {
+        return new Set(JSON.parse(localStorage.getItem('munibed_daily_albergues') || '[]'));
+    } catch {
+        return new Set();
+    }
+}
+
+function markAlbergueUpdatedToday(albergueId) {
+    const set = getTodayUpdatedAlbergues(); // handles new-day reset before we write
+    set.add(albergueId);
+    localStorage.setItem('munibed_daily_albergues', JSON.stringify([...set]));
+}
+
+function updateDailyCounter() {
+    const el = document.getElementById('dailyCounter');
+    if (!el) return;
+    const used = getTodayUpdatedAlbergues().size;
+    const remaining = DAILY_LIMIT - used;
+    if (used === 0) {
+        el.textContent = '';
+        el.className = 'daily-counter';
+    } else if (remaining > 0) {
+        el.textContent = `오늘 ${used}/${DAILY_LIMIT}`;
+        el.className = 'daily-counter';
+    } else {
+        el.textContent = `오늘 한도 초과 (${DAILY_LIMIT}/${DAILY_LIMIT})`;
+        el.className = 'daily-counter daily-counter--full';
+    }
+}
+
+// ── Device Identity & Location Restriction ──────────────────────
+let deviceId;
+let userOrigin = null; // { lat, lng } - first launch location
+
+function getOrCreateDeviceId() {
+    let id = localStorage.getItem('munibed_device_id');
+    if (!id) {
+        id = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+            const r = Math.random() * 16 | 0;
+            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+        });
+        localStorage.setItem('munibed_device_id', id);
+    }
+    return id;
+}
+
+// Returns true if albergue is more than 40km west of user's origin
+function isAlbergueTooFarWest(albergue) {
+    if (!userOrigin) return false;
+    const lngDiff = userOrigin.lng - albergue.lng; // positive = albergue is west
+    const avgLat = (userOrigin.lat + albergue.lat) / 2;
+    const kmPerLngDeg = 111.32 * Math.cos(avgLat * Math.PI / 180);
+    return lngDiff * kmPerLngDeg > 40;
+}
+
+async function registerDevice(lat, lng) {
+    try {
+        const body = { device_id: deviceId };
+        if (lat != null && lng != null) { body.origin_lat = lat; body.origin_lng = lng; }
+        const resp = await fetch('/api/devices', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        const data = await resp.json();
+        // If device already existed with an origin, sync it locally
+        if (!data.registered && data.origin_lat != null && userOrigin == null) {
+            userOrigin = { lat: data.origin_lat, lng: data.origin_lng };
+            localStorage.setItem('munibed_origin_lat', data.origin_lat);
+            localStorage.setItem('munibed_origin_lng', data.origin_lng);
+            renderList();
+        }
+    } catch (err) {
+        console.error('Device registration failed:', err);
+    }
+}
+
+function saveOrigin(lat, lng) {
+    userOrigin = { lat, lng };
+    localStorage.setItem('munibed_origin_lat', lat);
+    localStorage.setItem('munibed_origin_lng', lng);
+    renderList();
+    registerDevice(lat, lng);
+}
+
+async function initDeviceOrigin() {
+    deviceId = getOrCreateDeviceId();
+
+    const storedLat = localStorage.getItem('munibed_origin_lat');
+    const storedLng = localStorage.getItem('munibed_origin_lng');
+    if (storedLat && storedLng) {
+        userOrigin = { lat: parseFloat(storedLat), lng: parseFloat(storedLng) };
+        registerDevice(userOrigin.lat, userOrigin.lng);
+        return;
+    }
+
+    // First launch: silently get location if permission already granted
+    if (!navigator.geolocation) { registerDevice(null, null); return; }
+    try {
+        const perm = await navigator.permissions?.query({ name: 'geolocation' });
+        if (perm?.state === 'granted') {
+            navigator.geolocation.getCurrentPosition(
+                pos => saveOrigin(pos.coords.latitude, pos.coords.longitude),
+                () => { registerDevice(null, null); showLocationBanner(); }
+            );
+        } else {
+            showLocationBanner();
+            registerDevice(null, null);
+        }
+    } catch {
+        showLocationBanner();
+        registerDevice(null, null);
+    }
+}
+
+function showLocationBanner() {
+    if (localStorage.getItem('munibed_location_banner_dismissed')) return;
+    if (document.getElementById('locationBanner')) return;
+
+    const banner = document.createElement('div');
+    banner.id = 'locationBanner';
+    banner.style.cssText = 'background:#fffbeb;border-bottom:1px solid #fde68a;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#92400e;gap:8px;z-index:999;flex-shrink:0';
+    banner.innerHTML = `
+        <span>📍 위치 정보를 허용하면 내 순례 구간의 알베르게만 수정할 수 있습니다.</span>
+        <div style="display:flex;gap:6px;flex-shrink:0">
+            <button id="bannerAllow" style="background:#f59e0b;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">허용</button>
+            <button id="bannerDismiss" style="background:none;border:none;color:#92400e;font-size:18px;cursor:pointer;padding:0 4px;line-height:1">×</button>
+        </div>`;
+
+    const header = document.querySelector('.app-header');
+    if (header?.nextSibling) header.parentNode.insertBefore(banner, header.nextSibling);
+
+    document.getElementById('bannerAllow').addEventListener('click', () => {
+        navigator.geolocation.getCurrentPosition(
+            pos => { saveOrigin(pos.coords.latitude, pos.coords.longitude); banner.remove(); },
+            () => alert('위치 정보를 가져올 수 없습니다. 브라우저 설정에서 권한을 허용해주세요.'),
+            { enableHighAccuracy: true, timeout: 10000 }
+        );
+    });
+    document.getElementById('bannerDismiss').addEventListener('click', () => {
+        localStorage.setItem('munibed_location_banner_dismissed', '1');
+        banner.remove();
+    });
+}
+
 // Initialize Map
 function initMap() {
     map = L.map('map').setView([42.9, -4.9], 7);
@@ -35,7 +194,6 @@ async function fetchAlbergues() {
         document.getElementById('count').textContent = data.length;
         renderMapMarkers();
         renderList();
-        initAlphabetIndex();
     } catch (error) {
         console.error('API 로드 실패:', error);
         document.getElementById('albergueList').innerHTML = 
@@ -130,6 +288,14 @@ function renderList(dataToRender = alberguesData) {
 
         const badgeClass = `bg-${item.status}`;
         const statusText = getStatusText(item.status);
+        const locationLocked = isAlbergueTooFarWest(item);
+        const todaySet = getTodayUpdatedAlbergues();
+        const dailyLimitLocked = !todaySet.has(item.id) && todaySet.size >= DAILY_LIMIT;
+
+        const actionButtons = `
+            <button class="status-btn btn-green ${item.status === 'green' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'green')">여유<br>(Available)</button>
+            <button class="status-btn btn-red ${item.status === 'red' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'red')">만실<br>(Full)</button>
+            <button class="status-btn btn-gray ${item.status === 'gray' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'gray')">미확인<br>(Unknown)</button>`;
 
         card.innerHTML = `
             <div class="card-header">
@@ -140,9 +306,12 @@ function renderList(dataToRender = alberguesData) {
                 <span>⏱️ ${item.lastUpdated}</span>
             </div>
             <div class="card-actions" onclick="event.stopPropagation()">
-                <button class="status-btn btn-green ${item.status === 'green' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'green')">여유<br>(Available)</button>
-                <button class="status-btn btn-red ${item.status === 'red' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'red')">만실<br>(Full)</button>
-                <button class="status-btn btn-gray ${item.status === 'gray' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'gray')">미확인<br>(Unknown)</button>
+                ${locationLocked
+                    ? `<div class="lock-notice">🔒 시작 지점 서쪽 40km 초과 — 수정 불가</div>`
+                    : dailyLimitLocked
+                        ? `<div class="lock-notice">📵 오늘 수정 한도 초과 (${DAILY_LIMIT}/${DAILY_LIMIT})</div>`
+                        : actionButtons
+                }
             </div>
         `;
         listContainer.appendChild(card);
@@ -151,20 +320,35 @@ function renderList(dataToRender = alberguesData) {
 
 // Update Status API
 async function updateStatus(id, newStatus) {
+    const albergue = alberguesData.find(a => a.id === id);
+    if (albergue && isAlbergueTooFarWest(albergue)) {
+        alert('이 알베르게는 처음 실행 위치에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
+        return;
+    }
+
+    // Daily limit check (client-side fast path)
+    const todaySet = getTodayUpdatedAlbergues();
+    if (!todaySet.has(id) && todaySet.size >= DAILY_LIMIT) {
+        alert(`오늘 변경 가능한 알베르게 수(${DAILY_LIMIT}개)를 초과했습니다. 내일 다시 시도해주세요.\n(Daily update limit reached. Try again tomorrow.)`);
+        return;
+    }
+
     const now = new Date();
     const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     try {
+        const body = { status: newStatus, lastUpdated: formattedDate };
+        if (deviceId) body.device_id = deviceId;
+
         const response = await fetch(`${API_URL}/${id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                status: newStatus,
-                lastUpdated: formattedDate
-            })
+            body: JSON.stringify(body)
         });
 
         if (response.ok) {
+            markAlbergueUpdatedToday(id);
+            updateDailyCounter();
             // Optimistic UI update
             const albergueIndex = alberguesData.findIndex(a => a.id === id);
             if (albergueIndex !== -1) {
@@ -174,7 +358,14 @@ async function updateStatus(id, newStatus) {
                 renderList();
             }
         } else {
-            alert('상태 업데이트에 실패했습니다.');
+            const errData = await response.json().catch(() => ({}));
+            if (errData.code === 'LOCATION_RESTRICTED') {
+                alert('이 알베르게는 처음 실행 위치에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
+            } else if (errData.code === 'DAILY_LIMIT_REACHED') {
+                alert(`오늘 변경 가능한 알베르게 수(${DAILY_LIMIT}개)를 초과했습니다. 내일 다시 시도해주세요.\n(Daily update limit reached. Try again tomorrow.)`);
+            } else {
+                alert('상태 업데이트에 실패했습니다.');
+            }
         }
     } catch (error) {
         console.error('업데이트 에러:', error);
@@ -183,7 +374,6 @@ async function updateStatus(id, newStatus) {
 }
 
 function scrollToLetter(letter) {
-    const container = document.getElementById('albergueList');
     // If list is filtered or searched, clear search to ensure all groups are present
     const searchInput = document.getElementById('searchInput');
     if (searchInput.value !== '') {
@@ -262,9 +452,8 @@ if (shareBtn) {
 }
 
 // Mobile Interaction Logic
-function handleMobileView(item) {
+function handleMobileView() {
     if (window.innerWidth <= 900) {
-        // Scroll to map top when clicking list item
         document.querySelector('.map-section').scrollIntoView({ behavior: 'smooth' });
     }
 }
@@ -354,6 +543,8 @@ langToggleContainer.forEach(container => {
 // Initialize on load
 window.addEventListener('DOMContentLoaded', () => {
     initMap();
+    initDeviceOrigin();
+    updateDailyCounter();
     fetchAlbergues().then(() => {
         setupSearch();
         initAlphabetIndex();
@@ -382,13 +573,10 @@ function setupSearch() {
     searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
         currentFocus = -1;
-        
-        // Remove active state from alphabet buttons
-        document.querySelectorAll('.alpha-btn').forEach(btn => btn.classList.remove('active'));
 
         // Clear autocomplete
         autocompleteList.innerHTML = '';
-        
+
         if (!query || query === 'all') {
             document.querySelectorAll('.alpha-btn').forEach(btn => btn.classList.remove('active'));
             document.querySelector('.alpha-btn').classList.add('active'); // Set 'All' to active
@@ -396,6 +584,9 @@ function setupSearch() {
             renderList(alberguesData);
             return;
         }
+
+        // Remove active state from alphabet buttons (non-empty query)
+        document.querySelectorAll('.alpha-btn').forEach(btn => btn.classList.remove('active'));
 
         // 1. Populate Autocomplete Dropdown with matching Cities that START with or CONTAIN the query
         const matchingCities = cityList.filter(city => city.toLowerCase().includes(query));
@@ -584,7 +775,10 @@ function setupGeolocation() {
         navigator.geolocation.getCurrentPosition(
             (position) => {
                 const { latitude, longitude } = position.coords;
-                
+
+                // Save as origin if not yet set
+                if (!userOrigin) saveOrigin(latitude, longitude);
+
                 // Add or move a specific marker for current location
                 if (window.myLocationMarker) {
                     window.myLocationMarker.setLatLng([latitude, longitude]);

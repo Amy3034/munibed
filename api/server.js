@@ -308,6 +308,18 @@ const albergueRows = [
   ["Ref. municipal (Fisterra)","Fisterra"]
 ];
 
+// ── Helpers ─────────────────────────────────────────────────────
+function getWestwardKm(originLng, albergueLng, lat) {
+  // Returns km the albergue is west of origin (positive = west)
+  const lngDiff = originLng - albergueLng;
+  const kmPerDeg = 111.32 * Math.cos(lat * Math.PI / 180);
+  return lngDiff * kmPerDeg;
+}
+
+function getMadridDate() {
+  return new Date().toLocaleDateString('sv-SE', { timeZone: 'Europe/Madrid' }); // YYYY-MM-DD
+}
+
 // ── DB Init ─────────────────────────────────────────────────────
 async function initDB() {
   const client = await pool.connect();
@@ -367,6 +379,38 @@ async function initDB() {
         )`;
     await client.query(commentsTableQuery);
 
+    // Create Devices table
+    const devicesTableQuery = usePostgres
+      ? `CREATE TABLE IF NOT EXISTS "Devices" (
+          device_id TEXT PRIMARY KEY,
+          origin_lat REAL,
+          origin_lng REAL,
+          created_at TEXT
+        )`
+      : `CREATE TABLE IF NOT EXISTS Devices (
+          device_id TEXT PRIMARY KEY,
+          origin_lat REAL,
+          origin_lng REAL,
+          created_at TEXT
+        )`;
+    await client.query(devicesTableQuery);
+
+    // Create DailyUpdates table (tracks which albergues each device updated per day)
+    const dailyUpdatesTableQuery = usePostgres
+      ? `CREATE TABLE IF NOT EXISTS "DailyUpdates" (
+          device_id TEXT NOT NULL,
+          albergue_id INTEGER NOT NULL,
+          update_date TEXT NOT NULL,
+          PRIMARY KEY (device_id, albergue_id, update_date)
+        )`
+      : `CREATE TABLE IF NOT EXISTS DailyUpdates (
+          device_id TEXT NOT NULL,
+          albergue_id INTEGER NOT NULL,
+          update_date TEXT NOT NULL,
+          PRIMARY KEY (device_id, albergue_id, update_date)
+        )`;
+    await client.query(dailyUpdatesTableQuery);
+
     console.log('✅ Database initialized.');
   } finally {
     client.release();
@@ -376,7 +420,7 @@ async function initDB() {
 // ── API Routes ───────────────────────────────────────────────────
 
 // GET all albergues
-app.get('/api/albergues', async (req, res) => {
+app.get('/api/albergues', async (_req, res) => {
   try {
     const query = usePostgres 
       ? 'SELECT * FROM "Albergues" ORDER BY id'
@@ -388,15 +432,104 @@ app.get('/api/albergues', async (req, res) => {
   }
 });
 
+// POST register device
+app.post('/api/devices', async (req, res) => {
+  const { device_id, origin_lat, origin_lng } = req.body;
+  if (!device_id) return res.status(400).json({ error: 'device_id is required.' });
+  try {
+    const existingQuery = usePostgres
+      ? 'SELECT device_id, origin_lat, origin_lng FROM "Devices" WHERE device_id = $1'
+      : 'SELECT device_id, origin_lat, origin_lng FROM Devices WHERE device_id = $1';
+    const existing = await pool.query(existingQuery, [device_id]);
+
+    if (existing.rows.length > 0) {
+      return res.json({
+        registered: false,
+        origin_lat: existing.rows[0].origin_lat,
+        origin_lng: existing.rows[0].origin_lng
+      });
+    }
+
+    const now = new Date().toISOString();
+    const insertQuery = usePostgres
+      ? 'INSERT INTO "Devices" (device_id, origin_lat, origin_lng, created_at) VALUES ($1, $2, $3, $4)'
+      : 'INSERT INTO Devices (device_id, origin_lat, origin_lng, created_at) VALUES ($1, $2, $3, $4)';
+    await pool.query(insertQuery, [device_id, origin_lat ?? null, origin_lng ?? null, now]);
+
+    res.json({ registered: true, origin_lat: origin_lat ?? null, origin_lng: origin_lng ?? null });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // PATCH albergue status
 app.patch('/api/albergues/:id', async (req, res) => {
-  const { status, lastUpdated } = req.body;
+  const { status, lastUpdated, device_id } = req.body;
   const { id } = req.params;
   if (!status || !lastUpdated) {
     return res.status(400).json({ error: 'status and lastUpdated are required.' });
   }
   try {
-    const query = usePostgres 
+    // Get albergue location for restriction check
+    const algQuery = usePostgres
+      ? 'SELECT lat, lng FROM "Albergues" WHERE id = $1'
+      : 'SELECT lat, lng FROM Albergues WHERE id = $1';
+    const algResult = await pool.query(algQuery, [id]);
+    if (algResult.rows.length === 0) return res.status(404).json({ error: 'Not found.' });
+    const { lat: algLat, lng: algLng } = algResult.rows[0];
+
+    // Validate location restriction and daily limit if device_id provided
+    if (device_id) {
+      const deviceQuery = usePostgres
+        ? 'SELECT origin_lat, origin_lng FROM "Devices" WHERE device_id = $1'
+        : 'SELECT origin_lat, origin_lng FROM Devices WHERE device_id = $1';
+      const deviceResult = await pool.query(deviceQuery, [device_id]);
+
+      if (deviceResult.rows.length > 0) {
+        const { origin_lat, origin_lng } = deviceResult.rows[0];
+        if (origin_lat != null && origin_lng != null) {
+          const westwardKm = getWestwardKm(origin_lng, algLng, algLat);
+          if (westwardKm > 40) {
+            return res.status(403).json({
+              error: '시작 지점에서 서쪽으로 40km 이상 떨어진 알베르게는 변경할 수 없습니다.',
+              code: 'LOCATION_RESTRICTED'
+            });
+          }
+        }
+      }
+
+      // Daily limit: max 4 distinct albergues per device per day
+      const today = getMadridDate();
+      const alreadyUpdatedQuery = usePostgres
+        ? 'SELECT 1 FROM "DailyUpdates" WHERE device_id = $1 AND albergue_id = $2 AND update_date = $3'
+        : 'SELECT 1 FROM DailyUpdates WHERE device_id = $1 AND albergue_id = $2 AND update_date = $3';
+      const alreadyUpdated = await pool.query(alreadyUpdatedQuery, [device_id, id, today]);
+
+      if (alreadyUpdated.rows.length === 0) {
+        // This is a new albergue for today — check the count
+        const countQuery = usePostgres
+          ? 'SELECT COUNT(*) as count FROM "DailyUpdates" WHERE device_id = $1 AND update_date = $2'
+          : 'SELECT COUNT(*) as count FROM DailyUpdates WHERE device_id = $1 AND update_date = $2';
+        const countResult = await pool.query(countQuery, [device_id, today]);
+        const dailyCount = parseInt(countResult.rows[0]?.count || 0);
+
+        if (dailyCount >= 4) {
+          return res.status(429).json({
+            error: '오늘 변경 가능한 알베르게 수(4개)를 초과했습니다.',
+            code: 'DAILY_LIMIT_REACHED',
+            remaining: 0
+          });
+        }
+
+        // Record this update
+        const insertDailyQuery = usePostgres
+          ? 'INSERT INTO "DailyUpdates" (device_id, albergue_id, update_date) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING'
+          : 'INSERT OR IGNORE INTO DailyUpdates (device_id, albergue_id, update_date) VALUES ($1, $2, $3)';
+        await pool.query(insertDailyQuery, [device_id, id, today]);
+      }
+    }
+
+    const query = usePostgres
       ? 'UPDATE "Albergues" SET status = $1, "lastUpdated" = $2 WHERE id = $3'
       : 'UPDATE Albergues SET status = $1, lastUpdated = $2 WHERE id = $3';
     const result = await pool.query(query, [status, lastUpdated, id]);

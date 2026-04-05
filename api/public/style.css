@@ -439,6 +439,28 @@ h1 {
     padding-top: 1rem;
 }
 
+.lock-notice {
+    grid-column: 1 / -1;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.5rem 0.75rem;
+    text-align: center;
+}
+
+.daily-counter {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.daily-counter--full {
+    color: var(--red);
+    font-weight: 600;
+}
+
 .status-btn {
     padding: 0.5rem;
     border-radius: 6px;
