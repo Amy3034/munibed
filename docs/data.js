@@ -2,8 +2,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 1,
     "name": "Ref. municipal (Saint-Jean-Pied-de-Port)",
-    "lat": 43.1636,
-    "lng": -1.2374,
+    "lat": 43.163782,
+    "lng": -1.234724,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -50,8 +50,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 7,
     "name": "Ref. Jésus et Maria / Ref. privé Paderborn (Pampelune)",
-    "lat": 42.8125,
-    "lng": -1.6458,
+    "lat": 42.819046,
+    "lng": -1.641834,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -82,8 +82,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 11,
     "name": "Ref. Padres Reparadores / Ref. privé Jakue (Puente La Reina)",
-    "lat": 42.6718,
-    "lng": -1.8136,
+    "lat": 42.6734,
+    "lng": -1.81042,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -114,8 +114,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 15,
     "name": "Ref. Asso. Estella / Ref. Asso. Anfas (Estella)",
-    "lat": 42.6717,
-    "lng": -2.0308,
+    "lat": 42.6698,
+    "lng": -2.027443,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -138,8 +138,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 18,
     "name": "Ref. municipal / Ref. privé Atharli (Los Arcos)",
-    "lat": 42.5694,
-    "lng": -2.1833,
+    "lat": 42.569059,
+    "lng": -2.194208,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -194,8 +194,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 25,
     "name": "Ref. Ass. Najera / Ref. La Juderia (Najera)",
-    "lat": 42.4178,
-    "lng": -2.735,
+    "lat": 42.414966,
+    "lng": -2.734201,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -290,8 +290,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 37,
     "name": "Ref. mun. San Rafael / Ref. privé El Pajar (Agès)",
-    "lat": 42.3756,
-    "lng": -3.4739,
+    "lat": 42.369419,
+    "lng": -3.479197,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -314,8 +314,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 40,
     "name": "Ref. Asso Burgos / Ref privé Emmaus (Burgos)",
-    "lat": 42.3439,
-    "lng": -3.6969,
+    "lat": 42.34235,
+    "lng": -3.703716,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -338,8 +338,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 43,
     "name": "Ref. municipal (Hornillos del Camino)",
-    "lat": 42.3392,
-    "lng": -3.9219,
+    "lat": 42.338699,
+    "lng": -3.926032,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -362,8 +362,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 46,
     "name": "Ref, municipal / Ref. Privé Casa Nostra (Castrojeriz)",
-    "lat": 42.2878,
-    "lng": -4.1378,
+    "lat": 42.291033,
+    "lng": -4.131811,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -522,8 +522,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 66,
     "name": "Ref. municipal / Ref. Bénédictines (Leon)",
-    "lat": 42.5987,
-    "lng": -5.5671,
+    "lat": 42.595142,
+    "lng": -5.568218,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -562,8 +562,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 71,
     "name": "Ref. Siervas de Maria / Ref. municipal (Astorga)",
-    "lat": 42.455,
-    "lng": -6.0594,
+    "lat": 42.452865,
+    "lng": -6.051355,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -634,32 +634,32 @@ window.ALBERGUES_DATA = [
   {
     "id": 80,
     "name": "Ref. municipal / RP Santa Marina (Molinaseca)",
-    "lat": 42.5381,
-    "lng": -6.52,
+    "lat": 42.540836,
+    "lng": -6.526174,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 81,
     "name": "Ref. paroissial (Ponferrada)",
-    "lat": 42.5464,
-    "lng": -6.5908,
+    "lat": 42.54339,
+    "lng": -6.586304,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 82,
     "name": "Ref. municipal (Cacabelos)",
-    "lat": 42.5986,
-    "lng": -6.7258,
+    "lat": 42.600205,
+    "lng": -6.731248,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 83,
     "name": "Ref. municipal / Ref. privé Jato (Villafranca del Bierzo)",
-    "lat": 42.6067,
-    "lng": -6.8111,
+    "lat": 42.604576,
+    "lng": -6.806513,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -730,8 +730,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 92,
     "name": "Ref. ACAG (O Cebreiro)",
-    "lat": 42.7114,
-    "lng": -7.0433,
+    "lat": 42.707744,
+    "lng": -7.045798,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -754,8 +754,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 95,
     "name": "Ref. ACAG (Triacastela)",
-    "lat": 42.7567,
-    "lng": -7.2431,
+    "lat": 42.755236,
+    "lng": -7.235385,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -778,8 +778,8 @@ window.ALBERGUES_DATA = [
   {
     "id": 98,
     "name": "Ref. ACAG (Sarria)",
-    "lat": 42.7806,
-    "lng": -7.4147,
+    "lat": 42.777426,
+    "lng": -7.413567,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -914,24 +914,24 @@ window.ALBERGUES_DATA = [
   {
     "id": 115,
     "name": "Ref. ACAG / Ref, privé Calvo (Santa Irene)",
-    "lat": 42.9153,
-    "lng": -8.3242,
+    "lat": 42.918397,
+    "lng": -8.335662,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 116,
     "name": "Ref. ACAG (Arca O Pino)",
-    "lat": 42.9067,
-    "lng": -8.3619,
+    "lat": 42.907131,
+    "lng": -8.358718,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
     "id": 117,
     "name": "Ref. ACAG (Monte del Gozo)",
-    "lat": 42.8886,
-    "lng": -8.4947,
+    "lat": 42.887464,
+    "lng": -8.498075,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
