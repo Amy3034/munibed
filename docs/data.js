@@ -9,7 +9,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 2,
-    "name": "Collégiale / Auberge de Jeunesse (Roncevaux)",
+    "name": "Collégiale / Auberge de Jeunesse (Roncesvalles)",
     "lat": 43.0098,
     "lng": -1.3197,
     "status": "gray",
@@ -49,7 +49,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 7,
-    "name": "Ref. Jésus et Maria / Ref. privé Paderborn (Pampelune)",
+    "name": "Ref. Jésus et Maria / Ref. privé Paderborn (Pamplona)",
     "lat": 42.819046,
     "lng": -1.641834,
     "status": "gray",
@@ -289,7 +289,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 37,
-    "name": "Ref. mun. San Rafael / Ref. privé El Pajar (Agès)",
+    "name": "Ref. mun. San Rafael / Ref. privé El Pajar (Agés)",
     "lat": 42.369419,
     "lng": -3.479197,
     "status": "gray",
@@ -945,7 +945,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 119,
-    "name": "Ref. municipal (De Santiago à Negreira)",
+    "name": "Ref. municipal (De Santiago a Negreira)",
     "lat": 42.905,
     "lng": -8.7369,
     "status": "gray",
