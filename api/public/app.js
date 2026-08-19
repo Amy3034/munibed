@@ -73,6 +73,13 @@ function isAlbergueTooFarWest(albergue) {
     return lngDiff * kmPerLngDeg > 40;
 }
 
+// Editing requires location consent (userOrigin set) AND being within range of it.
+// Without consent there is no origin to check against, so we must lock, not allow.
+function isLocationLocked(albergue) {
+    if (!userOrigin) return true;
+    return isAlbergueTooFarWest(albergue);
+}
+
 async function registerDevice(lat, lng) {
     try {
         const body = { device_id: deviceId };
@@ -288,7 +295,8 @@ function renderList(dataToRender = alberguesData) {
 
         const badgeClass = `bg-${item.status}`;
         const statusText = getStatusText(item.status);
-        const locationLocked = isAlbergueTooFarWest(item);
+        const noOrigin = !userOrigin;
+        const locationLocked = isLocationLocked(item);
         const todaySet = getTodayUpdatedAlbergues();
         const dailyLimitLocked = !todaySet.has(item.id) && todaySet.size >= DAILY_LIMIT;
 
@@ -307,7 +315,9 @@ function renderList(dataToRender = alberguesData) {
             </div>
             <div class="card-actions" onclick="event.stopPropagation()">
                 ${locationLocked
-                    ? `<div class="lock-notice">🔒 시작 지점 서쪽 40km 초과 — 수정 불가</div>`
+                    ? noOrigin
+                        ? `<div class="lock-notice">📍 위치 정보 동의 필요 — 수정 불가</div>`
+                        : `<div class="lock-notice">🔒 시작 지점 서쪽 40km 초과 — 수정 불가</div>`
                     : dailyLimitLocked
                         ? `<div class="lock-notice">📵 오늘 수정 한도 초과 (${DAILY_LIMIT}/${DAILY_LIMIT})</div>`
                         : actionButtons
@@ -321,6 +331,11 @@ function renderList(dataToRender = alberguesData) {
 // Update Status API
 async function updateStatus(id, newStatus) {
     const albergue = alberguesData.find(a => a.id === id);
+    if (!userOrigin) {
+        alert('위치 정보 동의가 필요합니다. 상단 안내 배너에서 "허용"을 눌러주세요.\n(Location permission is required to update status. Tap "Allow" in the banner above.)');
+        showLocationBanner();
+        return;
+    }
     if (albergue && isAlbergueTooFarWest(albergue)) {
         alert('이 알베르게는 처음 실행 위치에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
         return;
@@ -359,7 +374,10 @@ async function updateStatus(id, newStatus) {
             }
         } else {
             const errData = await response.json().catch(() => ({}));
-            if (errData.code === 'LOCATION_RESTRICTED') {
+            if (errData.code === 'LOCATION_REQUIRED') {
+                alert('위치 정보 동의가 필요합니다. 상단 안내 배너에서 "허용"을 눌러주세요.\n(Location permission is required to update status. Tap "Allow" in the banner above.)');
+                showLocationBanner();
+            } else if (errData.code === 'LOCATION_RESTRICTED') {
                 alert('이 알베르게는 처음 실행 위치에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
             } else if (errData.code === 'DAILY_LIMIT_REACHED') {
                 alert(`오늘 변경 가능한 알베르게 수(${DAILY_LIMIT}개)를 초과했습니다. 내일 다시 시도해주세요.\n(Daily update limit reached. Try again tomorrow.)`);

@@ -332,7 +332,9 @@
         });
 
         // ── API Calls ────────────────────────────────────────────────
-        const API = '/api/comments';
+        // Google Apps Script Web App URL (ends in /exec). Deploy Code.gs as a
+        // Web App (Execute as: Me / Who has access: Anyone) and paste the URL here.
+        const API = 'https://script.google.com/macros/s/AKfycbx8AYANbj7X7q3xAOITnxRvhlyUwYU_BjvBLiWFEMyrYIi7xq531iC0F_wc1pfsdI9Z/exec';
 
         async function loadComments() {
             const list = document.getElementById('commentsList');
@@ -341,6 +343,7 @@
                 const res = await fetch(API);
                 if (!res.ok) throw new Error('Server error');
                 const data = await res.json();
+                if (data && data.error) throw new Error(data.error);
                 renderComments(data);
             } catch(e) {
                 list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>댓글을 불러오지 못했습니다.<br>서버 연결을 확인해주세요.</p></div>';
@@ -388,12 +391,17 @@
             sendBtn.disabled = true;
             sendBtn.textContent = '전송 중...';
             try {
+                // Content-Type must stay 'text/plain' (not 'application/json') so this
+                // remains a CORS "simple request" — Apps Script Web Apps don't handle
+                // OPTIONS preflight requests, so a JSON content-type would fail silently.
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ nickname: myNick, content })
                 });
                 if (!res.ok) throw new Error('Failed');
+                const data = await res.json();
+                if (data && data.error) throw new Error(data.error);
                 textarea.value = '';
                 charCountEl.textContent = '0';
                 await loadComments();

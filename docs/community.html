@@ -214,9 +214,9 @@
 
     <script>
         // ── Configuration ─────────────────────────────────────────────
-        // API server URL - update this if your server URL changes
-        const API_BASE = 'https://kind-turtles-stick.loca.lt';
-        const API = API_BASE + '/api/comments';
+        // Google Apps Script Web App URL (ends in /exec). Deploy Code.gs as a
+        // Web App (Execute as: Me / Who has access: Anyone) and paste the URL here.
+        const API = 'https://script.google.com/macros/s/AKfycbx8AYANbj7X7q3xAOITnxRvhlyUwYU_BjvBLiWFEMyrYIi7xq531iC0F_wc1pfsdI9Z/exec';
 
         // ── Nickname Engine ───────────────────────────────────────────
         const ADJECTIVES = ['용감한','든든한','따뜻한','신비로운','씩씩한','느긋한','명랑한','차분한','열정적인','지혜로운','Brave','Gentle','Sunny','Swift','Calm','Cozy','Bright','Bold','Kind','Happy'];
@@ -339,11 +339,11 @@
             const list = document.getElementById('commentsList');
             list.innerHTML = COMMUNITY_STRINGS[currentLang].loading;
             try {
-                const res = await fetch(API, {
-                    headers: { 'bypass-tunnel-reminder': 'true' }
-                });
+                const res = await fetch(API);
                 if (!res.ok) throw new Error();
-                renderComments(await res.json());
+                const data = await res.json();
+                if (data && data.error) throw new Error(data.error);
+                renderComments(data);
             } catch {
                 list.innerHTML = COMMUNITY_STRINGS[currentLang].error;
             }
@@ -356,12 +356,17 @@
             btn.disabled = true;
             document.getElementById('t-send').textContent = COMMUNITY_STRINGS[currentLang].sending;
             try {
+                // Content-Type must stay 'text/plain' (not 'application/json') so this
+                // remains a CORS "simple request" — Apps Script Web Apps don't handle
+                // OPTIONS preflight requests, so a JSON content-type would fail silently.
                 const res = await fetch(API, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'bypass-tunnel-reminder': 'true' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ nickname: myNick, content })
                 });
                 if (!res.ok) throw new Error();
+                const data = await res.json();
+                if (data && data.error) throw new Error(data.error);
                 textarea.value = '';
                 document.getElementById('charCount').textContent = '0';
                 await loadComments();

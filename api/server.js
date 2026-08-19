@@ -478,24 +478,36 @@ app.patch('/api/albergues/:id', async (req, res) => {
     if (algResult.rows.length === 0) return res.status(404).json({ error: 'Not found.' });
     const { lat: algLat, lng: algLng } = algResult.rows[0];
 
-    // Validate location restriction and daily limit if device_id provided
-    if (device_id) {
+    // Editing requires a registered device with a known location — without it
+    // there is nothing to check the 40km restriction against, so we must
+    // reject rather than silently allow (fail closed, not open).
+    {
+      if (!device_id) {
+        return res.status(403).json({
+          error: '위치 정보 동의가 필요합니다.',
+          code: 'LOCATION_REQUIRED'
+        });
+      }
+
       const deviceQuery = usePostgres
         ? 'SELECT origin_lat, origin_lng FROM "Devices" WHERE device_id = $1'
         : 'SELECT origin_lat, origin_lng FROM Devices WHERE device_id = $1';
       const deviceResult = await pool.query(deviceQuery, [device_id]);
 
-      if (deviceResult.rows.length > 0) {
-        const { origin_lat, origin_lng } = deviceResult.rows[0];
-        if (origin_lat != null && origin_lng != null) {
-          const westwardKm = getWestwardKm(origin_lng, algLng, algLat);
-          if (westwardKm > 40) {
-            return res.status(403).json({
-              error: '시작 지점에서 서쪽으로 40km 이상 떨어진 알베르게는 변경할 수 없습니다.',
-              code: 'LOCATION_RESTRICTED'
-            });
-          }
-        }
+      const origin = deviceResult.rows[0];
+      if (!origin || origin.origin_lat == null || origin.origin_lng == null) {
+        return res.status(403).json({
+          error: '위치 정보 동의가 필요합니다.',
+          code: 'LOCATION_REQUIRED'
+        });
+      }
+
+      const westwardKm = getWestwardKm(origin.origin_lng, algLng, algLat);
+      if (westwardKm > 40) {
+        return res.status(403).json({
+          error: '시작 지점에서 서쪽으로 40km 이상 떨어진 알베르게는 변경할 수 없습니다.',
+          code: 'LOCATION_RESTRICTED'
+        });
       }
 
       // Daily limit: max 4 distinct albergues per device per day
@@ -575,13 +587,13 @@ app.post('/api/albergues/:id/comments', async (req, res) => {
   }
 });
 
-// ── Cron: Reset all statuses at 2am ────────────────────────────
-cron.schedule('0 2 * * *', async () => {
+// ── Cron: Reset all statuses at midnight ────────────────────────
+cron.schedule('0 0 * * *', async () => {
   console.log('⏰ Resetting all albergue statuses...');
   try {
     const query = usePostgres
-      ? 'UPDATE "Albergues" SET status = \'gray\', "lastUpdated" = \'새벽 2시 일괄 초기화됨\''
-      : 'UPDATE Albergues SET status = \'gray\', lastUpdated = \'새벽 2시 일괄 초기화됨\'';
+      ? 'UPDATE "Albergues" SET status = \'gray\', "lastUpdated" = \'자정 일괄 초기화됨\''
+      : 'UPDATE Albergues SET status = \'gray\', lastUpdated = \'자정 일괄 초기화됨\'';
     const result = await pool.query(query);
     console.log(`✅ Reset ${result.rowCount} albergues.`);
   } catch (err) {
@@ -597,9 +609,9 @@ async function resetStaleStatuses() {
   try {
     // Reset any albergue whose lastUpdated is not from today and not already gray
     const query = usePostgres
-      ? `UPDATE "Albergues" SET status = 'gray', "lastUpdated" = '새벽 2시 일괄 초기화됨'
+      ? `UPDATE "Albergues" SET status = 'gray', "lastUpdated" = '자정 일괄 초기화됨'
          WHERE status != 'gray' AND "lastUpdated" NOT LIKE $1`
-      : `UPDATE Albergues SET status = 'gray', lastUpdated = '새벽 2시 일괄 초기화됨'
+      : `UPDATE Albergues SET status = 'gray', lastUpdated = '자정 일괄 초기화됨'
          WHERE status != 'gray' AND lastUpdated NOT LIKE $1`;
     const result = await pool.query(query, [`${today}%`]);
     if (result.rowCount > 0) {
