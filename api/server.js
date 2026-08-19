@@ -309,11 +309,15 @@ const albergueRows = [
 ];
 
 // ── Helpers ─────────────────────────────────────────────────────
-function getWestwardKm(originLng, albergueLng, lat) {
-  // Returns km the albergue is west of origin (positive = west)
-  const lngDiff = originLng - albergueLng;
-  const kmPerDeg = 111.32 * Math.cos(lat * Math.PI / 180);
-  return lngDiff * kmPerDeg;
+const EDIT_RADIUS_KM = 5;
+
+function haversineKm(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
 function getMadridDate() {
@@ -464,7 +468,7 @@ app.post('/api/devices', async (req, res) => {
 
 // PATCH albergue status
 app.patch('/api/albergues/:id', async (req, res) => {
-  const { status, lastUpdated, device_id } = req.body;
+  const { status, lastUpdated, device_id, lat, lng } = req.body;
   const { id } = req.params;
   if (!status || !lastUpdated) {
     return res.status(400).json({ error: 'status and lastUpdated are required.' });
@@ -478,66 +482,54 @@ app.patch('/api/albergues/:id', async (req, res) => {
     if (algResult.rows.length === 0) return res.status(404).json({ error: 'Not found.' });
     const { lat: algLat, lng: algLng } = algResult.rows[0];
 
-    // Editing requires a registered device with a known location — without it
-    // there is nothing to check the 40km restriction against, so we must
-    // reject rather than silently allow (fail closed, not open).
+    // Editing requires the device's current position — without it there is
+    // nothing to check the radius against, so we must reject, not allow.
     {
-      if (!device_id) {
+      if (lat == null || lng == null) {
         return res.status(403).json({
-          error: '위치 정보 동의가 필요합니다.',
+          error: '현재 위치를 확인할 수 없습니다.',
           code: 'LOCATION_REQUIRED'
         });
       }
 
-      const deviceQuery = usePostgres
-        ? 'SELECT origin_lat, origin_lng FROM "Devices" WHERE device_id = $1'
-        : 'SELECT origin_lat, origin_lng FROM Devices WHERE device_id = $1';
-      const deviceResult = await pool.query(deviceQuery, [device_id]);
-
-      const origin = deviceResult.rows[0];
-      if (!origin || origin.origin_lat == null || origin.origin_lng == null) {
+      const distanceKm = haversineKm(lat, lng, algLat, algLng);
+      if (distanceKm > EDIT_RADIUS_KM) {
         return res.status(403).json({
-          error: '위치 정보 동의가 필요합니다.',
-          code: 'LOCATION_REQUIRED'
-        });
-      }
-
-      const westwardKm = getWestwardKm(origin.origin_lng, algLng, algLat);
-      if (westwardKm > 40) {
-        return res.status(403).json({
-          error: '시작 지점에서 서쪽으로 40km 이상 떨어진 알베르게는 변경할 수 없습니다.',
+          error: `현재 위치에서 ${EDIT_RADIUS_KM}km 이상 떨어진 알베르게는 변경할 수 없습니다.`,
           code: 'LOCATION_RESTRICTED'
         });
       }
 
       // Daily limit: max 4 distinct albergues per device per day
-      const today = getMadridDate();
-      const alreadyUpdatedQuery = usePostgres
-        ? 'SELECT 1 FROM "DailyUpdates" WHERE device_id = $1 AND albergue_id = $2 AND update_date = $3'
-        : 'SELECT 1 FROM DailyUpdates WHERE device_id = $1 AND albergue_id = $2 AND update_date = $3';
-      const alreadyUpdated = await pool.query(alreadyUpdatedQuery, [device_id, id, today]);
+      if (device_id) {
+        const today = getMadridDate();
+        const alreadyUpdatedQuery = usePostgres
+          ? 'SELECT 1 FROM "DailyUpdates" WHERE device_id = $1 AND albergue_id = $2 AND update_date = $3'
+          : 'SELECT 1 FROM DailyUpdates WHERE device_id = $1 AND albergue_id = $2 AND update_date = $3';
+        const alreadyUpdated = await pool.query(alreadyUpdatedQuery, [device_id, id, today]);
 
-      if (alreadyUpdated.rows.length === 0) {
-        // This is a new albergue for today — check the count
-        const countQuery = usePostgres
-          ? 'SELECT COUNT(*) as count FROM "DailyUpdates" WHERE device_id = $1 AND update_date = $2'
-          : 'SELECT COUNT(*) as count FROM DailyUpdates WHERE device_id = $1 AND update_date = $2';
-        const countResult = await pool.query(countQuery, [device_id, today]);
-        const dailyCount = parseInt(countResult.rows[0]?.count || 0);
+        if (alreadyUpdated.rows.length === 0) {
+          // This is a new albergue for today — check the count
+          const countQuery = usePostgres
+            ? 'SELECT COUNT(*) as count FROM "DailyUpdates" WHERE device_id = $1 AND update_date = $2'
+            : 'SELECT COUNT(*) as count FROM DailyUpdates WHERE device_id = $1 AND update_date = $2';
+          const countResult = await pool.query(countQuery, [device_id, today]);
+          const dailyCount = parseInt(countResult.rows[0]?.count || 0);
 
-        if (dailyCount >= 4) {
-          return res.status(429).json({
-            error: '오늘 변경 가능한 알베르게 수(4개)를 초과했습니다.',
-            code: 'DAILY_LIMIT_REACHED',
-            remaining: 0
-          });
+          if (dailyCount >= 4) {
+            return res.status(429).json({
+              error: '오늘 변경 가능한 알베르게 수(4개)를 초과했습니다.',
+              code: 'DAILY_LIMIT_REACHED',
+              remaining: 0
+            });
+          }
+
+          // Record this update
+          const insertDailyQuery = usePostgres
+            ? 'INSERT INTO "DailyUpdates" (device_id, albergue_id, update_date) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING'
+            : 'INSERT OR IGNORE INTO DailyUpdates (device_id, albergue_id, update_date) VALUES ($1, $2, $3)';
+          await pool.query(insertDailyQuery, [device_id, id, today]);
         }
-
-        // Record this update
-        const insertDailyQuery = usePostgres
-          ? 'INSERT INTO "DailyUpdates" (device_id, albergue_id, update_date) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING'
-          : 'INSERT OR IGNORE INTO DailyUpdates (device_id, albergue_id, update_date) VALUES ($1, $2, $3)';
-        await pool.query(insertDailyQuery, [device_id, id, today]);
       }
     }
 

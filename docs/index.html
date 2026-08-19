@@ -59,9 +59,27 @@
         }
         .logo-area .camino-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
         .logo-area .tracker-text { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; opacity: 0.8; }
-        .header-icons { display: flex; gap: 20px; color: #64748b; }
+        .header-icons { display: flex; align-items: center; gap: 20px; color: #64748b; }
         .header-icons span { cursor: pointer; font-size: 1.4rem; transition: color 0.2s; }
         .header-icons span:hover { color: var(--primary); }
+        .page-lang-toggle { display: flex; gap: 6px; }
+        .page-lang-btn {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 4px 9px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .page-lang-btn.active, .page-lang-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(232,160,0,0.08);
+        }
 
         /* Modals (General) */
         .modal {
@@ -690,10 +708,14 @@
             </div>
         </div>
         <div class="header-icons">
-            <span title="Community Board" onclick="window.location.href='community.html'">💬</span>
-            <span title="Share" onclick="shareApp()">🔗</span>
-            <span title="Information" onclick="openModal('info-modal')">ℹ️</span>
-            <span title="Contact" onclick="openModal('contact-modal')">✉️</span>
+            <div class="page-lang-toggle">
+                <button class="page-lang-btn active" id="page-lang-ko" onclick="setPageLang('KO')">KO</button>
+                <button class="page-lang-btn" id="page-lang-en" onclick="setPageLang('EN')">EN</button>
+            </div>
+            <span id="icon-community" title="Community Board" onclick="window.location.href='community.html'">💬</span>
+            <span id="icon-share" title="Share" onclick="shareApp()">🔗</span>
+            <span id="icon-info" title="Information" onclick="openModal('info-modal')">ℹ️</span>
+            <span id="icon-contact" title="Contact" onclick="openModal('contact-modal')">✉️</span>
         </div>
     </header>
 
@@ -771,7 +793,7 @@
     <div class="main-container">
         <div id="map"></div>
         <div id="mobile-overlay" onclick="toggleSidebar(false)"></div>
-        <div class="geo-btn" title="My Location" onclick="locateMe()">
+        <div class="geo-btn" id="geo-btn" title="My Location" onclick="locateMe()">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M12.5 2.25C12.5 1.83579 12.1642 1.5 11.75 1.5C11.3358 1.5 11 1.83579 11 2.25V3.54419C7.64378 3.91499 5 6.75503 5 10.2188C5 14.6644 10.3106 20.7368 11.2929 21.7071C11.6834 22.0976 12.3166 22.0976 12.7071 21.7071C13.6894 20.7368 19 14.6644 19 10.2188C19 6.75503 16.3562 3.91499 13 3.54419V2.25ZM11.75 13C10.2312 13 9 11.7688 9 10.25C9 8.73122 10.2312 7.5 11.75 7.5C13.2688 7.5 14.5 8.73122 14.5 10.25C14.5 11.7688 13.2688 13 11.75 13Z" fill="currentColor"/>
             </svg>
@@ -786,8 +808,8 @@
             <div class="sidebar-header">
                 <div class="close-drawer" onclick="toggleSidebar(false)">&times;</div>
                 <div class="sidebar-title">
-                    <h2 id="list-count">숙소 목록 / Albergues (0)</h2>
-                    <button class="refresh-btn" onclick="renderAll()" title="새로고침 / Refresh">🔄</button>
+                    <h2 id="list-count">숙소 목록 (0)</h2>
+                    <button class="refresh-btn" id="refresh-btn" onclick="renderAll()" title="새로고침">🔄</button>
                 </div>
                 <div class="search-box">
                     <input type="text" id="search-input" placeholder="도시명(eng) 검색 (예: Burgos)..." oninput="handleSearch()">
@@ -834,69 +856,40 @@
         let searchQuery = '';
         let currentSelectedId = null;
 
-        // ── Location Consent Gating ──────────────────────────────────────
-        const ORIGIN_LAT_KEY = 'munibed_origin_lat';
-        const ORIGIN_LNG_KEY = 'munibed_origin_lng';
-        let userOrigin = null;
-        {
-            const storedLat = localStorage.getItem(ORIGIN_LAT_KEY);
-            const storedLng = localStorage.getItem(ORIGIN_LNG_KEY);
-            if (storedLat && storedLng) {
-                userOrigin = { lat: parseFloat(storedLat), lng: parseFloat(storedLng) };
-            }
+        // ── Live Location: only albergues within EDIT_RADIUS_KM are editable ──
+        // No separate consent step — this is just the browser's normal geolocation
+        // prompt, requested silently on load. Position is never persisted; a
+        // pilgrim's location changes daily, so each visit re-checks the real spot.
+        const EDIT_RADIUS_KM = 5;
+        let currentPos = null; // { lat, lng }
+
+        function haversineKm(lat1, lng1, lat2, lng2) {
+            const R = 6371;
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) ** 2 +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
 
-        function saveOrigin(lat, lng) {
-            userOrigin = { lat, lng };
-            localStorage.setItem(ORIGIN_LAT_KEY, lat);
-            localStorage.setItem(ORIGIN_LNG_KEY, lng);
-            renderAll({ keepScroll: true });
-        }
-
-        // Returns true if albergue is more than 40km west of user's origin
-        function isAlbergueTooFarWest(albergue) {
-            if (!userOrigin) return false;
-            const lngDiff = userOrigin.lng - albergue.lng; // positive = albergue is west
-            const avgLat = (userOrigin.lat + albergue.lat) / 2;
-            const kmPerLngDeg = 111.32 * Math.cos(avgLat * Math.PI / 180);
-            return lngDiff * kmPerLngDeg > 40;
-        }
-
-        // Editing requires location consent (userOrigin set) AND being within range of it.
-        // Without consent there is no origin to check against, so we must lock, not allow.
+        // Editing requires knowing where the user currently is, within range.
+        // Without a fix there is nothing to check against, so we must lock, not allow.
         function isLocationLocked(albergue) {
-            if (!userOrigin) return true;
-            return isAlbergueTooFarWest(albergue);
+            if (!currentPos) return true;
+            return haversineKm(currentPos.lat, currentPos.lng, albergue.lat, albergue.lng) > EDIT_RADIUS_KM;
         }
 
-        function showLocationBanner() {
-            if (localStorage.getItem('munibed_location_banner_dismissed')) return;
-            if (document.getElementById('locationBanner')) return;
-
-            const banner = document.createElement('div');
-            banner.id = 'locationBanner';
-            banner.style.cssText = 'background:#fffbeb;border-bottom:1px solid #fde68a;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#92400e;gap:8px;z-index:999';
-            banner.innerHTML = `
-                <span>📍 위치 정보를 허용하면 내 순례 구간의 알베르게만 수정할 수 있습니다.</span>
-                <div style="display:flex;gap:6px;flex-shrink:0">
-                    <button id="bannerAllow" style="background:#f59e0b;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">허용</button>
-                    <button id="bannerDismiss" style="background:none;border:none;color:#92400e;font-size:18px;cursor:pointer;padding:0 4px;line-height:1">×</button>
-                </div>`;
-
-            const header = document.querySelector('header');
-            if (header && header.nextSibling) header.parentNode.insertBefore(banner, header.nextSibling);
-            else if (header) header.parentNode.appendChild(banner);
-
-            document.getElementById('bannerAllow').addEventListener('click', () => {
+        function refreshCurrentPosition() {
+            return new Promise(resolve => {
+                if (!navigator.geolocation) { resolve(null); return; }
                 navigator.geolocation.getCurrentPosition(
-                    pos => { saveOrigin(pos.coords.latitude, pos.coords.longitude); banner.remove(); },
-                    () => alert('위치 정보를 가져올 수 없습니다. 브라우저 설정에서 권한을 허용해주세요.'),
-                    { enableHighAccuracy: true, timeout: 10000 }
+                    pos => {
+                        currentPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        resolve(currentPos);
+                    },
+                    () => resolve(null),
+                    { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
                 );
-            });
-            document.getElementById('bannerDismiss').addEventListener('click', () => {
-                localStorage.setItem('munibed_location_banner_dismissed', '1');
-                banner.remove();
             });
         }
 
@@ -904,11 +897,82 @@
         const listCountEl = document.getElementById('list-count');
         const alphabetFilterEl = document.getElementById('alphabet-filter');
 
-        const STATUS_MAP = {
-            'green': { label: '여유 (Available)', class: 'badge-green', text: '여유' },
-            'red': { label: '만실 (Full)', class: 'badge-red', text: '만실' },
-            'gray': { label: '미확인 (Unknown)', class: 'badge-gray', text: '미확인' }
+        const STATUS_MAP_BY_LANG = {
+            KO: {
+                green: { text: '여유', class: 'badge-green' },
+                red: { text: '만실', class: 'badge-red' },
+                gray: { text: '미확인', class: 'badge-gray' }
+            },
+            EN: {
+                green: { text: 'Available', class: 'badge-green' },
+                red: { text: 'Full', class: 'badge-red' },
+                gray: { text: 'Unknown', class: 'badge-gray' }
+            }
         };
+        function getStatusMap() { return STATUS_MAP_BY_LANG[pageLang]; }
+
+        // ── Page-wide language toggle ────────────────────────────────────
+        const PAGE_STRINGS = {
+            KO: {
+                listHeader: count => `숙소 목록 (${count})`,
+                searchPlaceholder: '도시명 검색 (예: Burgos)...',
+                refreshTitle: '새로고침',
+                noResultsTitle: '검색 결과가 없습니다',
+                noResultsBody: '다른 검색어나 알파벳을 선택해주세요.',
+                communityTitle: '커뮤니티 게시판',
+                shareTitle: '공유하기',
+                infoTitle: '정보',
+                contactTitle: '문의하기',
+                myLocationTitle: '내 위치',
+                statusPrefix: '상태: ',
+                checkingLocation: '📍 위치 확인 중...',
+                tooFarLocked: radius => `🔒 현재 위치에서 ${radius}km 이상 떨어짐 — 수정 불가`,
+                yourLocationPopup: '📍 현재 위치',
+                mobileHint: '🔍 버튼을 눌러 목록을 보세요!',
+            },
+            EN: {
+                listHeader: count => `Albergues (${count})`,
+                searchPlaceholder: 'Search by city (e.g. Burgos)...',
+                refreshTitle: 'Refresh',
+                noResultsTitle: 'No results found',
+                noResultsBody: 'Try a different search term or letter.',
+                communityTitle: 'Community Board',
+                shareTitle: 'Share',
+                infoTitle: 'Information',
+                contactTitle: 'Contact',
+                myLocationTitle: 'My Location',
+                statusPrefix: 'Status: ',
+                checkingLocation: '📍 Checking location...',
+                tooFarLocked: radius => `🔒 More than ${radius}km from your current location — cannot update`,
+                yourLocationPopup: '📍 Your Location',
+                mobileHint: '🔍 Tap the icon to see the hostel list!',
+            }
+        };
+
+        let pageLang = localStorage.getItem('munibed_page_lang') === 'EN' ? 'EN' : 'KO';
+
+        function setPageLang(lang) {
+            pageLang = lang;
+            localStorage.setItem('munibed_page_lang', lang);
+            document.documentElement.lang = lang.toLowerCase();
+
+            const t = PAGE_STRINGS[lang];
+            document.getElementById('search-input').placeholder = t.searchPlaceholder;
+            document.getElementById('refresh-btn').title = t.refreshTitle;
+            document.getElementById('icon-community').title = t.communityTitle;
+            document.getElementById('icon-share').title = t.shareTitle;
+            document.getElementById('icon-info').title = t.infoTitle;
+            document.getElementById('icon-contact').title = t.contactTitle;
+            document.getElementById('geo-btn').title = t.myLocationTitle;
+            document.getElementById('page-lang-ko').classList.toggle('active', lang === 'KO');
+            document.getElementById('page-lang-en').classList.toggle('active', lang === 'EN');
+
+            // Keep the info/contact modals in sync with the same language
+            switchInfoLanguage(lang);
+            switchContactLanguage(lang);
+
+            renderAll({ keepScroll: true });
+        }
         const LOCAL_STATE_KEY = 'munibed_state';
         const LOCAL_STATE_DAY_KEY = 'munibed_state_day';
         const LOCAL_STATE_SCHEMA_KEY = 'munibed_state_schema';
@@ -1006,15 +1070,22 @@
             localStorage.setItem(LOCAL_STATE_SCHEMA_KEY, LOCAL_STATE_SCHEMA_VERSION);
         }
 
-        function updateStatus(id, newStatus) {
+        async function updateStatus(id, newStatus) {
             const albergue = alberguesData.find(a => a.id === id);
-            if (!userOrigin) {
-                alert('위치 정보 동의가 필요합니다. 상단 안내 배너에서 "허용"을 눌러주세요.\n(Location permission is required to update status. Tap "Allow" in the banner above.)');
-                showLocationBanner();
+
+            if (!currentPos) await refreshCurrentPosition(); // one more live attempt, e.g. after a slow first fix
+
+            if (!currentPos) {
+                alert(pageLang === 'KO'
+                    ? '현재 위치를 확인할 수 없습니다. 위치 서비스를 켜주고 다시 시도해주세요.'
+                    : 'Could not determine your location. Please enable location services and try again.');
+                renderAll({ keepScroll: true });
                 return;
             }
-            if (albergue && isAlbergueTooFarWest(albergue)) {
-                alert('이 알베르게는 시작 지점에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
+            if (albergue && isLocationLocked(albergue)) {
+                alert(pageLang === 'KO'
+                    ? `이 알베르게는 현재 위치에서 ${EDIT_RADIUS_KM}km 이상 떨어져 있어 상태를 변경할 수 없습니다.`
+                    : `Cannot update albergues more than ${EDIT_RADIUS_KM}km from your current location.`);
                 return;
             }
 
@@ -1097,7 +1168,7 @@
                 return cityA.localeCompare(cityB, 'en', { sensitivity: 'base' });
             });
 
-            listCountEl.textContent = `숙소 목록 / Albergues (${filtered.length})`;
+            listCountEl.textContent = PAGE_STRINGS[pageLang].listHeader(filtered.length);
 
             // Preserve scroll position if needed
             const scrollPos = options.keepScroll ? hostelListEl.scrollTop : 0;
@@ -1108,8 +1179,8 @@
                 hostelListEl.innerHTML = `
                     <div style="padding: 40px 20px; text-align: center; color: #94a3b8;">
                         <div style="font-size: 3rem; margin-bottom: 16px;">🔍</div>
-                        <div style="font-weight: 800; font-size: 1.1rem; color: #475569; margin-bottom: 8px;">검색 결과가 없습니다</div>
-                        <p style="font-size: 0.95rem; line-height: 1.5;">다른 검색어나 알파벳을 선택해주세요.</p>
+                        <div style="font-weight: 800; font-size: 1.1rem; color: #475569; margin-bottom: 8px;">${PAGE_STRINGS[pageLang].noResultsTitle}</div>
+                        <p style="font-size: 0.95rem; line-height: 1.5;">${PAGE_STRINGS[pageLang].noResultsBody}</p>
                     </div>
                 `;
                 return;
@@ -1131,19 +1202,21 @@
                     hostelListEl.appendChild(groupTitle);
                 }
 
-                const status = STATUS_MAP[item.status] || STATUS_MAP['gray'];
+                const status = getStatusMap()[item.status] || getStatusMap().gray;
                 const card = document.createElement('div');
                 card.id = `card-${item.id}`;
                 card.className = `hostel-card ${currentSelectedId === item.id ? 'selected' : ''}`;
                 const locked = isLocationLocked(item);
                 const actionsHtml = locked
-                    ? `<div class="lock-notice">${!userOrigin ? '📍 위치 정보 동의 필요' : '🔒 시작 지점 서쪽 40km 초과'} — 수정 불가</div>`
-                    : `<button class="btn-update green" onclick="event.stopPropagation(); updateStatus(${item.id}, 'green')">여유<span>(Available)</span></button>
-                       <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(${item.id}, 'red')">만실<span>(Full)</span></button>`;
+                    ? !currentPos
+                        ? `<div class="lock-notice">${PAGE_STRINGS[pageLang].checkingLocation}</div>`
+                        : `<div class="lock-notice">${PAGE_STRINGS[pageLang].tooFarLocked(EDIT_RADIUS_KM)}</div>`
+                    : `<button class="btn-update green" onclick="event.stopPropagation(); updateStatus(${item.id}, 'green')">${getStatusMap().green.text}</button>
+                       <button class="btn-update red" onclick="event.stopPropagation(); updateStatus(${item.id}, 'red')">${getStatusMap().red.text}</button>`;
                 card.innerHTML = `
                     <div class="card-header" onclick="focusHostel(${item.id})">
                         <div class="hostel-name">${item.name}</div>
-                        <div class="status-badge ${status.class}">${status.label.split(' ')[1]} (${status.text})</div>
+                        <div class="status-badge ${status.class}">${status.text}</div>
                     </div>
                     <div class="update-item">
                         <span>🕒</span> <span id="time-${item.id}">${item.lastUpdated}</span>
@@ -1183,7 +1256,7 @@
                     iconSize: [18, 18]
                 });
                 const marker = L.marker([item.lat, item.lng], { icon }).addTo(map);
-                marker.bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-status">상태: ${STATUS_MAP[item.status]?.label || '미확인'}</div>`);
+                marker.bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-status">${PAGE_STRINGS[pageLang].statusPrefix}${(getStatusMap()[item.status] || getStatusMap().gray).text}</div>`);
                 marker.on('click', () => {
                     syncListToMarker(item.id);
                 });
@@ -1239,19 +1312,21 @@
             const actionsEl = document.getElementById('sheet-actions');
             
             nameEl.textContent = item.name;
-            const status = STATUS_MAP[item.status] || STATUS_MAP['gray'];
+            const status = getStatusMap()[item.status] || getStatusMap().gray;
             statusEl.innerHTML = `
                 <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="status-badge ${status.class}">${status.label.split(' ')[1]} (${status.text})</span>
+                    <span class="status-badge ${status.class}">${status.text}</span>
                     <span style="font-size:0.85rem; color:#94a3b8;">🕒 ${item.lastUpdated}</span>
                 </div>
             `;
-            
+
             const sheetLocked = isLocationLocked(item);
             actionsEl.innerHTML = sheetLocked
-                ? `<div class="lock-notice">${!userOrigin ? '📍 위치 정보 동의 필요' : '🔒 시작 지점 서쪽 40km 초과'} — 수정 불가</div>`
-                : `<button class="btn-update green" style="padding:12px;" onclick="updateStatus(${item.id}, 'green'); closeBottomSheet()">여유<span>(Available)</span></button>
-                   <button class="btn-update red" style="padding:12px;" onclick="updateStatus(${item.id}, 'red'); closeBottomSheet()">만실<span>(Full)</span></button>`;
+                ? !currentPos
+                    ? `<div class="lock-notice">${PAGE_STRINGS[pageLang].checkingLocation}</div>`
+                    : `<div class="lock-notice">${PAGE_STRINGS[pageLang].tooFarLocked(EDIT_RADIUS_KM)}</div>`
+                : `<button class="btn-update green" style="padding:12px;" onclick="updateStatus(${item.id}, 'green'); closeBottomSheet()">${getStatusMap().green.text}</button>
+                   <button class="btn-update red" style="padding:12px;" onclick="updateStatus(${item.id}, 'red'); closeBottomSheet()">${getStatusMap().red.text}</button>`;
             
             sheet.classList.add('active');
         }
@@ -1263,7 +1338,9 @@
         async function shareApp() {
             const shareData = {
                 title: 'MuniBed - Camino Albergue Tracker',
-                text: '산티아고 순례길 알베르게 실시간 현황을 확인해보세요! Check real-time Albergue status on Camino!',
+                text: pageLang === 'KO'
+                    ? '산티아고 순례길 알베르게 실시간 현황을 확인해보세요!'
+                    : 'Check real-time Albergue status on the Camino de Santiago!',
                 url: window.location.href
             };
 
@@ -1272,7 +1349,7 @@
                     await navigator.share(shareData);
                 } else {
                     await navigator.clipboard.writeText(window.location.href);
-                    alert('주소가 복사되었습니다! Link copied to clipboard.');
+                    alert(pageLang === 'KO' ? '주소가 복사되었습니다!' : 'Link copied to clipboard!');
                 }
             } catch (err) {
                 console.error('Share failed:', err);
@@ -1428,52 +1505,36 @@
             }
         }
 
-        async function autoLocateOnLoad() {
+        function autoLocateOnLoad() {
+            // Silent — just the browser's normal geolocation prompt, no extra banner.
             if (!navigator.geolocation) return;
-
-            if (userOrigin) return; // Already have consent + saved origin from a previous visit
-
-            let permissionState = 'prompt';
-            try {
-                const perm = await navigator.permissions?.query({ name: 'geolocation' });
-                if (perm) permissionState = perm.state;
-            } catch { /* permissions API unsupported, fall through to prompt */ }
-
-            if (permissionState === 'denied') {
-                showLocationBanner();
-                return;
-            }
-
-            if (permissionState !== 'granted') {
-                // Don't auto-prompt on load — wait for explicit consent via the banner
-                showLocationBanner();
-                return;
-            }
-
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
-                    saveOrigin(latitude, longitude);
+                    currentPos = { lat: latitude, lng: longitude };
+                    renderAll({ keepScroll: true });
                     map.flyTo([latitude, longitude], 13, { duration: 1.5 });
                     L.circleMarker([latitude, longitude], {
                         radius: 8, fillColor: '#E8A000', color: '#fff',
                         weight: 3, opacity: 1, fillOpacity: 0.9
-                    }).addTo(map).bindPopup('📍 현재 위치 / Your Location');
+                    }).addTo(map).bindPopup(PAGE_STRINGS[pageLang].yourLocationPopup);
                 },
-                () => { showLocationBanner(); },
+                () => { /* denied or unavailable — cards just stay locked */ },
                 { enableHighAccuracy: true, timeout: 8000, maximumAge: 0 }
             );
         }
 
         function locateMe() {
             if (!navigator.geolocation) {
-                alert("Geolocation is not supported by your browser");
+                alert(pageLang === 'KO' ? '이 브라우저는 위치 정보를 지원하지 않습니다.' : 'Geolocation is not supported by your browser.');
                 return;
             }
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const { latitude, longitude } = position.coords;
+                    currentPos = { lat: latitude, lng: longitude };
+                    renderAll({ keepScroll: true });
                     map.flyTo([latitude, longitude], 15, { duration: 1.5 });
 
                     // Add a dot for user location
@@ -1484,10 +1545,10 @@
                         weight: 3,
                         opacity: 1,
                         fillOpacity: 0.8
-                    }).addTo(map).bindPopup("You are here").openPopup();
+                    }).addTo(map).bindPopup(PAGE_STRINGS[pageLang].yourLocationPopup).openPopup();
                 },
                 (error) => {
-                    alert("Unable to retrieve your location: " + error.message);
+                    alert((pageLang === 'KO' ? '위치 정보를 가져올 수 없습니다: ' : 'Unable to retrieve your location: ') + error.message);
                 }
             );
         }
@@ -1497,7 +1558,7 @@
                 const hint = document.createElement('div');
                 hint.id = 'mobile-hint';
                 hint.style.cssText = 'position:fixed; bottom:90px; right:20px; background:rgba(0,0,0,0.7); color:white; padding:10px 16px; border-radius:12px; font-size:0.85rem; z-index:4000; animation: fadeIn 0.5s;';
-                hint.innerHTML = '🔍 버튼을 눌러 목록을 보세요!<br>(Click icon for hostel list)';
+                hint.innerHTML = PAGE_STRINGS[pageLang].mobileHint;
                 document.body.appendChild(hint);
                 setTimeout(() => {
                     hint.style.opacity = '0';
@@ -1553,9 +1614,8 @@
             if (!map) initMap();
             // Initialize alphabet filter UI
             initAlphabetFilter();
-            // Load saved local states and render map/list unconditionally
-            loadLocalState();
-            renderAll();
+            // Apply saved/default language (also loads local state and renders map/list)
+            setPageLang(pageLang);
             scheduleDailyResetRender();
             // Auto-locate user on load (silent fail if permission denied)
             setTimeout(autoLocateOnLoad, 500);

@@ -25,7 +25,11 @@
                 </div>
             </div>
             <div class="header-actions">
-                <button class="info-btn" title="Community Board" onclick="window.location.href='community.html'">💬</button>
+                <div class="page-lang-toggle">
+                    <button class="page-lang-btn active" id="pageLangKo" onclick="setPageLang('KO')">KO</button>
+                    <button class="page-lang-btn" id="pageLangEn" onclick="setPageLang('EN')">EN</button>
+                </div>
+                <button class="info-btn" id="communityBtn" title="Community Board" onclick="window.location.href='community.html'">💬</button>
                 <button id="shareBtn" class="info-btn" title="Share App">🔗</button>
                 <button id="contactBtn" class="info-btn" title="Contact Developer">✉️</button>
                 <button id="infoBtn" class="info-btn" title="About MuniBed">ℹ️</button>
@@ -38,11 +42,11 @@
         <section class="map-section">
             <div id="map"></div>
             <div class="map-overlay-legend">
-                <div class="legend-item"><span class="dot dot-green"></span> 여유 (Available)</div>
-                <div class="legend-item"><span class="dot dot-red"></span> 만실 (Full)</div>
-                <div class="legend-item"><span class="dot dot-gray"></span> 미확인 (Unknown)</div>
+                <div class="legend-item"><span class="dot dot-green"></span> <span id="legendGreen">여유</span></div>
+                <div class="legend-item"><span class="dot dot-red"></span> <span id="legendRed">만실</span></div>
+                <div class="legend-item"><span class="dot dot-gray"></span> <span id="legendGray">미확인</span></div>
             </div>
-            <button id="locateBtn" class="locate-btn" title="현재 위치 찾기 / Locate Me">📍</button>
+            <button id="locateBtn" class="locate-btn" title="현재 위치 찾기">📍</button>
             <!-- Mobile Toggle Elements -->
             <div id="mobileOverlay" class="mobile-overlay"></div>
             <button id="mobileFab" class="mobile-fab">🔍</button>
@@ -51,13 +55,13 @@
         <!-- 리스트 영역 -->
         <section id="listSection" class="list-section">
             <div class="list-header">
-                <h2>숙소 목록 / Albergues (<span id="count">0</span>)</h2>
+                <h2><span id="listHeaderLabel">숙소 목록</span> (<span id="count">0</span>)</h2>
                 <div style="display:flex;align-items:center;gap:0.5rem">
                     <span id="dailyCounter" class="daily-counter"></span>
-                    <button id="refreshBtn" class="refresh-btn" title="새로고침 / Refresh">🔄</button>
+                    <button id="refreshBtn" class="refresh-btn" title="새로고침">🔄</button>
                 </div>
             </div>
-            
+
             <!-- 통합 검색 및 색인 영역 -->
             <div class="search-container">
                 <div class="autocomplete-wrapper">
@@ -71,7 +75,7 @@
 
             <div class="albergue-list" id="albergueList">
                 <!-- Data will be loaded here -->
-                <div class="loading">데이터를 불러오는 중입니다...</div>
+                <div class="loading" id="initialLoading">데이터를 불러오는 중입니다...</div>
             </div>
         </section>
     </main>

@@ -4,6 +4,105 @@ let markers = {};
 let alberguesData = [];
 let baseLayer;
 
+// ── Page-wide language toggle ─────────────────────────────────────
+const STATUS_TEXT_BY_LANG = {
+    KO: { green: '여유', red: '만실', gray: '미확인' },
+    EN: { green: 'Available', red: 'Full', gray: 'Unknown' }
+};
+
+const PAGE_STRINGS = {
+    KO: {
+        listHeaderLabel: '숙소 목록',
+        searchPlaceholder: '도시명 검색 (예: Burgos)...',
+        refreshTitle: '새로고침',
+        locateTitle: '현재 위치 찾기',
+        communityTitle: '커뮤니티 게시판',
+        shareTitle: '앱 공유하기',
+        contactTitle: '개발자에게 문의',
+        infoTitle: 'MuniBed 소개',
+        loadingText: '데이터를 불러오는 중입니다...',
+        loadErrorText: '데이터를 불러오지 못했습니다. 서버 연결을 확인해주세요.',
+        noResultsText: '검색 결과가 없습니다.',
+        checkingLocation: '📍 위치 확인 중...',
+        tooFarLocked: radius => `🔒 현재 위치에서 ${radius}km 이상 떨어짐 — 수정 불가`,
+        dailyLimitLocked: (used, total) => `📵 오늘 수정 한도 초과 (${used}/${total})`,
+        geoNotSupported: '지오로케이션(Geolocation)을 지원하지 않는 브라우저입니다.',
+        geoDenied: '위치 정보 공유가 거부되었습니다. 설정에서 권한을 허용해주세요.',
+        geoUnable: '위치 정보를 가져올 수 없습니다.',
+        locationRequired: '현재 위치를 확인할 수 없습니다. 위치 서비스를 켜주고 다시 시도해주세요.',
+        locationRestricted: radius => `이 알베르게는 현재 위치에서 ${radius}km 이상 떨어져 있어 상태를 변경할 수 없습니다.`,
+        dailyLimitReached: (limit) => `오늘 변경 가능한 알베르게 수(${limit}개)를 초과했습니다. 내일 다시 시도해주세요.`,
+        updateFailed: '상태 업데이트에 실패했습니다.',
+    },
+    EN: {
+        listHeaderLabel: 'Albergues',
+        searchPlaceholder: 'Search by city (e.g. Burgos)...',
+        refreshTitle: 'Refresh',
+        locateTitle: 'Find My Location',
+        communityTitle: 'Community Board',
+        shareTitle: 'Share App',
+        contactTitle: 'Contact Developer',
+        infoTitle: 'About MuniBed',
+        loadingText: 'Loading data...',
+        loadErrorText: 'Could not load data. Please check your connection.',
+        noResultsText: 'No results found.',
+        checkingLocation: '📍 Checking location...',
+        tooFarLocked: radius => `🔒 More than ${radius}km from your current location — cannot update`,
+        dailyLimitLocked: (used, total) => `📵 Daily limit reached (${used}/${total})`,
+        geoNotSupported: 'Geolocation is not supported by this browser.',
+        geoDenied: 'Location access was denied. Please allow it in your settings.',
+        geoUnable: 'Unable to retrieve your location.',
+        locationRequired: 'Could not determine your location. Please enable location services and try again.',
+        locationRestricted: radius => `Cannot update albergues more than ${radius}km from your current location.`,
+        dailyLimitReached: (limit) => `Daily update limit reached (${limit}). Please try again tomorrow.`,
+        updateFailed: 'Failed to update status.',
+    }
+};
+
+let pageLang = localStorage.getItem('munibed_page_lang') === 'EN' ? 'EN' : 'KO';
+
+function switchModalLang(modalId, lang) {
+    const contentPrefix = modalId === 'infoModal' ? 'content' : 'contactContent';
+    const container = document.querySelector(`#${modalId} .modal-actions`);
+    if (!container) return;
+    container.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.getAttribute('data-lang') === lang));
+    document.querySelectorAll(`#${modalId} .lang-content`).forEach(c => c.classList.remove('active'));
+    const target = document.getElementById(`${contentPrefix}${lang}`);
+    if (target) target.classList.add('active');
+}
+
+function setPageLang(lang) {
+    pageLang = lang;
+    localStorage.setItem('munibed_page_lang', lang);
+    document.documentElement.lang = lang.toLowerCase();
+
+    const t = PAGE_STRINGS[lang];
+    document.getElementById('listHeaderLabel').textContent = t.listHeaderLabel;
+    document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+    document.getElementById('refreshBtn').title = t.refreshTitle;
+    document.getElementById('locateBtn').title = t.locateTitle;
+    document.getElementById('communityBtn').title = t.communityTitle;
+    document.getElementById('shareBtn').title = t.shareTitle;
+    document.getElementById('contactBtn').title = t.contactTitle;
+    document.getElementById('infoBtn').title = t.infoTitle;
+    document.getElementById('legendGreen').textContent = STATUS_TEXT_BY_LANG[lang].green;
+    document.getElementById('legendRed').textContent = STATUS_TEXT_BY_LANG[lang].red;
+    document.getElementById('legendGray').textContent = STATUS_TEXT_BY_LANG[lang].gray;
+    document.getElementById('pageLangKo').classList.toggle('active', lang === 'KO');
+    document.getElementById('pageLangEn').classList.toggle('active', lang === 'EN');
+    const initialLoadingEl = document.getElementById('initialLoading');
+    if (initialLoadingEl) initialLoadingEl.textContent = t.loadingText;
+
+    // Keep the info/contact modals in sync with the same language
+    switchModalLang('infoModal', lang);
+    switchModalLang('contactModal', lang);
+
+    if (alberguesData.length > 0) {
+        renderMapMarkers();
+        renderList();
+    }
+}
+
 // ── Daily Update Limit ──────────────────────────────────────────
 const DAILY_LIMIT = 4;
 
@@ -48,9 +147,8 @@ function updateDailyCounter() {
     }
 }
 
-// ── Device Identity & Location Restriction ──────────────────────
+// ── Device Identity (for daily update limit) ─────────────────────
 let deviceId;
-let userOrigin = null; // { lat, lng } - first launch location
 
 function getOrCreateDeviceId() {
     let id = localStorage.getItem('munibed_device_id');
@@ -64,109 +162,40 @@ function getOrCreateDeviceId() {
     return id;
 }
 
-// Returns true if albergue is more than 40km west of user's origin
-function isAlbergueTooFarWest(albergue) {
-    if (!userOrigin) return false;
-    const lngDiff = userOrigin.lng - albergue.lng; // positive = albergue is west
-    const avgLat = (userOrigin.lat + albergue.lat) / 2;
-    const kmPerLngDeg = 111.32 * Math.cos(avgLat * Math.PI / 180);
-    return lngDiff * kmPerLngDeg > 40;
+// ── Live Location: only albergues within EDIT_RADIUS_KM are editable ──
+// No separate consent step — this is just the browser's normal geolocation
+// prompt, requested silently on load. Position is never persisted; a
+// pilgrim's location changes daily, so each visit re-checks the real spot.
+const EDIT_RADIUS_KM = 5;
+let currentPos = null; // { lat, lng }
+
+function haversineKm(lat1, lng1, lat2, lng2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLng = (lng2 - lng1) * Math.PI / 180;
+    const a = Math.sin(dLat / 2) ** 2 +
+        Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLng / 2) ** 2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-// Editing requires location consent (userOrigin set) AND being within range of it.
-// Without consent there is no origin to check against, so we must lock, not allow.
+// Editing requires knowing where the user currently is, within range.
+// Without a fix there is nothing to check against, so we must lock, not allow.
 function isLocationLocked(albergue) {
-    if (!userOrigin) return true;
-    return isAlbergueTooFarWest(albergue);
+    if (!currentPos) return true;
+    return haversineKm(currentPos.lat, currentPos.lng, albergue.lat, albergue.lng) > EDIT_RADIUS_KM;
 }
 
-async function registerDevice(lat, lng) {
-    try {
-        const body = { device_id: deviceId };
-        if (lat != null && lng != null) { body.origin_lat = lat; body.origin_lng = lng; }
-        const resp = await fetch('/api/devices', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(body)
-        });
-        const data = await resp.json();
-        // If device already existed with an origin, sync it locally
-        if (!data.registered && data.origin_lat != null && userOrigin == null) {
-            userOrigin = { lat: data.origin_lat, lng: data.origin_lng };
-            localStorage.setItem('munibed_origin_lat', data.origin_lat);
-            localStorage.setItem('munibed_origin_lng', data.origin_lng);
-            renderList();
-        }
-    } catch (err) {
-        console.error('Device registration failed:', err);
-    }
-}
-
-function saveOrigin(lat, lng) {
-    userOrigin = { lat, lng };
-    localStorage.setItem('munibed_origin_lat', lat);
-    localStorage.setItem('munibed_origin_lng', lng);
-    renderList();
-    registerDevice(lat, lng);
-}
-
-async function initDeviceOrigin() {
-    deviceId = getOrCreateDeviceId();
-
-    const storedLat = localStorage.getItem('munibed_origin_lat');
-    const storedLng = localStorage.getItem('munibed_origin_lng');
-    if (storedLat && storedLng) {
-        userOrigin = { lat: parseFloat(storedLat), lng: parseFloat(storedLng) };
-        registerDevice(userOrigin.lat, userOrigin.lng);
-        return;
-    }
-
-    // First launch: silently get location if permission already granted
-    if (!navigator.geolocation) { registerDevice(null, null); return; }
-    try {
-        const perm = await navigator.permissions?.query({ name: 'geolocation' });
-        if (perm?.state === 'granted') {
-            navigator.geolocation.getCurrentPosition(
-                pos => saveOrigin(pos.coords.latitude, pos.coords.longitude),
-                () => { registerDevice(null, null); showLocationBanner(); }
-            );
-        } else {
-            showLocationBanner();
-            registerDevice(null, null);
-        }
-    } catch {
-        showLocationBanner();
-        registerDevice(null, null);
-    }
-}
-
-function showLocationBanner() {
-    if (localStorage.getItem('munibed_location_banner_dismissed')) return;
-    if (document.getElementById('locationBanner')) return;
-
-    const banner = document.createElement('div');
-    banner.id = 'locationBanner';
-    banner.style.cssText = 'background:#fffbeb;border-bottom:1px solid #fde68a;padding:0.5rem 1rem;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#92400e;gap:8px;z-index:999;flex-shrink:0';
-    banner.innerHTML = `
-        <span>📍 위치 정보를 허용하면 내 순례 구간의 알베르게만 수정할 수 있습니다.</span>
-        <div style="display:flex;gap:6px;flex-shrink:0">
-            <button id="bannerAllow" style="background:#f59e0b;color:white;border:none;padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;font-family:inherit">허용</button>
-            <button id="bannerDismiss" style="background:none;border:none;color:#92400e;font-size:18px;cursor:pointer;padding:0 4px;line-height:1">×</button>
-        </div>`;
-
-    const header = document.querySelector('.app-header');
-    if (header?.nextSibling) header.parentNode.insertBefore(banner, header.nextSibling);
-
-    document.getElementById('bannerAllow').addEventListener('click', () => {
+function refreshCurrentPosition() {
+    return new Promise(resolve => {
+        if (!navigator.geolocation) { resolve(null); return; }
         navigator.geolocation.getCurrentPosition(
-            pos => { saveOrigin(pos.coords.latitude, pos.coords.longitude); banner.remove(); },
-            () => alert('위치 정보를 가져올 수 없습니다. 브라우저 설정에서 권한을 허용해주세요.'),
-            { enableHighAccuracy: true, timeout: 10000 }
+            pos => {
+                currentPos = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                resolve(currentPos);
+            },
+            () => resolve(null),
+            { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
         );
-    });
-    document.getElementById('bannerDismiss').addEventListener('click', () => {
-        localStorage.setItem('munibed_location_banner_dismissed', '1');
-        banner.remove();
     });
 }
 
@@ -203,8 +232,8 @@ async function fetchAlbergues() {
         renderList();
     } catch (error) {
         console.error('API 로드 실패:', error);
-        document.getElementById('albergueList').innerHTML = 
-            '<div class="loading" style="color:var(--red)">데이터를 불러오지 못했습니다. 서버 연결을 확인해주세요.</div>';
+        document.getElementById('albergueList').innerHTML =
+            `<div class="loading" style="color:var(--red)">${PAGE_STRINGS[pageLang].loadErrorText}</div>`;
     }
 }
 
@@ -266,7 +295,7 @@ function renderList(dataToRender = alberguesData) {
     listContainer.innerHTML = '';
 
     if (dataToRender.length === 0) {
-        listContainer.innerHTML = '<div class="loading">검색 결과가 없습니다.</div>';
+        listContainer.innerHTML = `<div class="loading">${PAGE_STRINGS[pageLang].noResultsText}</div>`;
         return;
     }
 
@@ -295,15 +324,15 @@ function renderList(dataToRender = alberguesData) {
 
         const badgeClass = `bg-${item.status}`;
         const statusText = getStatusText(item.status);
-        const noOrigin = !userOrigin;
+        const noFix = !currentPos;
         const locationLocked = isLocationLocked(item);
         const todaySet = getTodayUpdatedAlbergues();
         const dailyLimitLocked = !todaySet.has(item.id) && todaySet.size >= DAILY_LIMIT;
 
         const actionButtons = `
-            <button class="status-btn btn-green ${item.status === 'green' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'green')">여유<br>(Available)</button>
-            <button class="status-btn btn-red ${item.status === 'red' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'red')">만실<br>(Full)</button>
-            <button class="status-btn btn-gray ${item.status === 'gray' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'gray')">미확인<br>(Unknown)</button>`;
+            <button class="status-btn btn-green ${item.status === 'green' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'green')">${STATUS_TEXT_BY_LANG[pageLang].green}</button>
+            <button class="status-btn btn-red ${item.status === 'red' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'red')">${STATUS_TEXT_BY_LANG[pageLang].red}</button>
+            <button class="status-btn btn-gray ${item.status === 'gray' ? 'active' : ''}" onclick="updateStatus(${item.id}, 'gray')">${STATUS_TEXT_BY_LANG[pageLang].gray}</button>`;
 
         card.innerHTML = `
             <div class="card-header">
@@ -315,11 +344,11 @@ function renderList(dataToRender = alberguesData) {
             </div>
             <div class="card-actions" onclick="event.stopPropagation()">
                 ${locationLocked
-                    ? noOrigin
-                        ? `<div class="lock-notice">📍 위치 정보 동의 필요 — 수정 불가</div>`
-                        : `<div class="lock-notice">🔒 시작 지점 서쪽 40km 초과 — 수정 불가</div>`
+                    ? noFix
+                        ? `<div class="lock-notice">${PAGE_STRINGS[pageLang].checkingLocation}</div>`
+                        : `<div class="lock-notice">${PAGE_STRINGS[pageLang].tooFarLocked(EDIT_RADIUS_KM)}</div>`
                     : dailyLimitLocked
-                        ? `<div class="lock-notice">📵 오늘 수정 한도 초과 (${DAILY_LIMIT}/${DAILY_LIMIT})</div>`
+                        ? `<div class="lock-notice">${PAGE_STRINGS[pageLang].dailyLimitLocked(DAILY_LIMIT, DAILY_LIMIT)}</div>`
                         : actionButtons
                 }
             </div>
@@ -331,20 +360,23 @@ function renderList(dataToRender = alberguesData) {
 // Update Status API
 async function updateStatus(id, newStatus) {
     const albergue = alberguesData.find(a => a.id === id);
-    if (!userOrigin) {
-        alert('위치 정보 동의가 필요합니다. 상단 안내 배너에서 "허용"을 눌러주세요.\n(Location permission is required to update status. Tap "Allow" in the banner above.)');
-        showLocationBanner();
+
+    if (!currentPos) await refreshCurrentPosition(); // one more live attempt, e.g. after a slow first fix
+
+    if (!currentPos) {
+        alert(PAGE_STRINGS[pageLang].locationRequired);
+        renderList();
         return;
     }
-    if (albergue && isAlbergueTooFarWest(albergue)) {
-        alert('이 알베르게는 처음 실행 위치에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
+    if (albergue && isLocationLocked(albergue)) {
+        alert(PAGE_STRINGS[pageLang].locationRestricted(EDIT_RADIUS_KM));
         return;
     }
 
     // Daily limit check (client-side fast path)
     const todaySet = getTodayUpdatedAlbergues();
     if (!todaySet.has(id) && todaySet.size >= DAILY_LIMIT) {
-        alert(`오늘 변경 가능한 알베르게 수(${DAILY_LIMIT}개)를 초과했습니다. 내일 다시 시도해주세요.\n(Daily update limit reached. Try again tomorrow.)`);
+        alert(PAGE_STRINGS[pageLang].dailyLimitReached(DAILY_LIMIT));
         return;
     }
 
@@ -352,7 +384,7 @@ async function updateStatus(id, newStatus) {
     const formattedDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
     try {
-        const body = { status: newStatus, lastUpdated: formattedDate };
+        const body = { status: newStatus, lastUpdated: formattedDate, lat: currentPos.lat, lng: currentPos.lng };
         if (deviceId) body.device_id = deviceId;
 
         const response = await fetch(`${API_URL}/${id}`, {
@@ -375,14 +407,13 @@ async function updateStatus(id, newStatus) {
         } else {
             const errData = await response.json().catch(() => ({}));
             if (errData.code === 'LOCATION_REQUIRED') {
-                alert('위치 정보 동의가 필요합니다. 상단 안내 배너에서 "허용"을 눌러주세요.\n(Location permission is required to update status. Tap "Allow" in the banner above.)');
-                showLocationBanner();
+                alert(PAGE_STRINGS[pageLang].locationRequired);
             } else if (errData.code === 'LOCATION_RESTRICTED') {
-                alert('이 알베르게는 처음 실행 위치에서 서쪽으로 40km 이상 떨어져 있어 상태를 변경할 수 없습니다.\n(Cannot update albergues more than 40km west of your start point.)');
+                alert(PAGE_STRINGS[pageLang].locationRestricted(EDIT_RADIUS_KM));
             } else if (errData.code === 'DAILY_LIMIT_REACHED') {
-                alert(`오늘 변경 가능한 알베르게 수(${DAILY_LIMIT}개)를 초과했습니다. 내일 다시 시도해주세요.\n(Daily update limit reached. Try again tomorrow.)`);
+                alert(PAGE_STRINGS[pageLang].dailyLimitReached(DAILY_LIMIT));
             } else {
-                alert('상태 업데이트에 실패했습니다.');
+                alert(PAGE_STRINGS[pageLang].updateFailed);
             }
         }
     } catch (error) {
@@ -419,12 +450,8 @@ function scrollToLetter(letter) {
 
 // Helper: Get readable text for status
 function getStatusText(status) {
-    const statusMap = {
-        'green': '여유 (Available)',
-        'red': '만실 (Full)',
-        'gray': '미확인 (Unknown)'
-    };
-    return statusMap[status] || '미확인';
+    const statusMap = STATUS_TEXT_BY_LANG[pageLang];
+    return statusMap[status] || statusMap.gray;
 }
 
 // Map Focus Helper
@@ -561,7 +588,9 @@ langToggleContainer.forEach(container => {
 // Initialize on load
 window.addEventListener('DOMContentLoaded', () => {
     initMap();
-    initDeviceOrigin();
+    setPageLang(pageLang); // apply saved/default language to static UI text
+    deviceId = getOrCreateDeviceId();
+    refreshCurrentPosition().then(() => renderList()); // silent — just the browser's native prompt
     updateDailyCounter();
     fetchAlbergues().then(() => {
         setupSearch();
@@ -783,7 +812,7 @@ function setupGeolocation() {
 
     locateBtn.addEventListener('click', () => {
         if (!navigator.geolocation) {
-            alert('지오로케이션(Geolocation)을 지원하지 않는 브라우저입니다.');
+            alert(PAGE_STRINGS[pageLang].geoNotSupported);
             return;
         }
 
@@ -794,8 +823,8 @@ function setupGeolocation() {
             (position) => {
                 const { latitude, longitude } = position.coords;
 
-                // Save as origin if not yet set
-                if (!userOrigin) saveOrigin(latitude, longitude);
+                currentPos = { lat: latitude, lng: longitude };
+                renderList();
 
                 // Add or move a specific marker for current location
                 if (window.myLocationMarker) {
@@ -815,8 +844,7 @@ function setupGeolocation() {
             },
             (error) => {
                 console.error('Geolocation error:', error);
-                let msg = '위치 정보를 가져올 수 없습니다.';
-                if (error.code === 1) msg = '위치 정보 공유가 거부되었습니다. 설정에서 권한을 허용해주세요.';
+                const msg = error.code === 1 ? PAGE_STRINGS[pageLang].geoDenied : PAGE_STRINGS[pageLang].geoUnable;
                 alert(msg);
                 locateBtn.innerHTML = originalText;
             },

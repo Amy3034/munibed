@@ -47,6 +47,12 @@
             font-size: 0.75rem;
             margin-right: 4px;
         }
+        .nick-edit-btn {
+            background: none; border: none; cursor: pointer;
+            font-size: 0.8rem; opacity: 0.45; padding: 2px 4px; margin-left: 2px;
+            transition: opacity 0.2s;
+        }
+        .nick-edit-btn:hover { opacity: 1; }
 
         /* Compose Box */
         .compose-box {
@@ -105,6 +111,20 @@
         .send-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(2,132,199,0.4); }
         .send-btn:active { transform: translateY(0); }
         .send-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .compose-box input[type="password"] {
+            width: 100%;
+            border: 1.5px solid var(--border); border-radius: 10px;
+            padding: 10px 14px; font-family: inherit; font-size: 0.85rem;
+            color: var(--text-main); background: var(--bg);
+            transition: border-color 0.2s; box-sizing: border-box;
+        }
+        .compose-box input[type="password"]:focus { outline: none; border-color: var(--primary); }
+        .delete-btn {
+            background: none; border: none; cursor: pointer;
+            font-size: 0.85rem; opacity: 0.45; padding: 2px 4px; margin-left: 6px;
+            transition: opacity 0.2s;
+        }
+        .delete-btn:hover { opacity: 1; }
 
         /* Filter row */
         .filter-row {
@@ -232,6 +252,22 @@
         .back-btn:hover { opacity: 0.7; }
         .nav-title { font-weight: 800; font-size: 1.05rem; color: var(--text-main); }
         .nav-right { margin-left: auto; display: flex; gap: 8px; }
+        .lang-toggle {
+            background: transparent;
+            border: 1.5px solid var(--border);
+            border-radius: 8px;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .lang-toggle.active, .lang-toggle:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: rgba(2,132,199,0.07);
+        }
     </style>
 </head>
 <body id="communityBody">
@@ -251,34 +287,40 @@
             홈
         </a>
         <span class="nav-title">💬 Pilgrim Board</span>
+        <div class="nav-right">
+            <button class="lang-toggle active" id="lang-ko" onclick="setCommunityLang('KO')">KO</button>
+            <button class="lang-toggle" id="lang-en" onclick="setCommunityLang('EN')">EN</button>
+        </div>
     </nav>
 
     <div class="community-wrap">
 
         <!-- My Nickname -->
-        <div id="nickDisplay" class="nick-badge" title="이 기기의 고정 닉네임 (랜덤 부여)">
+        <div id="nickDisplay" class="nick-badge" title="이 기기의 닉네임 (랜덤 부여, 연필 아이콘으로 수정 가능)">
             <div class="nick-icon" id="nickInitial">?</div>
-            <span class="nick-label">내 닉네임</span>
+            <span class="nick-label" id="t-nick-label">내 닉네임</span>
             <span id="nickText">불러오는 중...</span>
+            <button class="nick-edit-btn" id="nickEditBtn" title="닉네임 수정" onclick="editNickname()">✏️</button>
         </div>
 
         <!-- Compose -->
         <div class="compose-box">
             <textarea id="commentInput" placeholder="길 위에서 나누고 싶은 이야기를 적어주세요 🎒&#10;Share your Camino story..." maxlength="300"></textarea>
+            <input type="password" id="passwordInput" maxlength="30" placeholder="삭제 비밀번호 (4자 이상, 나중에 글 삭제할 때 필요해요)">
             <div class="compose-footer">
                 <span class="char-count"><span id="charCount">0</span>/300</span>
                 <button class="send-btn" id="sendBtn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
                     </svg>
-                    남기기
+                    <span id="t-send">남기기</span>
                 </button>
             </div>
         </div>
 
         <!-- Comment List -->
         <div class="filter-row">
-            <span class="section-label">순례자 이야기</span>
+            <span class="section-label" id="t-section-label">순례자 이야기</span>
             <button class="refresh-icon-btn" id="refreshComments" title="새로고침">🔄</button>
         </div>
         <div class="comments-list" id="commentsList">
@@ -316,7 +358,7 @@
             return color;
         }
 
-        const myNick = getNickname();
+        let myNick = getNickname();
         const myColor = getNickColor();
 
         // Display nickname
@@ -324,36 +366,125 @@
         document.getElementById('nickInitial').textContent = myNick.charAt(0).toUpperCase();
         document.getElementById('nickInitial').style.background = myColor;
 
+        function editNickname() {
+            const s = COMMUNITY_STRINGS[currentLang];
+            const input = prompt(s.editNicknamePrompt, myNick);
+            if (input === null) return; // cancelled
+            const trimmed = input.trim().slice(0, 20);
+            if (!trimmed) return;
+            myNick = trimmed;
+            localStorage.setItem('munibed_nickname', myNick);
+            document.getElementById('nickText').textContent = myNick;
+            document.getElementById('nickInitial').textContent = myNick.charAt(0).toUpperCase();
+            // Re-render so "(나)/(me)" highlighting matches the new name going forward
+            // (older posts under the previous nickname will no longer show as mine)
+            const list = document.getElementById('commentsList');
+            if (!list.querySelector('.empty-state')) loadComments();
+        }
+
         // ── Char Count ───────────────────────────────────────────────
         const textarea = document.getElementById('commentInput');
+        const passwordInput = document.getElementById('passwordInput');
         const charCountEl = document.getElementById('charCount');
         textarea.addEventListener('input', () => {
             charCountEl.textContent = textarea.value.length;
         });
+
+        // ── Language ─────────────────────────────────────────────────
+        const COMMUNITY_STRINGS = {
+            KO: {
+                nickLabel: '내 닉네임',
+                nickTitle: '이 기기의 닉네임 (랜덤 부여, 연필 아이콘으로 수정 가능)',
+                placeholder: '길 위에서 나누고 싶은 이야기를 적어주세요 🎒\nShare your Camino story...',
+                passwordPlaceholder: '삭제 비밀번호 (4자 이상, 나중에 글 삭제할 때 필요해요)',
+                send: '남기기',
+                sending: '전송 중...',
+                sectionLabel: '순례자 이야기',
+                refreshTitle: '새로고침',
+                loading: '<div class="empty-state"><div class="empty-icon">🌄</div><p>불러오는 중...</p></div>',
+                empty: '<div class="empty-state"><div class="empty-icon">✍️</div><p>아직 첫 번째 이야기가 없어요.<br>순례길의 첫 게시물을 남겨보세요!</p></div>',
+                error: '<div class="empty-state"><div class="empty-icon">⚠️</div><p>댓글을 불러오지 못했습니다.<br>서버 연결을 확인해주세요.</p></div>',
+                sendError: '댓글 전송에 실패했습니다. 다시 시도해주세요.',
+                passwordTooShort: '삭제 비밀번호를 4자 이상 입력해주세요.',
+                delete: '삭제',
+                deletePrompt: '삭제하려면 작성 시 입력한 비밀번호를 입력해주세요.',
+                deleteError: '삭제에 실패했습니다. 잠시 후 다시 시도해주세요.',
+                editNicknamePrompt: '새 닉네임을 입력해주세요 (최대 20자)',
+                editNicknameTitle: '닉네임 수정',
+                me: '(나)',
+            },
+            EN: {
+                nickLabel: 'My nickname',
+                nickTitle: 'Your nickname for this device (randomly assigned, editable via the pencil icon)',
+                placeholder: 'Share your Camino story... 🎒\n길 위에서 나누고 싶은 이야기를 적어주세요',
+                passwordPlaceholder: 'Delete password (min 4 chars, needed later to delete your post)',
+                send: 'Post',
+                sending: 'Sending...',
+                sectionLabel: 'Pilgrim Stories',
+                refreshTitle: 'Refresh',
+                loading: '<div class="empty-state"><div class="empty-icon">🌄</div><p>Loading...</p></div>',
+                empty: '<div class="empty-state"><div class="empty-icon">✍️</div><p>No stories yet.<br>Be the first pilgrim to post!</p></div>',
+                error: '<div class="empty-state"><div class="empty-icon">⚠️</div><p>Could not load comments.<br>Please check your connection.</p></div>',
+                sendError: 'Failed to send. Please try again.',
+                passwordTooShort: 'Please enter a delete password of at least 4 characters.',
+                delete: 'Delete',
+                deletePrompt: 'Enter the password you used when posting to delete this.',
+                deleteError: 'Failed to delete. Please try again later.',
+                editNicknamePrompt: 'Enter a new nickname (max 20 characters)',
+                editNicknameTitle: 'Edit nickname',
+                me: '(me)',
+            }
+        };
+
+        let currentLang = 'KO';
+
+        function setCommunityLang(lang) {
+            currentLang = lang;
+            const s = COMMUNITY_STRINGS[lang];
+            document.getElementById('t-nick-label').textContent = s.nickLabel;
+            document.getElementById('nickDisplay').title = s.nickTitle;
+            textarea.placeholder = s.placeholder;
+            passwordInput.placeholder = s.passwordPlaceholder;
+            document.getElementById('t-send').textContent = s.send;
+            document.getElementById('t-section-label').textContent = s.sectionLabel;
+            document.getElementById('refreshComments').title = s.refreshTitle;
+            document.getElementById('nickEditBtn').title = s.editNicknameTitle;
+            document.getElementById('lang-ko').classList.toggle('active', lang === 'KO');
+            document.getElementById('lang-en').classList.toggle('active', lang === 'EN');
+            // Re-render from the already-fetched data (no need to hit the network
+            // again) so the empty/loading state and labels reflect the new language.
+            renderComments(lastCommentsData);
+        }
 
         // ── API Calls ────────────────────────────────────────────────
         // Google Apps Script Web App URL (ends in /exec). Deploy Code.gs as a
         // Web App (Execute as: Me / Who has access: Anyone) and paste the URL here.
         const API = 'https://script.google.com/macros/s/AKfycbx8AYANbj7X7q3xAOITnxRvhlyUwYU_BjvBLiWFEMyrYIi7xq531iC0F_wc1pfsdI9Z/exec';
 
+        let lastCommentsData = [];
+
         async function loadComments() {
             const list = document.getElementById('commentsList');
-            list.innerHTML = '<div class="empty-state"><div class="empty-icon">🌄</div><p>불러오는 중...</p></div>';
+            list.innerHTML = COMMUNITY_STRINGS[currentLang].loading;
             try {
-                const res = await fetch(API);
+                // Cache-bust: Apps Script GET responses get cached by the browser
+                // against the bare URL, so a stale sheet snapshot can stick around
+                // even after new comments are posted or the sheet schema changes.
+                const res = await fetch(`${API}?_=${Date.now()}`, { cache: 'no-store' });
                 if (!res.ok) throw new Error('Server error');
                 const data = await res.json();
                 if (data && data.error) throw new Error(data.error);
+                lastCommentsData = data;
                 renderComments(data);
             } catch(e) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><p>댓글을 불러오지 못했습니다.<br>서버 연결을 확인해주세요.</p></div>';
+                list.innerHTML = COMMUNITY_STRINGS[currentLang].error;
             }
         }
 
         function renderComments(data) {
             const list = document.getElementById('commentsList');
             if (!data.length) {
-                list.innerHTML = '<div class="empty-state"><div class="empty-icon">✍️</div><p>아직 첫 번째 이야기가 없어요.<br>순례길의 첫 게시물을 남겨보세요!</p></div>';
+                list.innerHTML = COMMUNITY_STRINGS[currentLang].empty;
                 return;
             }
             list.innerHTML = '';
@@ -370,9 +501,10 @@
                     <div class="comment-meta">
                         <div class="comment-avatar" style="background:${cardColor}">${initial}</div>
                         <div>
-                            <div class="comment-nick">${escapeHtml(c.nickname)}${isMine ? ' <span style="font-size:0.75rem;color:var(--primary);">(나)</span>' : ''}</div>
+                            <div class="comment-nick">${escapeHtml(c.nickname)}${isMine ? ` <span style="font-size:0.75rem;color:var(--primary);">${COMMUNITY_STRINGS[currentLang].me}</span>` : ''}</div>
                         </div>
                         <span class="comment-time">${c.createdAt}</span>
+                        ${isMine && c.id ? `<button class="delete-btn" title="${COMMUNITY_STRINGS[currentLang].delete}" onclick="deleteComment('${c.id}')">🗑️</button>` : ''}
                     </div>
                     <div class="comment-body">${escapeHtml(c.content).replace(/\n/g, '<br>')}</div>
                 `;
@@ -386,10 +518,15 @@
 
         async function sendComment() {
             const content = textarea.value.trim();
+            const password = passwordInput.value;
             if (!content) return;
+            if (password.length < 4) {
+                alert(COMMUNITY_STRINGS[currentLang].passwordTooShort);
+                return;
+            }
             const sendBtn = document.getElementById('sendBtn');
             sendBtn.disabled = true;
-            sendBtn.textContent = '전송 중...';
+            sendBtn.textContent = COMMUNITY_STRINGS[currentLang].sending;
             try {
                 // Content-Type must stay 'text/plain' (not 'application/json') so this
                 // remains a CORS "simple request" — Apps Script Web Apps don't handle
@@ -397,19 +534,39 @@
                 const res = await fetch(API, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ nickname: myNick, content })
+                    body: JSON.stringify({ nickname: myNick, content, password })
                 });
                 if (!res.ok) throw new Error('Failed');
                 const data = await res.json();
                 if (data && data.error) throw new Error(data.error);
                 textarea.value = '';
+                passwordInput.value = '';
                 charCountEl.textContent = '0';
                 await loadComments();
             } catch(e) {
-                alert('댓글 전송에 실패했습니다. 다시 시도해주세요.');
+                alert(COMMUNITY_STRINGS[currentLang].sendError);
             } finally {
                 sendBtn.disabled = false;
-                sendBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> 남기기`;
+                sendBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> <span id="t-send">${COMMUNITY_STRINGS[currentLang].send}</span>`;
+            }
+        }
+
+        async function deleteComment(id) {
+            const password = prompt(COMMUNITY_STRINGS[currentLang].deletePrompt);
+            if (password === null) return; // cancelled
+            if (!password) return;
+            try {
+                const res = await fetch(API, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'delete', id, password })
+                });
+                if (!res.ok) throw new Error();
+                const data = await res.json();
+                if (data && data.error) { alert(data.error); return; }
+                await loadComments();
+            } catch {
+                alert(COMMUNITY_STRINGS[currentLang].deleteError);
             }
         }
 
