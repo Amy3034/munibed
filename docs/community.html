@@ -474,6 +474,14 @@
         document.getElementById('refreshComments').addEventListener('click', loadComments);
 
         loadComments();
+
+        // Same app-shell caching as index.html, in case someone lands
+        // directly on this page without visiting the main one first.
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>

@@ -1969,6 +1969,15 @@
                 }
             });
         });
+
+        // Cache the app shell so the page itself still opens on a weak or
+        // dropped connection out on the trail — live data still comes from
+        // the API/data.js fallback above, this only covers the shell.
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch(() => {});
+            });
+        }
     </script>
 </body>
 </html>
