@@ -1236,8 +1236,25 @@
 
         function initMap() {
             map = L.map('map', { zoomControl: true }).setView([42.7, -5.25], 7);
-            updateMapTiles();
+            // Tile loading is deferred on mobile until the map is actually
+            // shown (the sidebar auto-opens over it on load) — eagerly
+            // fetching a whole Spain-wide tile set nobody's about to look
+            // at just burns cellular data on the trail. Desktop shows the
+            // map and list side by side, so it loads immediately there.
+            if (window.innerWidth > 900) {
+                updateMapTiles();
+            }
             setTimeout(() => { map.invalidateSize(); }, 300);
+        }
+
+        // Loads the tile layer the first time the map actually becomes
+        // visible on mobile (see initMap above). Safe to call repeatedly —
+        // a no-op once the tiles are already loaded.
+        function ensureMapTilesLoaded() {
+            if (map && !baseLayer) {
+                updateMapTiles();
+                map.invalidateSize();
+            }
         }
 
         function updateMapTiles() {
@@ -1548,6 +1565,9 @@
             } else {
                 sidebar.classList.remove('active');
                 overlay.classList.remove('active');
+                // Closing the drawer reveals the map — load its tiles now
+                // if we haven't yet (see initMap's deferred-tiles comment).
+                ensureMapTilesLoaded();
             }
         }
 
