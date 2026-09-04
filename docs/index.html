@@ -354,6 +354,25 @@
             align-items: center;
             gap: 4px;
         }
+        .refresh-btn.spinning { animation: spin 0.8s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        #offline-indicator {
+            display: none;
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
 
         .search-box {
             position: relative;
@@ -474,6 +493,18 @@
         .badge-gray { background: #f1f5f9; color: #64748b; }
 
         .update-item { display: flex; align-items: center; gap: 6px; font-size: 0.85rem; color: #94a3b8; font-weight: 500; }
+
+        .map-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            margin-top: 4px;
+        }
+        .map-link:hover { text-decoration: underline; }
 
         .card-actions {
             display: grid;
@@ -793,6 +824,7 @@
 
     <div class="main-container">
         <div id="map"></div>
+        <div id="offline-indicator">📡 오프라인 — 마지막으로 불러온 정보입니다</div>
         <div id="mobile-overlay" onclick="toggleSidebar(false)"></div>
         <div class="geo-btn" id="geo-btn" title="My Location" onclick="locateMe()">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -810,10 +842,10 @@
                 <div class="close-drawer" onclick="toggleSidebar(false)">&times;</div>
                 <div class="sidebar-title">
                     <h2 id="list-count">숙소 목록 (0)</h2>
-                    <button class="refresh-btn" id="refresh-btn" onclick="renderAll()" title="새로고침">🔄</button>
+                    <button class="refresh-btn" id="refresh-btn" onclick="manualRefresh()" title="새로고침">🔄</button>
                 </div>
                 <div class="search-box">
-                    <input type="text" id="search-input" placeholder="도시명(eng) 검색 (예: Burgos)..." oninput="handleSearch()">
+                    <input type="text" id="search-input" placeholder="도시명 검색 (예: Burgos, 부르고스)..." oninput="handleSearch()">
                 </div>
                 <div class="alphabet-filter" id="alphabet-filter">
                     <!-- Dynamic letters A, B, C... -->
@@ -840,6 +872,28 @@
     <script src="data.js?v=1.2"></script>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script>
+        // ── Backend connection ──────────────────────────────────────────
+        // TODO: after deploying api/server.js (Railway), replace this with
+        // the deployed URL, e.g. 'https://munibed-api-production.up.railway.app'
+        // (no trailing slash). Until then the app still runs — it just falls
+        // back to the static data.js snapshot and shows the offline banner,
+        // and status updates will fail with a "서버에 연결할 수 없습니다" alert.
+        const API_BASE_URL = 'https://REPLACE-WITH-YOUR-RAILWAY-URL.up.railway.app';
+
+        // Anonymous per-browser device id, used by the server to enforce
+        // the daily-4-albergue-update limit and the location-radius check.
+        // Generated once and kept in localStorage (not sessionStorage) so
+        // it's stable across the whole trip on the same phone.
+        function getOrCreateDeviceId() {
+            let id = localStorage.getItem('munibed_device_id');
+            if (!id) {
+                id = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+                localStorage.setItem('munibed_device_id', id);
+            }
+            return id;
+        }
+        const DEVICE_ID = getOrCreateDeviceId();
+
         let map;
         let baseLayer;
 
@@ -916,7 +970,7 @@
         const PAGE_STRINGS = {
             KO: {
                 listHeader: count => `숙소 목록 (${count})`,
-                searchPlaceholder: '도시명 검색 (예: Burgos)...',
+                searchPlaceholder: '도시명 검색 (예: Burgos, 부르고스)...',
                 refreshTitle: '새로고침',
                 noResultsTitle: '검색 결과가 없습니다',
                 noResultsBody: '다른 검색어나 알파벳을 선택해주세요.',
@@ -974,12 +1028,6 @@
 
             renderAll({ keepScroll: true });
         }
-        const LOCAL_STATE_KEY = 'munibed_state';
-        const LOCAL_STATE_DAY_KEY = 'munibed_state_day';
-        const LOCAL_STATE_SCHEMA_KEY = 'munibed_state_schema';
-        const LOCAL_STATE_SCHEMA_VERSION = '2';
-        const DAILY_RESET_HOUR = 0;
-
         // Extract city name: finds all innermost (no-nested) paren groups, returns the last one
         // Handles: "Ref. (Italie) (City)" → "City"
         //          "Ref. ((City) variant)" → "City"
@@ -987,6 +1035,153 @@
             const matches = name.match(/\([^()]+\)/g);
             if (!matches) return '';
             return matches[matches.length - 1].slice(1, -1).trim();
+        }
+
+        // Opens the exact pin in Google Maps — this is how the app lets a
+        // pilgrim verify the real address themselves, since we don't store
+        // one (see CITY_KO_MAP comment below for why).
+        function googleMapsUrl(item) {
+            return `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}`;
+        }
+        function mapLinkHtml(item) {
+            const label = pageLang === 'EN' ? 'View on Google Maps' : '구글지도에서 보기';
+            return `<a class="map-link" href="${googleMapsUrl(item)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">📍 ${label}</a>`;
+        }
+
+        // Korean names for search, keyed by the city name exactly as
+        // getCityName() extracts it from item.name (the last parenthesized
+        // group). Transliterations commonly used in Korean Camino-pilgrim
+        // write-ups; a few (esp. Galician village names) are less
+        // standardized, so treat these as best-effort and easy to correct
+        // in this one table if a spelling looks off.
+        const CITY_KO_MAP = {
+            "Saint-Jean-Pied-de-Port": "생장피에드포르",
+            "Roncesvalles": "론세스바예스",
+            "Camping Urrobi-Espinal": "에스피날",
+            "Zubiri": "수비리",
+            "Larrasoana": "라라소아냐",
+            "Arre-Villava": "비야바",
+            "Pamplona": "팜플로나",
+            "Cizur Minor": "시수르 메노르",
+            "Uterga": "우테르가",
+            "Obanos": "오바노스",
+            "Puente La Reina": "푸엔테 라 레이나",
+            "Cirauqui": "시라우키",
+            "Lorca": "로르카",
+            "Villatuerta": "비야투에르타",
+            "Estella": "에스테야",
+            "Ayegui": "아예기",
+            "Villamajor de Monjardin": "비야마요르 데 몬하르딘",
+            "Los Arcos": "로스 아르코스",
+            "Sansol": "산솔",
+            "Torres del Rio": "토레스 델 리오",
+            "Viana": "비아나",
+            "Logroño": "로그로뇨",
+            "Navarrete": "나바레테",
+            "Ventosa": "벤토사",
+            "Najera": "나헤라",
+            "Azofra": "아소프라",
+            "Santo Domingo de la Calzada": "산토 도밍고 데 라 칼사다",
+            "Grañon": "그라뇬",
+            "Redecilla del Camino": "레데시야 델 카미노",
+            "Viloria de Rioja": "빌로리아 데 리오하",
+            "Villamayor del Rio": "비야마요르 델 리오",
+            "Belorado": "벨로라도",
+            "Tosantos": "토산토스",
+            "Espinosa del Camino": "에스피노사 델 카미노",
+            "Villafranca Montes de Oca": "비야프랑카 몬테스 데 오카",
+            "San Juan de Ortega": "산 후안 데 오르테가",
+            "Agés": "아헤스",
+            "Atapuerca": "아타푸에르카",
+            "Cardeñuels - Riopico": "카르데뉴엘라 리오피코",
+            "Burgos": "부르고스",
+            "Villalbilla de Burgos": "비얄빌라 데 부르고스",
+            "Tardajos": "타르다호스",
+            "Hornillos del Camino": "오르니요스 델 카미노",
+            "Hontanas": "온타나스",
+            "San Anton": "산 안톤",
+            "Castrojeriz": "카스트로헤리스",
+            "Puente Fitero San Nicolas": "푸엔테 피테로",
+            "Itero de la Vega": "이테로 데 라 베가",
+            "Boadilla del Camino": "보아디야 델 카미노",
+            "Fromista": "프로미스타",
+            "Poblacion de Campos": "포블라시온 데 캄포스",
+            "Villalcazar de Sirga": "비얄카사르 데 시르가",
+            "Carrion de los Condes": "카리온 데 로스 콘데스",
+            "Calzadilla de la Cueza": "칼사디야 데 라 쿠에사",
+            "Ledigos": "레디고스",
+            "Terradillos de Los Templarios": "테라디요스 데 로스 템플라리오스",
+            "San Nicolas del Real Carnino": "산 니콜라스 델 레알 카미노",
+            "Sahagun": "사아군",
+            "Calzada del Coto": "칼사다 델 코토",
+            "Bercianos del Camino": "베르시아노스 델 카미노",
+            "El Burgo Ranero": "엘 부르고 라네로",
+            "Rellegos": "레예고스",
+            "Mansilla de las Mulas": "만시야 데 라스 물라스",
+            "Villarente": "비야렌테",
+            "Arcahueja": "아르카우에하",
+            "Leon": "레온",
+            "Virgen del Camino": "비르헨 델 카미노",
+            "Villadangos del Paramo": "비야당고스 델 파라모",
+            "Villar de Mazarife": "비야르 데 마사리페",
+            "Hospital de Orbigo": "오스피탈 데 오르비고",
+            "Astorga": "아스토르가",
+            "Murias de Rechivaldo": "무리아스 데 레치발도",
+            "Santa Catalina de Somoza": "산타 카탈리나 데 소모사",
+            "El Ganso": "엘 간소",
+            "Rabanal del Camino": "라바날 델 카미노",
+            "Foncabadon": "폰카바돈",
+            "Manjarin": "만하린",
+            "El Acebo": "엘 아세보",
+            "Riego de Ambros": "리에고 데 암브로스",
+            "Molinaseca": "몰리나세카",
+            "Ponferrada": "폰페라다",
+            "Cacabelos": "카카벨로스",
+            "Villafranca del Bierzo": "비야프랑카 델 비에르소",
+            "Pereje": "페레헤",
+            "Trabadelo": "트라바델로",
+            "La Portela de Valcarce": "라 포르텔라 데 발카르세",
+            "Ambasmestas": "암바스메스타스",
+            "Vega de Valcarce": "베가 데 발카르세",
+            "Ruitelan": "루이텔란",
+            "La Faba": "라 파바",
+            "Laguna de Castilla": "라구나 데 카스티야",
+            "O Cebreiro": "오 세브레이로",
+            "Hospital de la Condesa": "오스피탈 데 라 콘데사",
+            "Fonfria": "폰프리아",
+            "Triacastela": "트리아카스텔라",
+            "Samos": "사모스",
+            "Calvor": "칼보르",
+            "Sarria": "사리아",
+            "Barbadelo": "바르바델로",
+            "Ferreiros": "페레이로스",
+            "Portomarin": "포르토마린",
+            "Gonzar": "곤사르",
+            "Hospital de la Cruz": "오스피탈 데 라 크루스",
+            "Ventas de Naron": "벤타스 데 나론",
+            "Ligonde": "리곤데",
+            "Eirexe": "에이레헤",
+            "Palas de Rei": "팔라스 데 레이",
+            "San Xulian": "산 훌리안",
+            "Ponte Campana": "폰테 캄파나",
+            "Casanova Mato": "카사노바 마토",
+            "Leboreiro": "레보레이로",
+            "Melide": "멜리데",
+            "Ribadiso de Baixo": "리바디소 데 바이소",
+            "Arzua": "아르수아",
+            "Santa Irene": "산타 이레네",
+            "Arca O Pino": "아르카 오 피노",
+            "Monte del Gozo": "몬테 델 고소",
+            "Santiago de Compostela": "산티아고 데 콤포스텔라",
+            "De Santiago a Negreira": "네그레이라",
+            "Vilaserio": "빌라세리오",
+            "Olveiroa": "올베이로아",
+            "Cee": "세에",
+            "Corcubion Redonda": "코르쿠비온",
+            "Fisterra": "피스테라"
+        };
+        function getCityNameKo(name) {
+            return CITY_KO_MAP[getCityName(name)] || '';
         }
 
         function initMap() {
@@ -1002,73 +1197,39 @@
             }).addTo(map);
         }
 
-        function getResetDay(date = new Date()) {
-            const adjusted = new Date(date.getTime() - DAILY_RESET_HOUR * 60 * 60 * 1000);
-            const year = adjusted.getFullYear();
-            const month = String(adjusted.getMonth() + 1).padStart(2, '0');
-            const day = String(adjusted.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        function resetAlberguesToBase() {
-            alberguesData = baseAlberguesData.map(item => ({ ...item }));
-        }
-
-        function clearLocalState() {
-            localStorage.removeItem(LOCAL_STATE_KEY);
-            localStorage.removeItem(LOCAL_STATE_DAY_KEY);
-        }
-
-        function getCurrentLocalStates() {
-            if (localStorage.getItem(LOCAL_STATE_SCHEMA_KEY) !== LOCAL_STATE_SCHEMA_VERSION) {
-                clearLocalState();
-                localStorage.setItem(LOCAL_STATE_SCHEMA_KEY, LOCAL_STATE_SCHEMA_VERSION);
-                return null;
-            }
-
-            const saved = localStorage.getItem(LOCAL_STATE_KEY);
-            if (!saved) return null;
-
-            let states;
-            try {
-                states = JSON.parse(saved);
-            } catch (error) {
-                clearLocalState();
-                return null;
-            }
-
-            const currentDay = getResetDay();
-            const savedDay = localStorage.getItem(LOCAL_STATE_DAY_KEY);
-
-            if (savedDay !== currentDay) {
-                clearLocalState();
-                return null;
-            }
-
-            return states;
-        }
-
-        function loadLocalState() {
-            resetAlberguesToBase();
-            const states = getCurrentLocalStates();
-            if (!states) return;
-
-            alberguesData = alberguesData.map(item => {
-                if (states[item.id]) {
-                    const merged = { ...item, ...states[item.id] };
-                    if (merged.status === 'yellow') merged.status = 'gray';
-                    return merged;
+        // Maps a server error `code` (see api/server.js PATCH /api/albergues/:id)
+        // to a user-facing message in the current page language. Unknown
+        // codes fall back to whatever message text the server sent.
+        function serverErrorMessage(code, fallbackText) {
+            const messages = {
+                LOCATION_REQUIRED: {
+                    KO: '현재 위치를 확인할 수 없습니다. 위치 서비스를 켜주고 다시 시도해주세요.',
+                    EN: 'Could not determine your location. Please enable location services and try again.'
+                },
+                LOCATION_INVALID: {
+                    KO: '위치 정보가 올바르지 않습니다. 위치 서비스를 다시 확인해주세요.',
+                    EN: 'Your location looks invalid. Please check your location settings and try again.'
+                },
+                LOCATION_RESTRICTED: {
+                    KO: `이 알베르게는 현재 위치에서 ${EDIT_RADIUS_KM}km 이상 떨어져 있어 상태를 변경할 수 없습니다.`,
+                    EN: `Cannot update albergues more than ${EDIT_RADIUS_KM}km from your current location.`
+                },
+                DAILY_LIMIT_REACHED: {
+                    KO: '오늘 변경 가능한 알베르게 수(4개)를 초과했습니다. 내일 다시 시도해주세요.',
+                    EN: 'You have reached today\'s limit of 4 albergue updates. Please try again tomorrow.'
+                },
+                RATE_LIMITED: {
+                    KO: '요청이 너무 많습니다. 잠시 후 다시 시도해주세요.',
+                    EN: 'Too many requests. Please try again in a moment.'
+                },
+                IP_DAILY_LIMIT_REACHED: {
+                    KO: '이 네트워크에서 오늘 변경 가능한 횟수를 초과했습니다.',
+                    EN: 'This network has reached today\'s update limit.'
                 }
-                return item;
-            });
-        }
-
-        function saveLocalState(id, status, time) {
-            const states = getCurrentLocalStates() || {};
-            states[id] = { status, lastUpdated: time };
-            localStorage.setItem(LOCAL_STATE_KEY, JSON.stringify(states));
-            localStorage.setItem(LOCAL_STATE_DAY_KEY, getResetDay());
-            localStorage.setItem(LOCAL_STATE_SCHEMA_KEY, LOCAL_STATE_SCHEMA_VERSION);
+            };
+            const entry = messages[code];
+            if (entry) return entry[pageLang] || entry.KO;
+            return fallbackText || (pageLang === 'KO' ? '알 수 없는 오류가 발생했습니다.' : 'An unknown error occurred.');
         }
 
         async function updateStatus(id, newStatus) {
@@ -1077,16 +1238,12 @@
             if (!currentPos) await refreshCurrentPosition(); // one more live attempt, e.g. after a slow first fix
 
             if (!currentPos) {
-                alert(pageLang === 'KO'
-                    ? '현재 위치를 확인할 수 없습니다. 위치 서비스를 켜주고 다시 시도해주세요.'
-                    : 'Could not determine your location. Please enable location services and try again.');
+                alert(serverErrorMessage('LOCATION_REQUIRED'));
                 renderAll({ keepScroll: true });
                 return;
             }
             if (albergue && isLocationLocked(albergue)) {
-                alert(pageLang === 'KO'
-                    ? `이 알베르게는 현재 위치에서 ${EDIT_RADIUS_KM}km 이상 떨어져 있어 상태를 변경할 수 없습니다.`
-                    : `Cannot update albergues more than ${EDIT_RADIUS_KM}km from your current location.`);
+                alert(serverErrorMessage('LOCATION_RESTRICTED'));
                 return;
             }
 
@@ -1094,11 +1251,39 @@
             const timeStr = `${now.getFullYear()}-${(now.getMonth()+1).toString().padStart(2,'0')}-${now.getDate().toString().padStart(2,'0')} ${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}:${now.getSeconds().toString().padStart(2,'0')}`;
             const fullTime = timeStr;
 
-            const idx = alberguesData.findIndex(a => a.id === id);
-            if (idx !== -1) {
-                alberguesData[idx].status = newStatus;
-                alberguesData[idx].lastUpdated = fullTime;
-                saveLocalState(id, newStatus, fullTime);
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/albergues/${id}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        status: newStatus,
+                        lastUpdated: fullTime,
+                        device_id: DEVICE_ID,
+                        lat: currentPos.lat,
+                        lng: currentPos.lng
+                    })
+                });
+                let data = {};
+                try { data = await res.json(); } catch (_) { /* non-JSON error body, ignore */ }
+
+                if (!res.ok) {
+                    alert(serverErrorMessage(data.code, data.error));
+                    renderAll({ keepScroll: true });
+                    return;
+                }
+
+                // Server confirmed the write — reflect it locally right away
+                // instead of waiting for the next poll.
+                const idx = alberguesData.findIndex(a => a.id === id);
+                if (idx !== -1) {
+                    alberguesData[idx].status = newStatus;
+                    alberguesData[idx].lastUpdated = data.newLastUpdated || fullTime;
+                }
+                renderAll({ keepScroll: true });
+            } catch (err) {
+                alert(pageLang === 'KO'
+                    ? '서버에 연결할 수 없습니다. 인터넷 연결을 확인하고 다시 시도해주세요.'
+                    : 'Could not reach the server. Please check your connection and try again.');
                 renderAll({ keepScroll: true });
             }
         }
@@ -1133,7 +1318,9 @@
         }
 
         function renderAll(options = {}) {
-            loadLocalState();
+            // alberguesData is kept current by fetchAndSync()/updateStatus(),
+            // not reloaded from localStorage here — the server is now the
+            // single source of truth shared by every pilgrim.
 
             // ALWAYS render markers from the full data set first
             renderMarkers();
@@ -1150,11 +1337,18 @@
                     const cleanCity = cityName.toLowerCase().trim();
                     const cleanHostel = hostelNamePart.toLowerCase().trim();
                     const query = searchQuery.toLowerCase().trim();
-                    
+                    const cityNameKo = getCityNameKo(item.name);
+
                     const cityStarts = cleanCity.startsWith(query);
                     const hostelStarts = cleanHostel.startsWith(query);
-                    
-                    matchesSearch = (cityStarts || hostelStarts);
+                    // Korean query: match if the town's Korean name starts
+                    // with it, or contains it — "starts with" alone is too
+                    // strict for Korean since people often search a middle
+                    // word of a multi-word town name (e.g. "레이나" in
+                    // "푸엔테 라 레이나").
+                    const koMatches = cityNameKo && (cityNameKo.startsWith(query) || cityNameKo.includes(query));
+
+                    matchesSearch = (cityStarts || hostelStarts || koMatches);
                 }
 
                 const firstLetter = cityName.charAt(0).toUpperCase();
@@ -1222,6 +1416,7 @@
                     <div class="update-item">
                         <span>🕒</span> <span id="time-${item.id}">${item.lastUpdated}</span>
                     </div>
+                    ${mapLinkHtml(item)}
                     <div class="card-actions">
                         ${actionsHtml}
                     </div>
@@ -1257,7 +1452,7 @@
                     iconSize: [18, 18]
                 });
                 const marker = L.marker([item.lat, item.lng], { icon }).addTo(map);
-                marker.bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-status">${PAGE_STRINGS[pageLang].statusPrefix}${(getStatusMap()[item.status] || getStatusMap().gray).text}</div>`);
+                marker.bindPopup(`<div class="popup-title">${item.name}</div><div class="popup-status">${PAGE_STRINGS[pageLang].statusPrefix}${(getStatusMap()[item.status] || getStatusMap().gray).text}</div>${mapLinkHtml(item)}`);
                 marker.on('click', () => {
                     syncListToMarker(item.id);
                 });
@@ -1319,6 +1514,7 @@
                     <span class="status-badge ${status.class}">${status.text}</span>
                     <span style="font-size:0.85rem; color:#94a3b8;">🕒 ${item.lastUpdated}</span>
                 </div>
+                ${mapLinkHtml(item)}
             `;
 
             const sheetLocked = isLocationLocked(item);
@@ -1569,41 +1765,87 @@
             }
         }
 
-        function scheduleDailyResetRender() {
-            const now = new Date();
-            const nextReset = new Date(now);
-            nextReset.setHours(DAILY_RESET_HOUR, 0, 0, 0);
-            if (nextReset <= now) {
-                nextReset.setDate(nextReset.getDate() + 1);
-            }
+        // ── Server sync ─────────────────────────────────────────────────
+        // The server (api/server.js) is now the single shared source of
+        // truth — every pilgrim's app polls it and sees the same statuses.
+        // window.ALBERGUES_DATA (data.js) is kept only as an offline/first-
+        // paint fallback for when the API can't be reached (bad signal on
+        // the trail, server briefly down, etc.).
+        let isOnline = true;
+        const POLL_INTERVAL_MS = 30000;
 
-            setTimeout(() => {
-                loadLocalState();
-                renderAll({ keepScroll: true });
-                scheduleDailyResetRender();
-            }, nextReset.getTime() - now.getTime() + 1000);
+        function setOnlineIndicator(online) {
+            isOnline = online;
+            const el = document.getElementById('offline-indicator');
+            if (!el) return;
+            el.style.display = online ? 'none' : 'block';
         }
 
+        async function fetchAlberguesFromServer() {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 8000);
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/albergues`, { signal: controller.signal });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                if (!Array.isArray(data)) throw new Error('Unexpected response shape');
+                return data;
+            } finally {
+                clearTimeout(timeout);
+            }
+        }
 
-        function performRobustDataSync() {
-            if (window.ALBERGUES_DATA && window.ALBERGUES_DATA.length > 0) {
-                // Determine if we need to update
-                if (alberguesData.length !== window.ALBERGUES_DATA.length) {
+        // Fetches live data from the server and re-renders. Falls back to
+        // the bundled data.js snapshot (unmodified — no live status) only
+        // if this is the very first load and the server is unreachable, so
+        // the app still shows something rather than a blank screen.
+        async function fetchAndSync(options = {}) {
+            try {
+                const serverData = await fetchAlberguesFromServer();
+                baseAlberguesData = serverData.map(item => ({ ...item }));
+                alberguesData = serverData.map(item => ({ ...item }));
+                setOnlineIndicator(true);
+                if (!map) initMap();
+                initAlphabetFilter();
+                renderAll({ keepScroll: options.keepScroll });
+                return true;
+            } catch (err) {
+                setOnlineIndicator(false);
+                if (alberguesData.length === 0 && window.ALBERGUES_DATA && window.ALBERGUES_DATA.length > 0) {
+                    // First load, server unreachable: show the static snapshot
+                    // so the map/list aren't empty, clearly marked offline.
                     baseAlberguesData = window.ALBERGUES_DATA.map(item => ({ ...item }));
                     alberguesData = baseAlberguesData.map(item => ({ ...item }));
-                    loadLocalState();
                     if (!map) initMap();
                     initAlphabetFilter();
                     renderAll();
-                } else if (!map) {
-                    // Fallback to ensure map and everything initialized
-                    initMap();
-                    initAlphabetFilter();
-                    renderAll();
                 }
-                return true; // We have data and it's rendered
+                return false;
             }
-            return false; // Not ready yet
+        }
+
+        async function manualRefresh() {
+            const btn = document.getElementById('refresh-btn');
+            if (btn) btn.classList.add('spinning');
+            await fetchAndSync({ keepScroll: true });
+            if (btn) btn.classList.remove('spinning');
+        }
+
+        async function registerDevice() {
+            // Fire-and-forget: the app works fine even if this fails (it
+            // just retries next load), and DEVICE_ID is already usable
+            // locally regardless of whether the server round-trip succeeds.
+            if (sessionStorage.getItem('munibed_device_registered')) return;
+            try {
+                await fetch(`${API_BASE_URL}/api/devices`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ device_id: DEVICE_ID })
+                });
+                sessionStorage.setItem('munibed_device_registered', '1');
+            } catch (err) {
+                // Ignored — see comment above.
+            }
         }
 
         window.addEventListener('load', () => {
@@ -1615,28 +1857,30 @@
             if (!map) initMap();
             // Initialize alphabet filter UI
             initAlphabetFilter();
-            // Apply saved/default language (also loads local state and renders map/list)
+            // Apply saved/default language
             setPageLang(pageLang);
-            scheduleDailyResetRender();
             // Auto-locate user on load (silent fail if permission denied)
             setTimeout(autoLocateOnLoad, 500);
 
-            // Give it a first shot
-            performRobustDataSync();
-            
+            registerDevice();
+            fetchAndSync();
+
             // Auto open sidebar on mobile
             if (window.innerWidth <= 900) {
                 toggleSidebar(true);
             }
 
-            // Keep polling for a short time to catch data.js if it's lagging or deferred
-            let attempts = 0;
-            const dataInterval = setInterval(() => {
-                attempts++;
-                if (performRobustDataSync() || attempts > 20) {
-                    clearInterval(dataInterval); // Stop once we succeed or hit ~10 seconds
+            // Keep the view current while the tab is open — another
+            // pilgrim's update should show up without a manual refresh.
+            setInterval(() => fetchAndSync({ keepScroll: true }), POLL_INTERVAL_MS);
+
+            // Also refresh right away when the pilgrim comes back to the
+            // tab (e.g. after switching apps to check a map).
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    fetchAndSync({ keepScroll: true });
                 }
-            }, 500);
+            });
         });
     </script>
 </body>
