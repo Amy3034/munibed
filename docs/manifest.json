@@ -1,0 +1,16 @@
+{
+  "name": "MuniBed - 산티아고 순례길 공립 알베르게 현황판",
+  "short_name": "MuniBed",
+  "description": "산티아고 순례길 공립 알베르게 실시간 만원/여유 현황을 순례자들이 함께 기록하고 공유하는 서비스",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0076D2",
+  "theme_color": "#0076D2",
+  "lang": "ko",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}
