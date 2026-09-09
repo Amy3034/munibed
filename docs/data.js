@@ -16,16 +16,8 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 3,
-    "name": "Auberge privée (Camping Urrobi-Espinal)",
-    "lat": 42.9774,
-    "lng": -1.3533,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 4,
-    "name": "Ref. municipal / Auberge privée Zaldiko (Zubiri)",
+    "name": "Ref. municipal (Zubiri)",
     "lat": 42.9304,
     "lng": -1.5032,
     "status": "gray",
@@ -48,70 +40,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 7,
-    "name": "Ref. Jésus et Maria / Ref. privé Paderborn (Pamplona)",
-    "lat": 42.819046,
-    "lng": -1.641834,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 8,
-    "name": "Ref. privé Roncal (Cizur Minor)",
-    "lat": 42.7937,
-    "lng": -1.6705,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 9,
-    "name": "Ref. prive Ana Calvo (Uterga)",
-    "lat": 42.7167,
-    "lng": -1.7483,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 10,
-    "name": "USDA Privé (Obanos)",
-    "lat": 42.6828,
-    "lng": -1.7852,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 11,
-    "name": "Ref. Padres Reparadores / Ref. privé Jakue (Puente La Reina)",
-    "lat": 42.6734,
-    "lng": -1.81042,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 12,
-    "name": "Ref. privé Maralotx / Ref. paroissial (Cirauqui)",
-    "lat": 42.6583,
-    "lng": -1.9056,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 13,
-    "name": "Ref. privé Ramon / RP La Bodega del Camino (Lorca)",
-    "lat": 42.6681,
-    "lng": -1.9669,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 14,
-    "name": "Ref. prive Arandigoyen (Villatuerta)",
-    "lat": 42.6583,
-    "lng": -1.9961,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 15,
     "name": "Ref. Asso. Estella / Ref. Asso. Anfas (Estella)",
     "lat": 42.6698,
@@ -128,34 +56,10 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 17,
-    "name": "Ref. paroissial / Ref. privé Hollandais (Villamajor de Monjardin)",
-    "lat": 42.6322,
-    "lng": -2.1006,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 18,
-    "name": "Ref. municipal / Ref. privé Atharli (Los Arcos)",
+    "name": "Ref. municipal (Los Arcos)",
     "lat": 42.569059,
     "lng": -2.194208,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 19,
-    "name": "Ref. Privé Arcadi y Nines (Sansol)",
-    "lat": 42.5561,
-    "lng": -2.2611,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 20,
-    "name": "Ref. privé Casa Man (Torres del Rio)",
-    "lat": 42.5528,
-    "lng": -2.2711,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -172,22 +76,6 @@ window.ALBERGUES_DATA = [
     "name": "Ref. Ass. La Rioja / Albergue Municipal (Logroño)",
     "lat": 42.4627,
     "lng": -2.445,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 23,
-    "name": "Ref. privé El Cantaro (Navarrete)",
-    "lat": 42.4286,
-    "lng": -2.5606,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 24,
-    "name": "Ref. privé San Saturnino ((Ventosa) 4 km)",
-    "lat": 42.4042,
-    "lng": -2.6281,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -232,42 +120,10 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 30,
-    "name": "Rel. privé Acacia y Orieta (Viloria de Rioja)",
-    "lat": 42.4239,
-    "lng": -3.1067,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 31,
-    "name": "Ref. prive San Luis (Villamayor del Rio)",
-    "lat": 42.4161,
-    "lng": -3.1369,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 32,
     "name": "Ref. paroissial / Refuge mun. El Corro (Belorado)",
     "lat": 42.4192,
     "lng": -3.1897,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 33,
-    "name": "Ref.privé A Santiago / Ref. paroissial (Tosantos)",
-    "lat": 42.4067,
-    "lng": -3.2425,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 34,
-    "name": "Ref. privé La Campana (Espinosa del Camino)",
-    "lat": 42.3994,
-    "lng": -3.2769,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -289,17 +145,9 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 37,
-    "name": "Ref. mun. San Rafael / Ref. privé El Pajar (Agés)",
+    "name": "Ref. mun. San Rafael (Agés)",
     "lat": 42.369419,
     "lng": -3.479197,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 38,
-    "name": "Ref. privé La Hutte / Ref, privé Rocio Garcia (Atapuerca)",
-    "lat": 42.3789,
-    "lng": -3.5042,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -308,14 +156,6 @@ window.ALBERGUES_DATA = [
     "name": "Ref. municipal (Cardeñuels - Riopico)",
     "lat": 42.3592,
     "lng": -3.6169,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 40,
-    "name": "Ref. Asso Burgos / Ref privé Emmaus (Burgos)",
-    "lat": 42.34235,
-    "lng": -3.703716,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -345,7 +185,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 44,
-    "name": "Ref. municipal / Raf privé Puntido (Hontanas)",
+    "name": "Ref. municipal (Hontanas)",
     "lat": 42.3131,
     "lng": -4.045,
     "status": "gray",
@@ -361,7 +201,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 46,
-    "name": "Ref, municipal / Ref. Privé Casa Nostra (Castrojeriz)",
+    "name": "Ref. municipal (Castrojeriz)",
     "lat": 42.291033,
     "lng": -4.131811,
     "status": "gray",
@@ -377,7 +217,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 48,
-    "name": "Ref. municipal / Ref. privé Itero (Itero de la Vega)",
+    "name": "Ref. municipal (Itero de la Vega)",
     "lat": 42.2842,
     "lng": -4.2611,
     "status": "gray",
@@ -408,56 +248,8 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 52,
-    "name": "Ref. prive Aurea (Villalcazar de Sirga)",
-    "lat": 42.3164,
-    "lng": -4.5422,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 53,
-    "name": "Ref. paroissial / Ref. privé Clarisses (Carrion de los Condes)",
-    "lat": 42.3389,
-    "lng": -4.6028,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 54,
-    "name": "Ref. prive Camino Real (Calzadilla de la Cueza)",
-    "lat": 42.3197,
-    "lng": -4.7931,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 55,
-    "name": "Ref. privé El Palomar (Ledigos)",
-    "lat": 42.3389,
-    "lng": -4.8561,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 56,
-    "name": "Ref. privé J. de Molay / Ref privélos Templarios (Terradillos de Los Templarios)",
-    "lat": 42.3411,
-    "lng": -4.8889,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 57,
-    "name": "Ref. privé Laganares (San Nicolas del Real Carnino)",
-    "lat": 42.3503,
-    "lng": -4.9542,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 58,
-    "name": "Ref. municipal Cluny / Ref. privé Viatoris (Sahagun)",
+    "name": "Ref. municipal Cluny (Sahagun)",
     "lat": 42.3719,
     "lng": -5.0319,
     "status": "gray",
@@ -480,14 +272,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 61,
-    "name": "Ref. privé El Nogal / Centre turismo rural (El Burgo Ranero)",
-    "lat": 42.4239,
-    "lng": -5.2217,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 62,
     "name": "Ref. municipal (Rellegos)",
     "lat": 42.4828,
@@ -500,22 +284,6 @@ window.ALBERGUES_DATA = [
     "name": "Ref. municipal (Mansilla de las Mulas)",
     "lat": 42.4969,
     "lng": -5.4161,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 64,
-    "name": "Ref. privé San Pelayo (Villarente)",
-    "lat": 42.5186,
-    "lng": -5.4856,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 65,
-    "name": "Ref. privé La Torre (Arcahueja)",
-    "lat": 42.5458,
-    "lng": -5.5297,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -544,14 +312,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 69,
-    "name": "Ref. privé San Anton / Ref. privé Tio Pepe ((Villar de Mazarife) variante)",
-    "lat": 42.4636,
-    "lng": -5.7331,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 70,
     "name": "Ref. mun. El Camping / Ref. paroissial (Hospital de Orbigo)",
     "lat": 42.465,
@@ -564,14 +324,6 @@ window.ALBERGUES_DATA = [
     "name": "Ref. Siervas de Maria / Ref. municipal (Astorga)",
     "lat": 42.452865,
     "lng": -6.051355,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 72,
-    "name": "Rof. privé Las Aguadas (Murias de Rechivaldo)",
-    "lat": 42.4497,
-    "lng": -6.1106,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -592,42 +344,10 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 75,
-    "name": "Ref. Asso. Gaucelmo / Ref. privé N.S. del Pilar (Rabanal del Camino)",
-    "lat": 42.48,
-    "lng": -6.2842,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 76,
     "name": "Ref. paroissial / RP Monte Irago (Foncabadon)",
     "lat": 42.5028,
     "lng": -6.3406,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 77,
-    "name": "Ref. privé Martinez (Manjarin)",
-    "lat": 42.5153,
-    "lng": -6.3742,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 78,
-    "name": "Ref. privé Florez (El Acebo)",
-    "lat": 42.5317,
-    "lng": -6.4464,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 79,
-    "name": "Ref. privé (Riego de Ambros)",
-    "lat": 42.5414,
-    "lng": -6.4822,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -657,7 +377,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 83,
-    "name": "Ref. municipal / Ref. privé Jato (Villafranca del Bierzo)",
+    "name": "Ref. municipal (Villafranca del Bierzo)",
     "lat": 42.604576,
     "lng": -6.806513,
     "status": "gray",
@@ -688,14 +408,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 87,
-    "name": "Ref. privé Das Anima (Ambasmestas)",
-    "lat": 42.6608,
-    "lng": -6.9275,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 88,
     "name": "Ref. municipal / RP NS do Brazil (Vega de Valcarce)",
     "lat": 42.6653,
@@ -704,26 +416,10 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 89,
-    "name": "Ref. privé Potala (Ruitelan)",
-    "lat": 42.6739,
-    "lng": -6.9639,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 90,
     "name": "Ref. Ass. Allemande (La Faba)",
     "lat": 42.6869,
     "lng": -6.9953,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 91,
-    "name": "Ref. privé (Laguna de Castilla)",
-    "lat": 42.7042,
-    "lng": -7.0208,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -740,14 +436,6 @@ window.ALBERGUES_DATA = [
     "name": "Ref. ACAG (Hospital de la Condesa)",
     "lat": 42.7247,
     "lng": -7.0864,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 94,
-    "name": "Ref. privé Reboleira (Fonfria)",
-    "lat": 42.7483,
-    "lng": -7.1483,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -784,14 +472,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 99,
-    "name": "Ref. ACAG / Ref. privé Casa Carmen (Barbadelo)",
-    "lat": 42.7656,
-    "lng": -7.4606,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 100,
     "name": "Ref. ACAG / Ref. municipal (Ferreiros)",
     "lat": 42.8258,
@@ -801,7 +481,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 101,
-    "name": "Ref. privé Ferramanteiro / Ref. mun. El Caminante (Portomarin)",
+    "name": "Ref. mun. El Caminante (Portomarin)",
     "lat": 42.8081,
     "lng": -7.6167,
     "status": "gray",
@@ -824,14 +504,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 104,
-    "name": "Ref. Privé Casa Molar / Ref Privé O Cruceiro (Ventas de Naron)",
-    "lat": 42.8589,
-    "lng": -7.7817,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 105,
     "name": "Ref ACAG (Ligonde)",
     "lat": 42.8681,
@@ -848,26 +520,10 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 107,
-    "name": "Ref. ACAG / Ref. privé Buen Camino (Palas de Rei)",
-    "lat": 42.8731,
-    "lng": -7.8686,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 108,
     "name": "RP O Abrigadoiro (San Xulian)",
     "lat": 42.88,
     "lng": -7.9042,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 109,
-    "name": "Ref. privé Casa Domingo (Ponte Campana)",
-    "lat": 42.8842,
-    "lng": -7.9422,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
@@ -912,14 +568,6 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 115,
-    "name": "Ref. ACAG / Ref, privé Calvo (Santa Irene)",
-    "lat": 42.918397,
-    "lng": -8.335662,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 116,
     "name": "Ref. ACAG (Arca O Pino)",
     "lat": 42.907131,
@@ -932,14 +580,6 @@ window.ALBERGUES_DATA = [
     "name": "Ref. ACAG (Monte del Gozo)",
     "lat": 42.887464,
     "lng": -8.498075,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 118,
-    "name": "Seminario Menor / Ref. privé Acuario (Santiago de Compostela)",
-    "lat": 42.8806,
-    "lng": -8.5448,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
