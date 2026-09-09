@@ -16,6 +16,14 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 4,
+    "name": "Municipal (Zubiri)",
+    "lat": 42.931644,
+    "lng": -1.504423,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 5,
     "name": "Municipal (Larrasoana)",
     "lat": 42.8887,
@@ -30,6 +38,30 @@ window.ALBERGUES_DATA = [
     "lng": -1.6146,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 7,
+    "name": "Municipal (Pamplona)",
+    "lat": 42.819046,
+    "lng": -1.641834,
+    "status": "gray",
+    "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 8,
+    "name": "Orden de Malta (Cizur Menor)",
+    "lat": 42.788579,
+    "lng": -1.674443,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 11,
+    "name": "Padres Reparadores (Puente La Reina)",
+    "lat": 42.673448,
+    "lng": -1.810316,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 15,
@@ -70,6 +102,14 @@ window.ALBERGUES_DATA = [
     "lng": -2.445,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 23,
+    "name": "Municipal (Navarrete)",
+    "lat": 42.429264,
+    "lng": -2.560425,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 25,
@@ -120,6 +160,14 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 33,
+    "name": "Parroquial San Francisco de Asis (Tosantos)",
+    "lat": 42.413796,
+    "lng": -3.242747,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 35,
     "name": "Municipal (Villafranca Montes de Oca)",
     "lat": 42.3872,
@@ -152,6 +200,14 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 40,
+    "name": "Municipal Casa del Cubo (Burgos)",
+    "lat": 42.342429,
+    "lng": -3.70382,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 41,
     "name": "Municipal (Villalbilla de Burgos)",
     "lat": 42.3361,
@@ -176,6 +232,14 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 44,
+    "name": "Municipal (Hontanas)",
+    "lat": 42.312717,
+    "lng": -4.044819,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 45,
     "name": "Association (San Anton)",
     "lat": 42.2961,
@@ -184,12 +248,28 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 46,
+    "name": "Municipal San Esteban (Castrojeriz)",
+    "lat": 42.288666,
+    "lng": -4.140204,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 47,
     "name": "Municipal / San Nicolas (Italie) (Puente Fitero San Nicolas)",
     "lat": 42.2742,
     "lng": -4.2542,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 48,
+    "name": "Municipal (Itero de la Vega)",
+    "lat": 42.286939,
+    "lng": -4.259074,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 49,
@@ -216,6 +296,38 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 52,
+    "name": "Municipal (Villalcazar de Sirga)",
+    "lat": 42.316278,
+    "lng": -4.542664,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 53,
+    "name": "Parroquial Santa Maria (Carrion de los Condes)",
+    "lat": 42.337751,
+    "lng": -4.601598,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 54,
+    "name": "Municipal (Calzadilla de la Cueza)",
+    "lat": 42.329147,
+    "lng": -4.802577,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 58,
+    "name": "Municipal Cluny (Sahagun)",
+    "lat": 42.371188,
+    "lng": -5.027255,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 59,
     "name": "Municipal (Calzada del Coto)",
     "lat": 42.3908,
@@ -230,6 +342,14 @@ window.ALBERGUES_DATA = [
     "lng": -5.1436,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 61,
+    "name": "Municipal Domenico Laffi (El Burgo Ranero)",
+    "lat": 42.423413,
+    "lng": -5.218647,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 62,
@@ -288,6 +408,14 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 72,
+    "name": "Municipal (Murias de Rechivaldo)",
+    "lat": 42.460354,
+    "lng": -6.10715,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 73,
     "name": "Municipal (Santa Catalina de Somoza)",
     "lat": 42.4536,
@@ -302,6 +430,38 @@ window.ALBERGUES_DATA = [
     "lng": -6.215,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 75,
+    "name": "Municipal (Rabanal del Camino)",
+    "lat": 42.480756,
+    "lng": -6.284089,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 76,
+    "name": "Parroquial Domus Dei (Foncabadon)",
+    "lat": 42.491866,
+    "lng": -6.343491,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 78,
+    "name": "Parroquial (El Acebo)",
+    "lat": 42.499103,
+    "lng": -6.458082,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
+    "id": 79,
+    "name": "Municipal (Riego de Ambros)",
+    "lat": 42.520907,
+    "lng": -6.478861,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 81,
@@ -416,12 +576,28 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 99,
+    "name": "Xunta de Galicia (Barbadelo)",
+    "lat": 42.767576,
+    "lng": -7.450971,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 100,
     "name": "ACAG / Municipal (Ferreiros)",
     "lat": 42.8258,
     "lng": -7.5303,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 101,
+    "name": "Xunta de Galicia (Portomarin)",
+    "lat": 42.808423,
+    "lng": -7.615054,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 102,
@@ -454,6 +630,14 @@ window.ALBERGUES_DATA = [
     "lng": -7.8344,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 107,
+    "name": "Xunta de Galicia (Palas de Rei)",
+    "lat": 42.87308,
+    "lng": -7.869033,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 110,
@@ -496,6 +680,14 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
+    "id": 115,
+    "name": "Xunta de Galicia (Santa Irene)",
+    "lat": 42.918289,
+    "lng": -8.335771,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
+  },
+  {
     "id": 116,
     "name": "ACAG (Arca O Pino)",
     "lat": 42.907131,
@@ -510,6 +702,14 @@ window.ALBERGUES_DATA = [
     "lng": -8.498075,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
+  },
+  {
+    "id": 118,
+    "name": "Seminario Menor - Arzobispado (Santiago de Compostela)",
+    "lat": 42.876649,
+    "lng": -8.53716,
+    "status": "gray",
+    "lastUpdated": "2026-09-09 전수조사 반영"
   },
   {
     "id": 119,
