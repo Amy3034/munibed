@@ -910,6 +910,20 @@ app.get('/api/admin/history', async (req, res) => {
   }
 });
 
+// GET today's page-visit count — public, shown in the client UI as a
+// small "오늘 방문자 N명" badge.
+app.get('/api/visitors/today', async (req, res) => {
+  try {
+    const today = getMadridDate();
+    const table = usePostgres ? '"PageVisits"' : 'PageVisits';
+    const query = `SELECT count FROM ${table} WHERE visit_date = $1`;
+    const { rows } = await pool.query(query, [today]);
+    res.json({ date: today, count: rows.length ? parseInt(rows[0].count) : 0 });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // GET daily page-visit counts — admin-only (same ADMIN_KEY gate as
 // /api/admin/history above). Not used by the client app.
 app.get('/api/admin/visitors', async (req, res) => {

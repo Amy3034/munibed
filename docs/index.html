@@ -72,6 +72,12 @@
         .logo-area .camino-text { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
         .logo-area .tracker-text { font-size: 0.75rem; color: var(--text-muted); font-weight: 500; opacity: 0.8; }
         .header-icons { display: flex; align-items: center; gap: 20px; color: #64748b; }
+        .visitor-badge {
+            font-size: 0.78rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            margin-left: 8px;
+        }
         .header-icons span { cursor: pointer; font-size: 1.4rem; transition: color 0.2s; }
         .header-icons span:hover { color: var(--primary); }
         .page-lang-toggle { display: flex; gap: 6px; }
@@ -777,6 +783,7 @@
             <div class="subtitle-group">
                 <span class="camino-text">for Camino de Santiago</span>
                 <span class="tracker-text">Municipal Albergue Tracker</span>
+                <span id="visitor-badge" class="visitor-badge"></span>
             </div>
         </div>
         <div class="header-icons">
@@ -1074,6 +1081,7 @@
             // Keep the info/contact modals in sync with the same language
             switchInfoLanguage(lang);
             switchContactLanguage(lang);
+            showVisitorBadge();
 
             renderAll({ keepScroll: true });
         }
@@ -1965,6 +1973,21 @@
             }
         }
 
+        async function showVisitorBadge() {
+            const el = document.getElementById('visitor-badge');
+            if (!el) return;
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/visitors/today`);
+                const data = await res.json();
+                const count = data.count || 0;
+                el.textContent = (pageLang === 'EN')
+                    ? `👀 ${count} visitors today`
+                    : `👀 오늘 방문자 ${count}명`;
+            } catch (err) {
+                // Silent — badge just stays empty if this fails.
+            }
+        }
+
         window.addEventListener('load', () => {
             showMobileHint();
         });
@@ -1981,6 +2004,7 @@
 
             registerDevice();
             recordVisit();
+            showVisitorBadge();
             fetchAndSync();
 
             // Auto open sidebar on mobile
