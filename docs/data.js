@@ -1,7 +1,7 @@
 window.ALBERGUES_DATA = [
   {
     "id": 1,
-    "name": "Ref. municipal (Saint-Jean-Pied-de-Port)",
+    "name": "Municipal (Saint-Jean-Pied-de-Port)",
     "lat": 43.163782,
     "lng": -1.234724,
     "status": "gray",
@@ -16,16 +16,8 @@ window.ALBERGUES_DATA = [
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 4,
-    "name": "Ref. municipal (Zubiri)",
-    "lat": 42.9304,
-    "lng": -1.5032,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 5,
-    "name": "Ref. municipal (Larrasoana)",
+    "name": "Municipal (Larrasoana)",
     "lat": 42.8887,
     "lng": -1.5457,
     "status": "gray",
@@ -33,7 +25,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 6,
-    "name": "Ref. des Frères Maristes (Arre-Villava)",
+    "name": "Des Frères Maristes (Arre-Villava)",
     "lat": 42.8306,
     "lng": -1.6146,
     "status": "gray",
@@ -41,7 +33,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 15,
-    "name": "Ref. Asso. Estella / Ref. Asso. Anfas (Estella)",
+    "name": "Asso. Estella / Asso. Anfas (Estella)",
     "lat": 42.6698,
     "lng": -2.027443,
     "status": "gray",
@@ -49,7 +41,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 16,
-    "name": "Ref.Mun.San Cipriano (Ayegui)",
+    "name": "Mun.San Cipriano (Ayegui)",
     "lat": 42.6567,
     "lng": -2.0461,
     "status": "gray",
@@ -57,7 +49,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 18,
-    "name": "Ref. municipal (Los Arcos)",
+    "name": "Municipal (Los Arcos)",
     "lat": 42.569059,
     "lng": -2.194208,
     "status": "gray",
@@ -65,7 +57,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 21,
-    "name": "Ref. mun. Munoz (Viana)",
+    "name": "Mun. Munoz (Viana)",
     "lat": 42.5147,
     "lng": -2.3719,
     "status": "gray",
@@ -73,7 +65,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 22,
-    "name": "Ref. Ass. La Rioja / Albergue Municipal (Logroño)",
+    "name": "Ass. La Rioja / Albergue Municipal (Logroño)",
     "lat": 42.4627,
     "lng": -2.445,
     "status": "gray",
@@ -81,7 +73,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 25,
-    "name": "Ref. Ass. Najera / Ref. La Juderia (Najera)",
+    "name": "Ass. Najera / La Juderia (Najera)",
     "lat": 42.414966,
     "lng": -2.734201,
     "status": "gray",
@@ -89,7 +81,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 26,
-    "name": "Ref. municipal (Azofra)",
+    "name": "Municipal (Azofra)",
     "lat": 42.4228,
     "lng": -2.8028,
     "status": "gray",
@@ -97,7 +89,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 27,
-    "name": "Ref. Casa. Del Santo / Ref. abbaye Cistercienne (Santo Domingo de la Calzada)",
+    "name": "Casa. Del Santo / Abbaye Cistercienne (Santo Domingo de la Calzada)",
     "lat": 42.4419,
     "lng": -2.9536,
     "status": "gray",
@@ -105,7 +97,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 28,
-    "name": "Ref. paroissial (Grañon)",
+    "name": "Paroissial (Grañon)",
     "lat": 42.4497,
     "lng": -3.0275,
     "status": "gray",
@@ -113,7 +105,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 29,
-    "name": "Ref. mun, San Lazaro (Redecilla del Camino)",
+    "name": "Mun, San Lazaro (Redecilla del Camino)",
     "lat": 42.4361,
     "lng": -3.0642,
     "status": "gray",
@@ -121,7 +113,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 32,
-    "name": "Ref. paroissial / Refuge mun. El Corro (Belorado)",
+    "name": "Paroissial / Refuge mun. El Corro (Belorado)",
     "lat": 42.4192,
     "lng": -3.1897,
     "status": "gray",
@@ -129,7 +121,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 35,
-    "name": "Ref. municipal (Villafranca Montes de Oca)",
+    "name": "Municipal (Villafranca Montes de Oca)",
     "lat": 42.3872,
     "lng": -3.3131,
     "status": "gray",
@@ -137,7 +129,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 36,
-    "name": "Ref. paroissial San Juan (San Juan de Ortega)",
+    "name": "Paroissial San Juan (San Juan de Ortega)",
     "lat": 42.3769,
     "lng": -3.4267,
     "status": "gray",
@@ -145,7 +137,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 37,
-    "name": "Ref. mun. San Rafael (Agés)",
+    "name": "Mun. San Rafael (Agés)",
     "lat": 42.369419,
     "lng": -3.479197,
     "status": "gray",
@@ -153,7 +145,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 39,
-    "name": "Ref. municipal (Cardeñuels - Riopico)",
+    "name": "Municipal (Cardeñuels - Riopico)",
     "lat": 42.3592,
     "lng": -3.6169,
     "status": "gray",
@@ -161,7 +153,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 41,
-    "name": "Ref. municipal (Villalbilla de Burgos)",
+    "name": "Municipal (Villalbilla de Burgos)",
     "lat": 42.3361,
     "lng": -3.7806,
     "status": "gray",
@@ -169,7 +161,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 42,
-    "name": "Ref. municipal (Tardajos)",
+    "name": "Municipal (Tardajos)",
     "lat": 42.3508,
     "lng": -3.8183,
     "status": "gray",
@@ -177,55 +169,31 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 43,
-    "name": "Ref. municipal (Hornillos del Camino)",
+    "name": "Municipal (Hornillos del Camino)",
     "lat": 42.338699,
     "lng": -3.926032,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 44,
-    "name": "Ref. municipal (Hontanas)",
-    "lat": 42.3131,
-    "lng": -4.045,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 45,
-    "name": "Ref. association (San Anton)",
+    "name": "Association (San Anton)",
     "lat": 42.2961,
     "lng": -4.0778,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 46,
-    "name": "Ref. municipal (Castrojeriz)",
-    "lat": 42.291033,
-    "lng": -4.131811,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 47,
-    "name": "Ref. municipal / Ref. San Nicolas (Italie) (Puente Fitero San Nicolas)",
+    "name": "Municipal / San Nicolas (Italie) (Puente Fitero San Nicolas)",
     "lat": 42.2742,
     "lng": -4.2542,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 48,
-    "name": "Ref. municipal (Itero de la Vega)",
-    "lat": 42.2842,
-    "lng": -4.2611,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 49,
-    "name": "Ref. municipal / Centre Tourisme rural (Boadilla del Camino)",
+    "name": "Municipal / Centre Tourisme rural (Boadilla del Camino)",
     "lat": 42.2597,
     "lng": -4.3481,
     "status": "gray",
@@ -233,7 +201,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 50,
-    "name": "Ref.municipal (Fromista)",
+    "name": "Municipal (Fromista)",
     "lat": 42.2667,
     "lng": -4.4069,
     "status": "gray",
@@ -241,23 +209,15 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 51,
-    "name": "Ref.municipal (Poblacion de Campos)",
+    "name": "Municipal (Poblacion de Campos)",
     "lat": 42.2722,
     "lng": -4.4539,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 58,
-    "name": "Ref. municipal Cluny (Sahagun)",
-    "lat": 42.3719,
-    "lng": -5.0319,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 59,
-    "name": "Ref. municipal (Calzada del Coto)",
+    "name": "Municipal (Calzada del Coto)",
     "lat": 42.3908,
     "lng": -5.0803,
     "status": "gray",
@@ -265,7 +225,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 60,
-    "name": "Ref. par.Casa rectoral / Ref. Ass. Léon (Bercianos del Camino)",
+    "name": "Par.Casa rectoral / Ass. Léon (Bercianos del Camino)",
     "lat": 42.3831,
     "lng": -5.1436,
     "status": "gray",
@@ -273,7 +233,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 62,
-    "name": "Ref. municipal (Rellegos)",
+    "name": "Municipal (Rellegos)",
     "lat": 42.4828,
     "lng": -5.3528,
     "status": "gray",
@@ -281,7 +241,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 63,
-    "name": "Ref. municipal (Mansilla de las Mulas)",
+    "name": "Municipal (Mansilla de las Mulas)",
     "lat": 42.4969,
     "lng": -5.4161,
     "status": "gray",
@@ -289,7 +249,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 66,
-    "name": "Ref. municipal / Ref. Bénédictines (Leon)",
+    "name": "Municipal / Bénédictines (Leon)",
     "lat": 42.595142,
     "lng": -5.568218,
     "status": "gray",
@@ -297,7 +257,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 67,
-    "name": "Ref. municipal (Virgen del Camino)",
+    "name": "Municipal (Virgen del Camino)",
     "lat": 42.5769,
     "lng": -5.6386,
     "status": "gray",
@@ -305,7 +265,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 68,
-    "name": "Ref. municipal (Villadangos del Paramo)",
+    "name": "Municipal (Villadangos del Paramo)",
     "lat": 42.5161,
     "lng": -5.7656,
     "status": "gray",
@@ -313,7 +273,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 70,
-    "name": "Ref. mun. El Camping / Ref. paroissial (Hospital de Orbigo)",
+    "name": "Mun. El Camping / Paroissial (Hospital de Orbigo)",
     "lat": 42.465,
     "lng": -5.8822,
     "status": "gray",
@@ -321,7 +281,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 71,
-    "name": "Ref. Siervas de Maria / Ref. municipal (Astorga)",
+    "name": "Siervas de Maria / Municipal (Astorga)",
     "lat": 42.452865,
     "lng": -6.051355,
     "status": "gray",
@@ -329,7 +289,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 73,
-    "name": "Ref. municipal (Santa Catalina de Somoza)",
+    "name": "Municipal (Santa Catalina de Somoza)",
     "lat": 42.4536,
     "lng": -6.1664,
     "status": "gray",
@@ -337,31 +297,15 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 74,
-    "name": "Ref. municipal (El Ganso)",
+    "name": "Municipal (El Ganso)",
     "lat": 42.46,
     "lng": -6.215,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 76,
-    "name": "Ref. paroissial / RP Monte Irago (Foncabadon)",
-    "lat": 42.5028,
-    "lng": -6.3406,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
-    "id": 80,
-    "name": "Ref. municipal / RP Santa Marina (Molinaseca)",
-    "lat": 42.540836,
-    "lng": -6.526174,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 81,
-    "name": "Ref. paroissial (Ponferrada)",
+    "name": "Paroissial (Ponferrada)",
     "lat": 42.54339,
     "lng": -6.586304,
     "status": "gray",
@@ -369,7 +313,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 82,
-    "name": "Ref. municipal (Cacabelos)",
+    "name": "Municipal (Cacabelos)",
     "lat": 42.600205,
     "lng": -6.731248,
     "status": "gray",
@@ -377,7 +321,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 83,
-    "name": "Ref. municipal (Villafranca del Bierzo)",
+    "name": "Municipal (Villafranca del Bierzo)",
     "lat": 42.604576,
     "lng": -6.806513,
     "status": "gray",
@@ -385,7 +329,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 84,
-    "name": "Ref. municipal (Pereje)",
+    "name": "Municipal (Pereje)",
     "lat": 42.6306,
     "lng": -6.8406,
     "status": "gray",
@@ -393,7 +337,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 85,
-    "name": "Ref.municipal (Trabadelo)",
+    "name": "Municipal (Trabadelo)",
     "lat": 42.6481,
     "lng": -6.8817,
     "status": "gray",
@@ -409,7 +353,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 88,
-    "name": "Ref. municipal / RP NS do Brazil (Vega de Valcarce)",
+    "name": "Municipal (Vega de Valcarce)",
     "lat": 42.6653,
     "lng": -6.9469,
     "status": "gray",
@@ -417,7 +361,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 90,
-    "name": "Ref. Ass. Allemande (La Faba)",
+    "name": "Ass. Allemande (La Faba)",
     "lat": 42.6869,
     "lng": -6.9953,
     "status": "gray",
@@ -425,7 +369,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 92,
-    "name": "Ref. ACAG (O Cebreiro)",
+    "name": "ACAG (O Cebreiro)",
     "lat": 42.707744,
     "lng": -7.045798,
     "status": "gray",
@@ -433,7 +377,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 93,
-    "name": "Ref. ACAG (Hospital de la Condesa)",
+    "name": "ACAG (Hospital de la Condesa)",
     "lat": 42.7247,
     "lng": -7.0864,
     "status": "gray",
@@ -441,7 +385,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 95,
-    "name": "Ref. ACAG (Triacastela)",
+    "name": "ACAG (Triacastela)",
     "lat": 42.755236,
     "lng": -7.235385,
     "status": "gray",
@@ -457,7 +401,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 97,
-    "name": "Ref. ACAG (Calvor)",
+    "name": "ACAG (Calvor)",
     "lat": 42.7661,
     "lng": -7.3692,
     "status": "gray",
@@ -465,7 +409,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 98,
-    "name": "Ref. ACAG (Sarria)",
+    "name": "ACAG (Sarria)",
     "lat": 42.777426,
     "lng": -7.413567,
     "status": "gray",
@@ -473,23 +417,15 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 100,
-    "name": "Ref. ACAG / Ref. municipal (Ferreiros)",
+    "name": "ACAG / Municipal (Ferreiros)",
     "lat": 42.8258,
     "lng": -7.5303,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 101,
-    "name": "Ref. mun. El Caminante (Portomarin)",
-    "lat": 42.8081,
-    "lng": -7.6167,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 102,
-    "name": "Ref. ACAG (Gonzar)",
+    "name": "ACAG (Gonzar)",
     "lat": 42.8339,
     "lng": -7.6975,
     "status": "gray",
@@ -497,7 +433,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 103,
-    "name": "Ref. ACAG (Hospital de la Cruz)",
+    "name": "ACAG (Hospital de la Cruz)",
     "lat": 42.855,
     "lng": -7.7664,
     "status": "gray",
@@ -505,7 +441,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 105,
-    "name": "Ref ACAG (Ligonde)",
+    "name": "ACAG (Ligonde)",
     "lat": 42.8681,
     "lng": -7.8183,
     "status": "gray",
@@ -513,23 +449,15 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 106,
-    "name": "Ref.ACAG (Eirexe)",
+    "name": "ACAG (Eirexe)",
     "lat": 42.8722,
     "lng": -7.8344,
     "status": "gray",
     "lastUpdated": "2026-03-17 검수 완료"
   },
   {
-    "id": 108,
-    "name": "RP O Abrigadoiro (San Xulian)",
-    "lat": 42.88,
-    "lng": -7.9042,
-    "status": "gray",
-    "lastUpdated": "2026-03-17 검수 완료"
-  },
-  {
     "id": 110,
-    "name": "Ref. ACAG (Casanova Mato)",
+    "name": "ACAG (Casanova Mato)",
     "lat": 42.8872,
     "lng": -7.9575,
     "status": "gray",
@@ -537,7 +465,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 111,
-    "name": "Ref. municipal (Leboreiro)",
+    "name": "Municipal (Leboreiro)",
     "lat": 42.8986,
     "lng": -7.9867,
     "status": "gray",
@@ -545,7 +473,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 112,
-    "name": "Ref. ACAG (Melide)",
+    "name": "ACAG (Melide)",
     "lat": 42.915,
     "lng": -8.0169,
     "status": "gray",
@@ -553,7 +481,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 113,
-    "name": "Ref. ACAG (Ribadiso de Baixo)",
+    "name": "ACAG (Ribadiso de Baixo)",
     "lat": 42.9242,
     "lng": -8.1342,
     "status": "gray",
@@ -561,7 +489,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 114,
-    "name": "Ref. ACAG (Arzua)",
+    "name": "ACAG (Arzua)",
     "lat": 42.9272,
     "lng": -8.1639,
     "status": "gray",
@@ -569,7 +497,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 116,
-    "name": "Ref. ACAG (Arca O Pino)",
+    "name": "ACAG (Arca O Pino)",
     "lat": 42.907131,
     "lng": -8.358718,
     "status": "gray",
@@ -577,7 +505,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 117,
-    "name": "Ref. ACAG (Monte del Gozo)",
+    "name": "ACAG (Monte del Gozo)",
     "lat": 42.887464,
     "lng": -8.498075,
     "status": "gray",
@@ -585,7 +513,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 119,
-    "name": "Ref. municipal (De Santiago a Negreira)",
+    "name": "Municipal (De Santiago a Negreira)",
     "lat": 42.905,
     "lng": -8.7369,
     "status": "gray",
@@ -593,7 +521,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 120,
-    "name": "Ref. municipal (Vilaserio)",
+    "name": "Municipal (Vilaserio)",
     "lat": 42.9242,
     "lng": -8.845,
     "status": "gray",
@@ -601,7 +529,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 121,
-    "name": "Ref. municipal (Olveiroa)",
+    "name": "Municipal (Olveiroa)",
     "lat": 42.9786,
     "lng": -9.0442,
     "status": "gray",
@@ -617,7 +545,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 123,
-    "name": "Ref. Ass. Galega (Corcubion Redonda)",
+    "name": "Ass. Galega (Corcubion Redonda)",
     "lat": 42.9467,
     "lng": -9.1936,
     "status": "gray",
@@ -625,7 +553,7 @@ window.ALBERGUES_DATA = [
   },
   {
     "id": 124,
-    "name": "Ref. municipal (Fisterra)",
+    "name": "Municipal (Fisterra)",
     "lat": 42.9061,
     "lng": -9.2636,
     "status": "gray",
