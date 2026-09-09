@@ -1954,6 +1954,17 @@
             }
         }
 
+        async function recordVisit() {
+            // Fire-and-forget page-load ping for an admin-only daily
+            // visit counter. Every load counts (no de-dup) — see
+            // GET /api/admin/visitors on the server.
+            try {
+                await fetch(`${API_BASE_URL}/api/visit`, { method: 'POST' });
+            } catch (err) {
+                // Ignored — a metrics ping should never affect the UI.
+            }
+        }
+
         window.addEventListener('load', () => {
             showMobileHint();
         });
@@ -1969,6 +1980,7 @@
             setTimeout(autoLocateOnLoad, 500);
 
             registerDevice();
+            recordVisit();
             fetchAndSync();
 
             // Auto open sidebar on mobile

@@ -559,6 +559,21 @@ async function initDB() {
         )`;
     await client.query(dailyUpdatesTableQuery);
 
+    // Create PageVisits table — one row per calendar day (Madrid time),
+    // with a running count of page loads that day. Admin-only metric
+    // (how many times the page was loaded, not unique visitors); not
+    // shown anywhere in the client UI.
+    const pageVisitsTableQuery = usePostgres
+      ? `CREATE TABLE IF NOT EXISTS "PageVisits" (
+          visit_date TEXT PRIMARY KEY,
+          count INTEGER NOT NULL DEFAULT 0
+        )`
+      : `CREATE TABLE IF NOT EXISTS PageVisits (
+          visit_date TEXT PRIMARY KEY,
+          count INTEGER NOT NULL DEFAULT 0
+        )`;
+    await client.query(pageVisitsTableQuery);
+
     // Create StatusHistory table — an append-only log of every status
     // change (who/when/from→to/where). Nothing reads this to gate
     // behavior yet; it exists so abuse or data-quality issues (a device
@@ -696,6 +711,36 @@ app.post('/api/devices', deviceRegisterLimiter, async (req, res) => {
 
     res.json({ registered: true, origin_lat: origin_lat ?? null, origin_lng: origin_lng ?? null });
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST record a page visit — called once per page load from the client.
+// Just increments a per-day counter; no device_id, no auth. Admin-only
+// metric, read back via GET /api/admin/visitors.
+app.post('/api/visit', async (req, res) => {
+  try {
+    const today = getMadridDate();
+    const selectQuery = usePostgres
+      ? 'SELECT count FROM "PageVisits" WHERE visit_date = $1'
+      : 'SELECT count FROM PageVisits WHERE visit_date = $1';
+    const existing = await pool.query(selectQuery, [today]);
+
+    if (existing.rows.length > 0) {
+      const updateQuery = usePostgres
+        ? 'UPDATE "PageVisits" SET count = count + 1 WHERE visit_date = $1'
+        : 'UPDATE PageVisits SET count = count + 1 WHERE visit_date = $1';
+      await pool.query(updateQuery, [today]);
+    } else {
+      const insertQuery = usePostgres
+        ? 'INSERT INTO "PageVisits" (visit_date, count) VALUES ($1, 1)'
+        : 'INSERT INTO PageVisits (visit_date, count) VALUES ($1, 1)';
+      await pool.query(insertQuery, [today]);
+    }
+
+    res.json({ ok: true });
+  } catch (err) {
+    // Never let a metrics failure surface as a visible error client-side.
     res.status(500).json({ error: err.message });
   }
 });
@@ -860,6 +905,29 @@ app.get('/api/admin/history', async (req, res) => {
     const query = `SELECT * FROM ${table} ${where} ORDER BY ${orderCol} DESC LIMIT ${limit}`;
     const { rows } = await pool.query(query, params);
     res.json(rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET daily page-visit counts — admin-only (same ADMIN_KEY gate as
+// /api/admin/history above). Not used by the client app.
+app.get('/api/admin/visitors', async (req, res) => {
+  if (!ADMIN_KEY || req.query.key !== ADMIN_KEY) {
+    return res.status(404).json({ error: 'Not found.' });
+  }
+  try {
+    const days = Math.min(parseInt(req.query.days) || 30, 365);
+    const table = usePostgres ? '"PageVisits"' : 'PageVisits';
+    const query = `SELECT * FROM ${table} ORDER BY visit_date DESC LIMIT ${days}`;
+    const { rows } = await pool.query(query);
+    const today = getMadridDate();
+    const todayRow = rows.find(r => r.visit_date === today);
+    res.json({
+      today: today,
+      today_count: todayRow ? parseInt(todayRow.count) : 0,
+      days: rows
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
